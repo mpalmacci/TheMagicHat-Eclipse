@@ -1,5 +1,9 @@
 package com.magichat;
 
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -7,7 +11,7 @@ public class Card implements Comparable<Card> {
 	int id;
 	String name;
 	CardSet defaultCardSet;
-	String defaultPicURL;
+	URL defaultPicURL;
 	String[] colors;
 	String manaCost;
 	int CMC;
@@ -16,9 +20,9 @@ public class Card implements Comparable<Card> {
 	int power;
 	int toughness;
 	String text;
-	SetImage[] setsImages;
+	HashMap<CardSet, URL> setsImages;
 
-	class SetImage {
+/*	class SetImage {
 		public CardSet cardSet;
 		public String picURL;
 
@@ -42,14 +46,14 @@ public class Card implements Comparable<Card> {
 		public String getPicURL() {
 			return this.picURL;
 		}
-	}
+	}*/
 	
 	public Card(String name, int id) {
 		this.name = name;
 		this.id = id;
 	}
 
-	public Card(String name, CardSet[] cardSets, String[] picURL, String[] colors,
+	public Card(String name, CardSet[] cardSets, URL[] picURL, String[] colors,
 			String manaCost, String type, String pt, String text) {
 		this.name = name;
 		this.colors = colors;
@@ -66,17 +70,16 @@ public class Card implements Comparable<Card> {
 		this.toughness = Integer.parseInt(sToughness);
 
 		for (int i = 0; i < cardSets.length; i++) {
-			setsImages[i].setCardSet(cardSets[i]);
-			setsImages[i].setPicURL(picURL[i]);
+			setsImages.put(cardSets[i], picURL[i]);
 		}
 
-		this.defaultCardSet = setsImages[0].getCardSet();
-		this.defaultPicURL = setsImages[0].getPicURL();
+		this.defaultCardSet = cardSets[0];
+		this.defaultPicURL = setsImages.get(cardSets[0]);
 
 		this.text = text;
 	}
 
-	public Card(String name, CardSet[] cardSets, String[] picURL, String[] colors,
+	public Card(String name, CardSet[] cardSets, URL[] picURL, String[] colors,
 			String manaCost, String type, String pt, String text, int id) {
 		this(name, cardSets, picURL, colors, manaCost, type, pt, text);
 		this.id = id;
@@ -129,7 +132,14 @@ public class Card implements Comparable<Card> {
 		return this.defaultCardSet;
 	}
 	
-	public String getDefaultPicURL() {
+	public List<CardSet> getAllCardSets() {
+		List<CardSet> allCardSets = new ArrayList<CardSet>();
+		allCardSets.addAll(setsImages.keySet());
+		
+		return allCardSets;
+	}
+	
+	public URL getDefaultPicURL() {
 		return this.defaultPicURL;
 	}
 	
@@ -157,7 +167,7 @@ public class Card implements Comparable<Card> {
 		return this.toughness;
 	}
 	
-	public SetImage[] getSetsImages() {
+	public HashMap<CardSet, URL> getSetsImages() {
 		return this.setsImages;
 	}
 	

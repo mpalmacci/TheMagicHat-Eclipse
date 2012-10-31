@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.magichat.Card.SetImage;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -292,7 +290,7 @@ public class MagicHatDB {
 				cvc.put(KEY_CARD_DEFAULT_CARDSET,
 						getCardSetId(c.getDefaultCardSet().getShortName(),
 								allCardSets));
-				cvc.put(KEY_CARD_DEFAULT_PICURL, c.getDefaultPicURL());
+				cvc.put(KEY_CARD_DEFAULT_PICURL, c.getDefaultPicURL().toString());
 				cvc.put(KEY_CARD_ISBLACK, iBlack);
 				cvc.put(KEY_CARD_ISBLUE, iBlue);
 				cvc.put(KEY_CARD_ISWHITE, iWhite);
@@ -317,13 +315,13 @@ public class MagicHatDB {
 
 			for (Card c : allCards) {
 				ContentValues cvp = new ContentValues();
-				for (SetImage si : c.getSetsImages()) {
+				for (CardSet cs : c.getAllCardSets()) {
 					cvp.put(KEY_CARDSET_PIC_CARDSET_ID,
-							getCardSetId(si.getCardSet().getShortName(),
+							getCardSetId(cs.getShortName(),
 									allCardSets));
 					cvp.put(KEY_CARDSET_PIC_CARD_ID,
 							getCardId(c.getName(), allCards));
-					cvp.put(KEY_CARDSET_PIC_PICURL, si.getPicURL());
+					cvp.put(KEY_CARDSET_PIC_PICURL, c.getSetsImages().get(cs).toString());
 					db.insert(DATABASE_TABLE_CARDSET_PIC, null, cvp);
 				}
 			}

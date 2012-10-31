@@ -1,6 +1,9 @@
 package com.magichat;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.xml.sax.Attributes;
@@ -21,8 +24,10 @@ public class SAXCardsActivityHandler extends DefaultHandler {
 
 	// Card data types
 	String manaCost = "", type = "", pt = "", text = "";
-	String[] picURL = {}, color = {};
+	String[] color = {};
 	CardSet[] cardSets = {};
+	URL[] picURL = {};
+	HashMap<CardSet, URL> setImages;
 	// i is used as the index tracker for the set input values
 	// j is used for picURL in the same manner
 	// k is used for color
@@ -42,7 +47,11 @@ public class SAXCardsActivityHandler extends DefaultHandler {
 		if (localName.equals("cards")) {
 			isSet = false;
 		} else if (localName.equals("set") && !isSet) {
-			picURL[j] = attributes.getValue("picURL");
+			try {
+				picURL[j] = new URL(attributes.getValue("picURL"));
+			} catch (MalformedURLException urlEx) {
+				urlEx.printStackTrace();
+			}
 			j++;
 		}
 	}
@@ -69,7 +78,12 @@ public class SAXCardsActivityHandler extends DefaultHandler {
 			if (localName.equals("name")) {
 				name = charVal;
 			} else if (localName.equals("set")) {
-				cardSets[i] = getCardSet(charVal);
+				for (CardSet c_s : allCardSets) {
+					if (c_s.getShortName().equals(charVal)) {
+						cardSets[i] = c_s;
+						break;
+					}
+				}
 				i++;
 			} else if (localName.equals("color")) {
 				color[k] = charVal;
@@ -83,9 +97,10 @@ public class SAXCardsActivityHandler extends DefaultHandler {
 			} else if (localName.equals("text")) {
 				text = charVal;
 
-				c = new Card(name, cardSets, picURL, color, manaCost, type, pt, text);
+				c = new Card(name, cardSets, picURL, color, manaCost, type, pt,
+						text);
 				allCards.add(c);
-				
+
 				i = 0;
 				cardSets = null;
 				j = 0;
@@ -94,15 +109,5 @@ public class SAXCardsActivityHandler extends DefaultHandler {
 				color = null;
 			}
 		}
-	}
-	
-	private CardSet getCardSet(String cardSet) {
-		for (CardSet c_s : allCardSets) {
-			if (c_s.getShortName().equals(cardSet)) {
-				return c_s;
-			}
-		}
-		System.out.println("The Card Set wasn't found in getCardSet");
-		return null;
 	}
 }
