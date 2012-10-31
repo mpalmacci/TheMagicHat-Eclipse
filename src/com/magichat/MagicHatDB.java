@@ -1,6 +1,8 @@
 package com.magichat;
 
 import java.util.Date;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -95,7 +97,8 @@ public class MagicHatDB {
 					+ " INTEGER NOT NULL, FOREIGN KEY(" + KEY_DECK_OWNERID
 					+ ") REFERENCES " + DATABASE_TABLE_ALLPLAYERS + "("
 					+ KEY_PLAYER_ROWID + "));");
-			db.execSQL("CREATE TABLE " + DATABASE_TABLE_ALLGAMES + " ("
+			
+			db.execSQL("CREATE TABLE IF NOT EXISTS " + DATABASE_TABLE_ALLGAMES + " ("
 					+ KEY_GAME_ROWID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
 					+ KEY_GAME_PLAYER1 + " INTEGER NOT NULL, "
 					+ KEY_GAME_PLAYER2 + " INTEGER NOT NULL, " + KEY_GAME_DECK1
@@ -155,7 +158,7 @@ public class MagicHatDB {
 			db.execSQL("DROP TABLE IF EXISTS " + DATABASE_TABLE_ALLDECKS);
 			db.execSQL("DROP TABLE IF EXISTS " + DATABASE_TABLE_ALLPLAYERS);
 			// TODO Keep games record when updating db
-			db.execSQL("DROP TABLE IF EXISTS " + DATABASE_TABLE_ALLGAMES);
+			//db.execSQL("DROP TABLE IF EXISTS " + DATABASE_TABLE_ALLGAMES);
 			db.execSQL("DROP TABLE IF EXISTS " + DATABASE_TABLE_CARDSET_PIC);
 			db.execSQL("DROP TABLE IF EXISTS " + DATABASE_TABLE_ALLCARDS);
 			db.execSQL("DROP TABLE IF EXISTS " + DATABASE_TABLE_ALLCARDSETS);
@@ -253,37 +256,13 @@ public class MagicHatDB {
 			allCardSets = getAllCardSets(db);
 			allCards = sdp.getAllCards();
 
-			int iBlue = 0, iBlack = 0, iWhite = 0, iGreen = 0, iRed = 0;
+			int iBlue, iBlack, iWhite, iGreen, iRed;
 			for (Card c : allCards) {
-				if (c.isBlue()) {
-					iBlue = 1;
-				} else {
-					iBlue = 0;
-				}
-
-				if (c.isBlack()) {
-					iBlack = 1;
-				} else {
-					iBlack = 0;
-				}
-
-				if (c.isWhite()) {
-					iWhite = 1;
-				} else {
-					iWhite = 0;
-				}
-
-				if (c.isGreen()) {
-					iGreen = 1;
-				} else {
-					iGreen = 0;
-				}
-
-				if (c.isRed()) {
-					iRed = 1;
-				} else {
-					iRed = 0;
-				}
+				iBlue = c.isBlue() ? 1 : 0;
+				iBlack = c.isBlack() ? 1 : 0;
+				iWhite = c.isWhite() ? 1 : 0;
+				iGreen = c.isGreen() ? 1 : 0;
+				iRed = c.isRed() ? 1 : 0;
 
 				ContentValues cvc = new ContentValues();
 				cvc.put(KEY_CARD_NAME, c.getName());
