@@ -1,0 +1,489 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TheHat>
+
+    <Owners>
+        <Owner
+            name="Matt"
+            active="true"
+            number="1" />
+        <Owner
+            name="Adam"
+            active="true"
+            number="2" />
+        <Owner
+            name="Eric"
+            active="false"
+            number="3" />
+        <Owner
+            name="Chris"
+            active="false"
+            number="4" />
+        <Owner
+            name="Mary"
+            active="false"
+            number="5" />
+        <Owner
+            name="Wizards of the Coast"
+            active="false"
+            number="6" />
+    </Owners>
+
+    <Decks>
+        <Deck
+            name="Artifact"
+            active="true"
+            number="1"
+            owner="2" />
+        <Deck
+            name="Bloodthirst"
+            active="true"
+            number="2"
+            owner="2" />
+        <Deck
+            name="Blue/White"
+            active="true"
+            number="3"
+            owner="2" />
+        <Deck
+            name="Deathtouch"
+            active="true"
+            number="4"
+            owner="2" />
+        <Deck
+            name="Direct Damage"
+            active="true"
+            number="5"
+            owner="2" />
+        <Deck
+            name="Enchantment"
+            active="true"
+            number="6"
+            owner="2" />
+        <Deck
+            name="Green"
+            active="true"
+            number="7"
+            owner="2" />
+        <Deck
+            name="Griffin"
+            active="true"
+            number="8"
+            owner="2" />
+        <Deck
+            name="Haste"
+            active="true"
+            number="9"
+            owner="2" />
+        <Deck
+            name="Mill"
+            active="true"
+            number="10"
+            owner="2" />
+        <Deck
+            name="Return"
+            active="true"
+            number="11"
+            owner="2" />
+        <Deck
+            name="Spirit"
+            active="true"
+            number="12"
+            owner="2" />
+        <Deck
+            name="The Human Sacrifice"
+            active="true"
+            number="13"
+            owner="2" />
+        <Deck
+            name="Trample"
+            active="false"
+            number="14"
+            owner="2" />
+        <Deck
+            name="Werewolf"
+            active="true"
+            number="15"
+            owner="2" />
+        <Deck
+            name="White Weenie"
+            active="true"
+            number="16"
+            owner="2" />
+        <Deck
+            name="Zombie"
+            active="true"
+            number="17"
+            owner="2" />
+        <Deck
+            name="Zomlusion"
+            active="true"
+            number="18"
+            owner="2" />
+        <Deck
+            name="Creatures from the Abyss"
+            active="true"
+            number="19"
+            owner="2" />
+        <Deck
+            name="Nicol Bolas"
+            active="true"
+            number="20"
+            owner="2" />
+        <Deck
+            name="D&amp;D"
+            active="true"
+            number="21"
+            owner="2" />
+        <Deck
+            name="Angels &amp; Demons"
+            active="true"
+            number="101"
+            owner="1" />
+        <Deck
+            name="Black Power"
+            active="true"
+            number="102"
+            owner="1" />
+        <Deck
+            name="Counter/Copy/Control"
+            active="true"
+            number="103"
+            owner="1" />
+        <Deck
+            name="Crafty Equipment"
+            active="true"
+            number="104"
+            owner="1" />
+        <Deck
+            name="Discard/Destroy"
+            active="true"
+            number="105"
+            owner="1" />
+        <Deck
+            name="Dragons"
+            active="true"
+            number="106"
+            owner="1" />
+        <Deck
+            name="Finders Keepers"
+            active="true"
+            number="107"
+            owner="1" />
+        <Deck
+            name="First Strike"
+            active="true"
+            number="108"
+            owner="1" />
+        <Deck
+            name="Flicker"
+            active="true"
+            number="109"
+            owner="1" />
+        <Deck
+            name="Gain Life"
+            active="true"
+            number="110"
+            owner="1" />
+        <Deck
+            name="Golem"
+            active="true"
+            number="111"
+            owner="1" />
+        <Deck
+            name="Green Monsters"
+            active="true"
+            number="112"
+            owner="1" />
+        <Deck
+            name="Human"
+            active="false"
+            number="113"
+            owner="1" />
+        <Deck
+            name="Humans Revised"
+            active="true"
+            number="114"
+            owner="1" />
+        <Deck
+            name="Indestructible"
+            active="true"
+            number="115"
+            owner="1" />
+        <Deck
+            name="Infect"
+            active="true"
+            number="116"
+            owner="1" />
+        <Deck
+            name="Land Empire"
+            active="true"
+            number="117"
+            owner="1" />
+        <Deck
+            name="Library Recycle"
+            active="true"
+            number="118"
+            owner="1" />
+        <Deck
+            name="Multi-Mill"
+            active="true"
+            number="119"
+            owner="1" />
+        <Deck
+            name="Myr"
+            active="true"
+            number="120"
+            owner="1" />
+        <Deck
+            name="Optical Illusion"
+            active="true"
+            number="121"
+            owner="1" />
+        <Deck
+            name="Pod"
+            active="true"
+            number="122"
+            owner="1" />
+        <Deck
+            name="Random Black/Green"
+            active="true"
+            number="123"
+            owner="1" />
+        <Deck
+            name="Red Hurt"
+            active="true"
+            number="124"
+            owner="1" />
+        <Deck
+            name="Spirit"
+            active="true"
+            number="125"
+            owner="1" />
+        <Deck
+            name="The Curse"
+            active="true"
+            number="126"
+            owner="1" />
+        <Deck
+            name="The Dead Ones"
+            active="true"
+            number="127"
+            owner="1" />
+        <Deck
+            name="The Empires"
+            active="true"
+            number="128"
+            owner="1" />
+        <Deck
+            name="The Sorcerer"
+            active="false"
+            number="129"
+            owner="1" />
+        <Deck
+            name="The Trainer"
+            active="false"
+            number="130"
+            owner="1" />
+        <Deck
+            name="Trample"
+            active="true"
+            number="131"
+            owner="1" />
+        <Deck
+            name="Vampire"
+            active="true"
+            number="132"
+            owner="1" />
+        <Deck
+            name="Werewolf"
+            active="true"
+            number="133"
+            owner="1" />
+        <Deck
+            name="Zombie"
+            active="false"
+            number="134"
+            owner="1" />
+        <Deck
+            name="Zombie Mill"
+            active="true"
+            number="135"
+            owner="1" />
+        <Deck
+            name="One Man Army"
+            active="true"
+            number="136"
+            owner="1" />
+        <Deck
+            name="Bolas"
+            active="true"
+            number="137"
+            owner="1" />
+        <Deck
+            name="Goblins"
+            active="true"
+            number="138"
+            owner="1" />
+        <Deck
+            name="Unblockable"
+            active="true"
+            number="139"
+            owner="1" />
+        <Deck
+            name="Red Power"
+            active="true"
+            number="140"
+            owner="1" />
+        <Deck
+            name="Soldier"
+            active="true"
+            number="141"
+            owner="1" />
+        <Deck
+            name="Mill"
+            active="true"
+            number="142"
+            owner="1" />
+        <Deck
+            name="The Sorcerer Revised"
+            active="true"
+            number="143"
+            owner="1" />
+        <Deck
+            name="Vampire Boosts"
+            active="true"
+            number="144"
+            owner="1" />
+        <Deck
+            name="All Colors"
+            active="true"
+            number="145"
+            owner="1" />
+        <Deck
+            name="Enchantment"
+            active="true"
+            number="146"
+            owner="1" />
+        <Deck
+            name="Black"
+            active="false"
+            number="201"
+            owner="3" />
+        <Deck
+            name="Land Destroy"
+            active="false"
+            number="202"
+            owner="3" />
+        <Deck
+            name="Myr"
+            active="false"
+            number="203"
+            owner="3" />
+        <Deck
+            name="Grimgrin Zombies"
+            active="false"
+            number="204"
+            owner="3" />
+        <Deck
+            name="Soldier"
+            active="false"
+            number="205"
+            owner="3" />
+        <Deck
+            name="Angels and Demons"
+            active="false"
+            number="301"
+            owner="4" />
+        <Deck
+            name="Curse"
+            active="false"
+            number="302"
+            owner="4" />
+        <Deck
+            name="Tamiyo"
+            active="false"
+            number="303"
+            owner="4" />
+        <Deck
+            name="Detain"
+            active="false"
+            number="304"
+            owner="4" />
+        <Deck
+            name="Defender"
+            active="false"
+            number="305"
+            owner="4" />
+        <Deck
+            name="Populate"
+            active="false"
+            number="305"
+            owner="4" />
+        <Deck
+            name="Relentless Dead"
+            active="false"
+            number="401"
+            owner="5" />
+        <Deck
+            name="Ajani"
+            active="false"
+            number="901"
+            owner="6" />
+        <Deck
+            name="Nicol Bolas"
+            active="false"
+            number="902"
+            owner="6" />
+        <Deck
+            name="Knights"
+            active="false"
+            number="903"
+            owner="6" />
+        <Deck
+            name="Dragons"
+            active="false"
+            number="904"
+            owner="6" />
+        <Deck
+            name="Venser"
+            active="false"
+            number="905"
+            owner="6" />
+        <Deck
+            name="Koth"
+            active="false"
+            number="906"
+            owner="6" />
+        <Deck
+            name="Niv-Mizzet"
+            active="false"
+            number="907"
+            owner="6" />
+        <Deck
+            name="Jarad"
+            active="false"
+            number="908"
+            owner="6" />
+        <Deck
+            name="Assemble the Doomsday Machine"
+            active="false"
+            number="909"
+            owner="6" />
+        <Deck
+            name="Bring About the Undead Apocalypse"
+            active="false"
+            number="910"
+            owner="6" />
+        <Deck
+            name="Scorch the World with Dragonfire"
+            active="false"
+            number="911"
+            owner="6" />
+        <Deck
+            name="Trample Civilization Underfoot"
+            active="false"
+            number="912"
+            owner="6" />
+    </Decks>
+
+</TheHat>

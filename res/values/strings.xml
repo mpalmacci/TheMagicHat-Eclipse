@@ -1,0 +1,55 @@
+<resources>
+
+    <string name="app_name">The Magic Hat</string>
+
+    <!-- Main Menu -->
+    <string name="play_button">Play a New Game</string>
+    <string name="add_deck">Add a New Deck</string>
+    <string name="update_deck">Update a Deck</string>
+    <string name="change_active">Change Active Status</string>
+    <string name="delete_deck">Delete Decks</string>
+    <string name="deck_display">Display All Decks</string>
+    <string name="view_game_stats">View Game Stats</string>
+
+    <!-- Play Game -->
+    <string name="winner">Who won?</string>
+    <string name="decklist_start">"Your current set of decks are&#8230;\n"</string>
+
+    <!-- Game Statistics -->
+    <string name="select_a_player">"Select a Player"</string>
+    <string name="make_a_selection">"Make a Selection"</string>
+    <string name="total_games">"Total Games Played: "</string>
+    <string name="won">" Won, "</string>
+    <string name="lost">" Lost"</string>
+    <string name="stats_breakdown">"Stats Breakdown - By Opposing Deck"</string>
+    <string name="no_games_played">"No stats to display, play some games!"</string>
+
+    <!-- Add Deck -->
+    <string name="add_the_deck">Add the New Deck</string>
+
+    <!-- Update Deck -->
+    <string name="select_a_deck_update">Select a Deck to Update</string>
+    <string name="deck_name_colon">Deck\'s Name:</string>
+    <string name="update_the_deck">Update the Deck</string>
+    <string name="select_an_owner">Select an Owner</string>
+    <string name="select_a_deck">Select a Deck</string>
+
+    <!-- Add & Update Deck -->
+    <string name="deck_name">Deck\'s Name</string>
+    <string name="active_deck">Is the Deck Active?</string>
+
+    <!-- Delete -->
+    <string name="deck_delete">Delete the Deck(s)</string>
+    <string name="choose_delete">Select the Decks to delete</string>
+
+    <!-- Change Active Status -->
+    <string name="select_owner">"Select an Owner to update&#8230;"</string>
+    <string name="select_deck">"Select a Deck to update&#8230;"</string>
+    <string name="flip_active_status">"Flip Active Status"</string>
+
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="grey">#888888</color>
+    <color name="light_blue">#00CCFF</color>
+
+</resources>

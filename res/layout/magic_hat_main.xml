@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="25dp" >
+
+    <Button
+        android:id="@+id/bEnterGame"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/play_button"
+        android:textSize="25dp" />
+
+    <Button
+        android:id="@+id/bViewGameStats"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/view_game_stats"
+        android:textSize="25dp" />
+
+    <Button
+        android:id="@+id/bAddDeck"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/add_deck"
+        android:textSize="25dp" />
+
+    <Button
+        android:id="@+id/bUpdateDeck"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/update_deck"
+        android:textSize="25dp" />
+
+    <Button
+        android:id="@+id/bChangeActive"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/change_active"
+        android:textSize="25dp" />
+
+    <Button
+        android:id="@+id/bDeleteDeck"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/delete_deck"
+        android:textSize="25dp" />
+
+    <Button
+        android:id="@+id/bDisplayAllDecks"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/deck_display"
+        android:textSize="25dp" />
+
+</LinearLayout>

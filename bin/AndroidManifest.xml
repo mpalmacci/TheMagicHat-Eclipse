@@ -1,0 +1,115 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.magichat"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="8"
+        android:targetSdkVersion="15" />
+
+    <application
+        android:icon="@drawable/salogo"
+        android:label="@string/app_name"
+        android:theme="@android:style/Theme.Black" >
+        <activity
+            android:name=".Splash"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".MagicHatMain"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="com.magichat.MAGICHATMAIN" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".PlayGame"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="com.magichat.PLAYGAME" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".PlayGamePrefs"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="com.magichat.PLAYGAMEPREFS" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".GameStats"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="com.magichat.GAMESTATS" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".GameStatsPrefs"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="com.magichat.GAMESTATSPREFS" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".AddDeck"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="com.magichat.ADDDECK" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".UpdateDeck"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="com.magichat.UPDATEDECK" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ChangeActive"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="com.magichat.CHANGEACTIVE" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".DeleteDeck"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="com.magichat.DELETEDECK" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".DisplayAllDecks"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="com.magichat.DISPLAYALLDECKS" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
