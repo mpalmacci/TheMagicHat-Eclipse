@@ -84,9 +84,9 @@ public class AddDeck extends Activity implements View.OnClickListener {
 				iActive = 0;
 			}
 
-			Deck d = new Deck(etDeckName.getText().toString(), new Player(
-					sAllOwners.getSelectedItem().toString()),
-					tbActiveDeck.isChecked(), 0);
+			Deck d = new Deck(0, etDeckName.getText().toString(),
+					new Player(
+							sAllOwners.getSelectedItem().toString()), tbActiveDeck.isChecked());
 
 			mhDB.openWritableDB();
 			int ownerId = mhDB.getPlayerId(sAllOwners.getSelectedItem()

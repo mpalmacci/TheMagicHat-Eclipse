@@ -84,6 +84,7 @@ public class UpdateDeck extends Activity implements OnClickListener,
 	// TODO Duplicate Code with ChangeActive
 	private void populateDecksSpinner(Player p) {
 		mhDb.openReadableDB();
+		// TODO Defect found here where the decklist isn't showing correct information
 		deckList = mhDb.getDeckList(p);
 		mhDb.closeDB();
 

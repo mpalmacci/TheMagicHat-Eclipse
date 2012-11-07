@@ -10,6 +10,8 @@ public class Deck implements Comparable<Deck> {
 
 	private int id;
 
+	private boolean manual;
+
 	public Deck() {
 	}
 
@@ -17,15 +19,21 @@ public class Deck implements Comparable<Deck> {
 		this.name = name;
 		this.owner = owner;
 	}
-	
+
 	public Deck(String name, Player owner, boolean active) {
 		this(name, owner);
 		this.active = active;
 	}
 
-	public Deck(String name, Player owner, boolean active, int id) {
+	public Deck(int id, String name, Player owner, boolean active) {
 		this(name, owner, active);
 		this.id = id;
+	}
+
+	public Deck(int id, String name, Player owner, boolean active,
+			boolean manual) {
+		this(id, name, owner, active);
+		this.manual = manual;
 	}
 
 	public boolean isActive() {
@@ -34,6 +42,14 @@ public class Deck implements Comparable<Deck> {
 
 	public void setActive(boolean active) {
 		this.active = active;
+	}
+
+	public boolean isManual() {
+		return this.manual;
+	}
+
+	public void setManual(boolean manual) {
+		this.manual = manual;
 	}
 
 	public Player getOwner() {

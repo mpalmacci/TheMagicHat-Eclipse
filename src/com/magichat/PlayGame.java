@@ -1,6 +1,7 @@
 package com.magichat;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -24,8 +25,10 @@ public class PlayGame extends Activity implements View.OnClickListener {
 	List<Deck> gameDecks = new ArrayList<Deck>();
 	List<Player> Players = new ArrayList<Player>();
 
-	TextView tvDisplay, tvWinner;
-	Button bGamePlay, bPlayer1, bPlayer2;
+	int p1GameCount = 0, p2GameCount = 0;
+
+	TextView tvDisplayGames, tvWinner;
+	Button bPlayGame, bPlayer1, bPlayer2;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -40,14 +43,15 @@ public class PlayGame extends Activity implements View.OnClickListener {
 		Players = getAllInfoDB.getActivePlayers();
 		getAllInfoDB.closeDB();
 
+		// TODO Add in handling in case the player doesn't have any active decks
 		if (Players.size() == 0) {
-			bGamePlay.setEnabled(false);
-			tvDisplay.setText("\n\nYou don't have any active Players.");
+			bPlayGame.setEnabled(false);
+			tvDisplayGames.setText("\n\nYou don't have any active Players.");
 		} else if (Players.size() == 1) {
 			getNewGame();
-			tvDisplay.setText(printNewGame(gameDecks, Players));
+			tvDisplayGames.setText(printNewGame(gameDecks, Players));
 		} else if (Players.size() == 2) {
-			bGamePlay.setEnabled(true);
+			bPlayGame.setEnabled(true);
 			tvWinner.setVisibility(LinearLayout.VISIBLE);
 			bPlayer1.setText(Players.get(0).getName());
 			bPlayer1.setVisibility(LinearLayout.VISIBLE);
@@ -55,37 +59,56 @@ public class PlayGame extends Activity implements View.OnClickListener {
 			bPlayer2.setVisibility(LinearLayout.VISIBLE);
 
 			getNewGame();
-			tvDisplay.setText(printNewGame(gameDecks, Players));
+			tvDisplayGames.setText(printNewGame(gameDecks, Players));
 		} else {
-			bGamePlay.setEnabled(false);
-			tvDisplay
-					.setText("Playing Games with more than 2 active Players is not currently supported");
+			bPlayGame.setEnabled(true);
+			
+			getNewGame();
+			tvDisplayGames.setText(printNewGame(gameDecks, Players));
 		}
 	}
 
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
-		case R.id.bGamePlay:
+		case R.id.bPlayGame:
 			// Clear the cache of gameDecks, and start anew
 			gameDecks = new ArrayList<Deck>();
+			p1GameCount = 0;
+			p2GameCount = 0;
 
 			getNewGame();
-			tvDisplay.setText(printNewGame(gameDecks, Players));
+			tvDisplayGames.setText(printNewGame(gameDecks, Players));
 			break;
 		case R.id.bPlayer1:
+			++p1GameCount;
 			MagicHatDB addGameResult1 = new MagicHatDB(this);
 			addGameResult1.openWritableDB();
-			addGameResult1.addGameResult(Players, gameDecks, Players.get(0));
+			addGameResult1.addGameResult(Players, gameDecks, Players.get(0),
+					new Date());
 			addGameResult1.closeDB();
-			showWinnerDialog();
+			if (p1GameCount + p2GameCount > 1) {
+				if (p1GameCount == 2) {
+					showCompletedDialog();
+				}
+			} else {
+				showWinnerDialog();
+			}
 			break;
 		case R.id.bPlayer2:
+			++p2GameCount;
 			MagicHatDB addGameResult2 = new MagicHatDB(this);
 			addGameResult2.openWritableDB();
-			addGameResult2.addGameResult(Players, gameDecks, Players.get(1));
+			addGameResult2.addGameResult(Players, gameDecks, Players.get(1),
+					new Date());
 			addGameResult2.closeDB();
-			showWinnerDialog();
+			if (p1GameCount + p2GameCount > 1) {
+				if (p2GameCount == 2) {
+					showCompletedDialog();
+				}
+			} else {
+				showWinnerDialog();
+			}
 			break;
 		}
 	}
@@ -93,14 +116,41 @@ public class PlayGame extends Activity implements View.OnClickListener {
 	private void showWinnerDialog() {
 		AlertDialog.Builder adb = new AlertDialog.Builder(this);
 		adb.setMessage(
-				"Congrats to the Winner!\nWould you like to play another game?")
+				"Congrats to the Winner!\nWould you like to play for best of 3?")
+				.setPositiveButton("Yes",
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int id) {
+								dialog.dismiss();
+							}
+						})
+				.setNegativeButton("No", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						// Clear the cache of gameDecks, and start anew
+						gameDecks = new ArrayList<Deck>();
+						p1GameCount = 0;
+						p2GameCount = 0;
+						getNewGame();
+						tvDisplayGames.setText(printNewGame(gameDecks, Players));
+						dialog.dismiss();
+					}
+				});
+		AlertDialog ad = adb.create();
+		ad.show();
+	}
+
+	private void showCompletedDialog() {
+		AlertDialog.Builder adb = new AlertDialog.Builder(this);
+		adb.setMessage(
+				"Congrats to the Winner!\nWould you like to play more games?")
 				.setPositiveButton("Yes",
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int id) {
 								// Clear the cache of gameDecks, and start anew
 								gameDecks = new ArrayList<Deck>();
+								p1GameCount = 0;
+								p2GameCount = 0;
 								getNewGame();
-								tvDisplay.setText(printNewGame(gameDecks,
+								tvDisplayGames.setText(printNewGame(gameDecks,
 										Players));
 								dialog.dismiss();
 							}
@@ -201,15 +251,15 @@ public class PlayGame extends Activity implements View.OnClickListener {
 		}
 		return false;
 	}
-	
+
 	private void initialize() {
-		bGamePlay = (Button) findViewById(R.id.bGamePlay);
-		tvDisplay = (TextView) findViewById(R.id.tvGames);
+		bPlayGame = (Button) findViewById(R.id.bPlayGame);
+		tvDisplayGames = (TextView) findViewById(R.id.tvDisplayGames);
 		bPlayer1 = (Button) findViewById(R.id.bPlayer1);
 		bPlayer2 = (Button) findViewById(R.id.bPlayer2);
 		tvWinner = (TextView) findViewById(R.id.tvWinner);
 
-		bGamePlay.setOnClickListener(this);
+		bPlayGame.setOnClickListener(this);
 		bPlayer1.setOnClickListener(this);
 		bPlayer2.setOnClickListener(this);
 	}

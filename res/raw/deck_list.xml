@@ -96,7 +96,7 @@
             owner="2" />
         <Deck
             name="Trample"
-            active="false"
+            active="true"
             number="14"
             owner="2" />
         <Deck
@@ -133,6 +133,16 @@
             name="D&amp;D"
             active="true"
             number="21"
+            owner="2" />
+        <Deck
+            name="Token"
+            active="true"
+            number="22"
+            owner="2" />
+        <Deck
+            name="Discard"
+            active="true"
+            number="22"
             owner="2" />
         <Deck
             name="Angels &amp; Demons"
@@ -363,6 +373,16 @@
             name="Enchantment"
             active="true"
             number="146"
+            owner="1" />
+        <Deck
+            name="Golgari"
+            active="true"
+            number="147"
+            owner="1" />
+        <Deck
+            name="Token"
+            active="true"
+            number="148"
             owner="1" />
         <Deck
             name="Black"

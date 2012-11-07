@@ -27,7 +27,7 @@ public class GameStats extends Activity implements OnItemSelectedListener {
 
 	LinearLayout llByDecks, llByPlayers, llWonLostStats, llNonePlayed;
 	Spinner sCurrentSelection;
-	TextView tvTotalGames, tvGamesWon, tvGamesLost;
+	TextView tvTotalGames, tvGamesWon, tvGamesLost, tvEmptyList;
 	ProgressBar pbTotalWonLost;
 
 	String currentDeck, currentPlayer, decksOrPlayersPref = "";
@@ -43,7 +43,7 @@ public class GameStats extends Activity implements OnItemSelectedListener {
 				.getDefaultSharedPreferences(getBaseContext());
 		decksOrPlayersPref = getPrefs
 				.getString("viewByDecksOrPlayers", "Decks");
-		
+
 		initialize();
 
 		if (decksOrPlayersPref.contentEquals("Decks")) {
@@ -72,12 +72,8 @@ public class GameStats extends Activity implements OnItemSelectedListener {
 					currentDeck.indexOf(" Deck"));
 
 			mhDB.openReadableDB();
-			// TODO Just use Deck d = getDeck(deckName, ownerName)
-			// Remove the middle man because the deck id can be grabbed by
-			// d.getId()
-			int dId = mhDB.getDeckId(currentDeckName,
+			d = mhDB.getDeck(currentDeckName,
 					currentDeck.substring(0, currentDeck.indexOf("'s")));
-			d = mhDB.getDeck(dId);
 			games = mhDB.getGames(d);
 			mhDB.closeDB();
 
@@ -277,7 +273,10 @@ public class GameStats extends Activity implements OnItemSelectedListener {
 
 		String[] stAllDecks = {};
 		if (allDecks.isEmpty()) {
-			stAllDecks[0] = "No Decks";
+			llByDecks.setVisibility(LinearLayout.GONE);
+			sCurrentSelection.setVisibility(LinearLayout.GONE);
+			llNonePlayed.setVisibility(LinearLayout.VISIBLE);
+			tvEmptyList.setText("There are No Decks in the Database!");
 		} else {
 			stAllDecks = new String[allDecks.size()];
 
@@ -298,7 +297,10 @@ public class GameStats extends Activity implements OnItemSelectedListener {
 
 		String[] stAllOwners = {};
 		if (allPlayers.isEmpty()) {
-			stAllOwners[0] = "No Players";
+			llByPlayers.setVisibility(LinearLayout.GONE);
+			sCurrentSelection.setVisibility(LinearLayout.GONE);
+			llNonePlayed.setVisibility(LinearLayout.VISIBLE);
+			tvEmptyList.setText("There are No Players in the Database!");
 		} else {
 			stAllOwners = new String[allPlayers.size()];
 
@@ -311,19 +313,6 @@ public class GameStats extends Activity implements OnItemSelectedListener {
 				android.R.layout.simple_spinner_item, stAllOwners);
 		sCurrentSelection.setAdapter(ownerAdapter);
 	}
-
-	/*
-	 * REMOVED FROM THIS SCREEN DUE TO REFRESH ISSUE WITH PREFERENCE CHANGES
-	 * 
-	 * @Override public boolean onCreateOptionsMenu(Menu menu) {
-	 * super.onCreateOptionsMenu(menu); MenuInflater mi = getMenuInflater();
-	 * mi.inflate(R.menu.game_stats_menu, menu); return true; }
-	 * 
-	 * @Override public boolean onOptionsItemSelected(MenuItem item) { switch
-	 * (item.getItemId()) { case R.id.gameStatsPrefs: Intent gameStatsPrefs =
-	 * new Intent("com.magichat.GAMESTATSPREFS"); startActivity(gameStatsPrefs);
-	 * break; } return false; }
-	 */
 
 	@Override
 	public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2,
@@ -355,6 +344,7 @@ public class GameStats extends Activity implements OnItemSelectedListener {
 		llByDecks = (LinearLayout) findViewById(R.id.llByDecks);
 		llByPlayers = (LinearLayout) findViewById(R.id.llByPlayers);
 		sCurrentSelection = (Spinner) findViewById(R.id.sCurrentSelection);
+		tvEmptyList = (TextView) findViewById(R.id.tvEmptyList);
 
 		if (decksOrPlayersPref.contentEquals("Decks")) {
 			llWonLostStats = (LinearLayout) findViewById(R.id.llWonLostStatsD);

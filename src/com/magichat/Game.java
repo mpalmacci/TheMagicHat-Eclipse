@@ -13,17 +13,13 @@ public class Game {
 	Player pW;
 	Date gameDate;
 	
-	public Game(int id, Player p1, Player p2, Deck d1, Deck d2, Player pW) {
+	public Game(int id, Player p1, Player p2, Deck d1, Deck d2, Player pW, Date gameDate) {
 		this.id = id;
 		this.p1 = p1;
 		this.p2 = p2;
 		this.d1 = d1;
 		this.d2 = d2;
 		this.pW = pW;
-	}
-	
-	public Game(int id, Player p1, Player p2, Deck d1, Deck d2, Player pW, Date gameDate) {
-		this(id, p1, p2, d1, d2, pW);
 		this.gameDate = gameDate;
 	}
 	
@@ -58,5 +54,9 @@ public class Game {
 		gamers.add(p1);
 		gamers.add(p2);
 		return gamers;
+	}
+	
+	public Date getDate() {
+		return this.gameDate;
 	}
 }

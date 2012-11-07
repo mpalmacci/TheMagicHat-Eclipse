@@ -61,7 +61,7 @@ public class SAXDeckListActivityHandler extends DefaultHandler {
 				String sId = attributes.getValue("number");
 				int id = Integer.parseInt(sId);
 
-				d = new Deck(name, owner, active, id);
+				d = new Deck(id, name, owner, active);
 			} else {
 				System.out.println("No deck owner was found for Owner Id"
 						+ ownerId);
