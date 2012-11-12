@@ -47,7 +47,7 @@ public class SAXDeckListActivityHandler extends DefaultHandler {
 			String sId = attributes.getValue("number");
 			int id = Integer.parseInt(sId);
 
-			p = new Player(name, active, id);
+			p = new Player(id, name, active);
 		} else if (localName.equals("Deck")) {
 			String name = attributes.getValue("name");
 

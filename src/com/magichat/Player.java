@@ -12,7 +12,7 @@ public class Player implements Comparable<Player> {
 		this.name = name;
 	}
 
-	public Player(String name, boolean active, int id) {
+	public Player(int id, String name, boolean active) {
 		this(name);
 		this.active = active;
 		this.id = id;

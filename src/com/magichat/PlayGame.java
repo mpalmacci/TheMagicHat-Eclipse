@@ -21,7 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class PlayGame extends Activity implements View.OnClickListener {
-	List<Deck> allDecks = new ArrayList<Deck>();
+	List<Deck> allActiveDecks = new ArrayList<Deck>();
 	List<Deck> gameDecks = new ArrayList<Deck>();
 	List<Player> Players = new ArrayList<Player>();
 
@@ -39,7 +39,7 @@ public class PlayGame extends Activity implements View.OnClickListener {
 
 		MagicHatDB getAllInfoDB = new MagicHatDB(this);
 		getAllInfoDB.openReadableDB();
-		allDecks = getAllInfoDB.getAllDecks();
+		allActiveDecks = getAllInfoDB.getAllActiveDecks();
 		Players = getAllInfoDB.getActivePlayers();
 		getAllInfoDB.closeDB();
 
@@ -62,7 +62,7 @@ public class PlayGame extends Activity implements View.OnClickListener {
 			tvDisplayGames.setText(printNewGame(gameDecks, Players));
 		} else {
 			bPlayGame.setEnabled(true);
-			
+
 			getNewGame();
 			tvDisplayGames.setText(printNewGame(gameDecks, Players));
 		}
@@ -130,7 +130,8 @@ public class PlayGame extends Activity implements View.OnClickListener {
 						p1GameCount = 0;
 						p2GameCount = 0;
 						getNewGame();
-						tvDisplayGames.setText(printNewGame(gameDecks, Players));
+						tvDisplayGames
+								.setText(printNewGame(gameDecks, Players));
 						dialog.dismiss();
 					}
 				});
@@ -167,7 +168,7 @@ public class PlayGame extends Activity implements View.OnClickListener {
 	private void getNewGame() {
 		Random ran = new Random();
 
-		int maxVal = allDecks.size();
+		int maxVal = allActiveDecks.size();
 		int r = 0;
 
 		SharedPreferences getPrefs = PreferenceManager
@@ -178,29 +179,26 @@ public class PlayGame extends Activity implements View.OnClickListener {
 		// to find that many random decks
 		for (Player p : Players) {
 			r = ran.nextInt(maxVal);
-			Deck d = allDecks.get(r);
+			Deck d = allActiveDecks.get(r);
 
 			if (ownDecks) {
-				// See if the deck element is of an Active deck
-				// and if it's unique to the decks already selected to be played
-				// and since the Preference to only play with your own decks is
-				// on check to see if the current player is the same as the
-				// deck's owner
-				while (!d.isActive() || gameDecks.contains(d)
-						|| !d.getOwner().equals(p)) {
+				// See if the deck is unique to the decks already selected to be
+				// played and since the Preference to only play with your own
+				// decks is on check to see if the current player is the same as
+				// the deck's owner
+				while (gameDecks.contains(d) || !d.getOwner().equals(p)) {
 					// try the next random integer that is smaller than the
 					// total number of decks
 					r = ran.nextInt(maxVal);
-					d = allDecks.get(r);
+					d = allActiveDecks.get(r);
 				}
 			} else {
-				// See if the deck element is of an Active deck
-				// and if it's unique to the decks already selected to be played
-				while (!d.isActive() || gameDecks.contains(d)) {
+				// See if the deck is unique to the decks already selected to be played
+				while (gameDecks.contains(d)) {
 					// try the next random integer that is smaller than the
 					// total number of decks
 					r = ran.nextInt(maxVal);
-					d = allDecks.get(r);
+					d = allActiveDecks.get(r);
 				}
 			}
 			gameDecks.add(d);

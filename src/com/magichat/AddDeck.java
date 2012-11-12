@@ -78,15 +78,11 @@ public class AddDeck extends Activity implements View.OnClickListener {
 
 			int iActive;
 
-			if (tbActiveDeck.isChecked()) {
-				iActive = 1;
-			} else {
-				iActive = 0;
-			}
+			iActive = tbActiveDeck.isChecked() ? 1 : 0;
 
-			Deck d = new Deck(0, etDeckName.getText().toString(),
-					new Player(
-							sAllOwners.getSelectedItem().toString()), tbActiveDeck.isChecked());
+			Deck d = new Deck(0, etDeckName.getText().toString(), new Player(
+					sAllOwners.getSelectedItem().toString()),
+					tbActiveDeck.isChecked());
 
 			mhDB.openWritableDB();
 			int ownerId = mhDB.getPlayerId(sAllOwners.getSelectedItem()
@@ -101,7 +97,8 @@ public class AddDeck extends Activity implements View.OnClickListener {
 				mhDB.closeDB();
 			}
 
-			// TODO Enhance how to send information back and forth (Build a Server)
+			// TODO Enhance how to send information back and forth (Build a
+			// Server)
 			Email eAddDeck = new Email(this);
 			eAddDeck.addDeck(new Deck(etDeckName.getText().toString(), p,
 					tbActiveDeck.isChecked()));
@@ -112,12 +109,6 @@ public class AddDeck extends Activity implements View.OnClickListener {
 							+ etDeckName.getText().toString()
 							+ " Deck was added successfully.",
 					Toast.LENGTH_LONG).show();
-			/*
-			 * REPLACED BY TOAST tvResults.setText("\n\n" +
-			 * sAllOwners.getSelectedItem() .toString() + "'s " +
-			 * etDeckName.getText().toString() +
-			 * " Deck was added successfully.");
-			 */
 
 			etDeckName.setText("");
 
@@ -165,7 +156,7 @@ public class AddDeck extends Activity implements View.OnClickListener {
 		adb.setTitle("Deck Addition");
 		ad.show();
 	}
-	
+
 	private void initialize() {
 		etDeckName = (EditText) findViewById(R.id.etDeckName);
 		sAllOwners = (Spinner) findViewById(R.id.sAllOwners);
