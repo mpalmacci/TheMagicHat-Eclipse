@@ -271,8 +271,12 @@ public class MagicHatDB {
 						getOwner(db, g.getPlayer(1).toString()).getId());
 				cv.put(KEY_GAME_PLAYER2,
 						getOwner(db, g.getPlayer(2).toString()).getId());
-				cv.put(KEY_GAME_DECK1, getDeck(db, g.getDeck(1).getName(), g.getDeck(1).getOwner().toString()).getId());
-				cv.put(KEY_GAME_DECK2, getDeck(db, g.getDeck(2).getName(), g.getDeck(2).getOwner().toString()).getId());
+				cv.put(KEY_GAME_DECK1,
+						getDeckId(db, g.getDeck(1).getName(), g.getDeck(1)
+								.getOwner().toString()));
+				cv.put(KEY_GAME_DECK2,
+						getDeckId(db, g.getDeck(2).getName(), g.getDeck(2)
+								.getOwner().toString()));
 				cv.put(KEY_GAME_WINNER, getOwner(db, g.getWinner().toString())
 						.getId());
 				cv.put(KEY_GAME_DATE, g.getDate().getTime());
@@ -374,7 +378,7 @@ public class MagicHatDB {
 		// DECKS
 		// //////////////////////////////////
 
-		public void addDeck(SQLiteDatabase db, String name, int OwnerId,
+		private void addDeck(SQLiteDatabase db, String name, int OwnerId,
 				Integer active) {
 			ContentValues cv = new ContentValues();
 			cv.put(KEY_DECK_NAME, name);
@@ -388,7 +392,7 @@ public class MagicHatDB {
 			}
 		}
 
-		public void updateDeck(SQLiteDatabase db, String owner,
+		private void updateDeck(SQLiteDatabase db, String owner,
 				String oldDeckName, String newDeckName, boolean newActive) {
 
 			int deckId = getDeckId(db, oldDeckName, owner);
@@ -409,7 +413,7 @@ public class MagicHatDB {
 			}
 		}
 
-		public void deleteDecks(SQLiteDatabase db, int[] id) {
+		private void deleteDecks(SQLiteDatabase db, int[] id) {
 			for (int dId : id) {
 				try {
 					db.delete(DATABASE_TABLE_ALLDECKS, KEY_DECK_ROWID + " = "
@@ -420,7 +424,7 @@ public class MagicHatDB {
 			}
 		}
 
-		public Deck getDeck(SQLiteDatabase db, int deckId) {
+		private Deck getDeck(SQLiteDatabase db, int deckId) {
 			String[] deckColumns = new String[] { KEY_DECK_ROWID,
 					KEY_DECK_NAME, KEY_DECK_OWNERID, KEY_DECK_ACTIVE,
 					KEY_DECK_MANUAL };
@@ -454,7 +458,7 @@ public class MagicHatDB {
 			return new Deck(deckId, deckName, owner, active, manual);
 		}
 
-		public Deck getDeck(SQLiteDatabase db, String sDeckName,
+		private Deck getDeck(SQLiteDatabase db, String sDeckName,
 				String sOwnerName) {
 			Deck d = new Deck();
 
@@ -490,7 +494,7 @@ public class MagicHatDB {
 			return d;
 		}
 
-		public List<Deck> getAllDecks(SQLiteDatabase db) {
+		private List<Deck> getAllDecks(SQLiteDatabase db) {
 			List<Deck> allDecks = new ArrayList<Deck>();
 
 			String[] deckColumns = new String[] { KEY_DECK_ROWID,
@@ -542,7 +546,7 @@ public class MagicHatDB {
 			return allDecks;
 		}
 
-		public List<Deck> getAllActiveDecks(SQLiteDatabase db) {
+		private List<Deck> getAllActiveDecks(SQLiteDatabase db) {
 			List<Deck> allActiveDecks = new ArrayList<Deck>();
 
 			String[] deckColumns = new String[] { KEY_DECK_ROWID,
@@ -592,7 +596,7 @@ public class MagicHatDB {
 			return allActiveDecks;
 		}
 
-		public List<Deck> getAllManualDecks(SQLiteDatabase db) {
+		private List<Deck> getAllManualDecks(SQLiteDatabase db) {
 			List<Deck> allManDecks = new ArrayList<Deck>();
 			String[] deckColumns = new String[] { KEY_DECK_ROWID,
 					KEY_DECK_NAME, KEY_DECK_OWNERID, KEY_DECK_ACTIVE,
@@ -641,7 +645,7 @@ public class MagicHatDB {
 			return allManDecks;
 		}
 
-		public List<Deck> getDeckList(SQLiteDatabase db, Player p) {
+		private List<Deck> getDeckList(SQLiteDatabase db, Player p) {
 			List<Deck> deckList = new ArrayList<Deck>();
 			Player pReal = getPlayer(db, p.toString());
 
@@ -672,7 +676,7 @@ public class MagicHatDB {
 			return deckList;
 		}
 
-		public int getDeckId(SQLiteDatabase db, String sDeckName,
+		private int getDeckId(SQLiteDatabase db, String sDeckName,
 				String sOwnerName) {
 			int deckId = 0;
 
@@ -699,7 +703,7 @@ public class MagicHatDB {
 			return deckId;
 		}
 
-		public boolean deckExists(SQLiteDatabase db, Deck d) {
+		private boolean deckExists(SQLiteDatabase db, Deck d) {
 			String[] deckColumns = new String[] { KEY_DECK_ROWID,
 					KEY_DECK_NAME, KEY_DECK_OWNERID, KEY_DECK_ACTIVE,
 					KEY_DECK_MANUAL };
@@ -724,7 +728,7 @@ public class MagicHatDB {
 		// OWNERS
 		// /////////////////////////////
 
-		public Player getOwner(SQLiteDatabase db, int ownerId) {
+		private Player getOwner(SQLiteDatabase db, int ownerId) {
 			Player p = new Player();
 			String[] playerColumns = new String[] { KEY_PLAYER_ROWID,
 					KEY_PLAYER_NAME, KEY_PLAYER_ACTIVE };
@@ -747,11 +751,11 @@ public class MagicHatDB {
 			return p;
 		}
 
-		public Player getPlayer(SQLiteDatabase db, int playerId) {
+		private Player getPlayer(SQLiteDatabase db, int playerId) {
 			return getOwner(db, playerId);
 		}
 
-		public Player getOwner(SQLiteDatabase db, String name) {
+		private Player getOwner(SQLiteDatabase db, String name) {
 			Player p = new Player();
 			String[] columns = new String[] { KEY_PLAYER_ROWID,
 					KEY_PLAYER_NAME, KEY_PLAYER_ACTIVE };
@@ -779,11 +783,11 @@ public class MagicHatDB {
 			return p;
 		}
 
-		public Player getPlayer(SQLiteDatabase db, String name) {
+		private Player getPlayer(SQLiteDatabase db, String name) {
 			return getOwner(db, name);
 		}
 
-		public int getPlayerId(SQLiteDatabase db, String name) {
+		private int getPlayerId(SQLiteDatabase db, String name) {
 			int playerId = 0;
 
 			String[] columns = new String[] { KEY_PLAYER_ROWID, KEY_PLAYER_NAME };
@@ -806,7 +810,7 @@ public class MagicHatDB {
 			return playerId;
 		}
 
-		public List<Player> getActivePlayers(SQLiteDatabase db) {
+		private List<Player> getActivePlayers(SQLiteDatabase db) {
 			List<Player> allActivePlayers = new ArrayList<Player>();
 
 			String[] playerColumns = new String[] { KEY_PLAYER_ROWID,
@@ -840,7 +844,7 @@ public class MagicHatDB {
 			return allActivePlayers;
 		}
 
-		public List<Player> getAllPlayers(SQLiteDatabase db) {
+		private List<Player> getAllPlayers(SQLiteDatabase db) {
 			List<Player> allPlayers = new ArrayList<Player>();
 
 			String[] columns = new String[] { KEY_PLAYER_ROWID,
@@ -875,7 +879,7 @@ public class MagicHatDB {
 			return allPlayers;
 		}
 
-		public List<Player> getAllOwners(SQLiteDatabase db) {
+		private List<Player> getAllOwners(SQLiteDatabase db) {
 			List<Player> allOwners = new ArrayList<Player>();
 
 			String[] columns = new String[] { KEY_PLAYER_ROWID,
@@ -907,7 +911,7 @@ public class MagicHatDB {
 			return allOwners;
 		}
 
-		public Player flipActiveStatus(SQLiteDatabase db, Player pFake) {
+		private Player flipActiveStatus(SQLiteDatabase db, Player pFake) {
 			Player pReal = getOwner(db, pFake.toString());
 
 			ContentValues cv = new ContentValues();
@@ -926,7 +930,7 @@ public class MagicHatDB {
 			return getOwner(db, pReal.toString());
 		}
 
-		public Deck flipActiveStatus(SQLiteDatabase db, String deckName,
+		private Deck flipActiveStatus(SQLiteDatabase db, String deckName,
 				String ownerName) {
 			int deckId = getDeckId(db, deckName, ownerName);
 
@@ -953,7 +957,7 @@ public class MagicHatDB {
 		// GAMES
 		// /////////////////////////////
 
-		public void addGameResult(SQLiteDatabase db, List<Player> Players,
+		private void addGameResult(SQLiteDatabase db, List<Player> Players,
 				List<Deck> gameDecks, Player pWinner, Date gameDate) {
 			ContentValues cv = new ContentValues();
 			cv.put(KEY_GAME_PLAYER1, Players.get(0).getId());
@@ -969,7 +973,7 @@ public class MagicHatDB {
 			}
 		}
 
-		public List<Game> getAllGames(SQLiteDatabase db) {
+		private List<Game> getAllGames(SQLiteDatabase db) {
 			List<Game> allGames = new ArrayList<Game>();
 
 			String[] columns = new String[] { KEY_GAME_ROWID, KEY_GAME_PLAYER1,
@@ -1009,7 +1013,7 @@ public class MagicHatDB {
 			return allGames;
 		}
 
-		public List<Game> getGames(SQLiteDatabase db, Player p) {
+		private List<Game> getGames(SQLiteDatabase db, Player p) {
 			List<Game> games = new ArrayList<Game>();
 
 			String[] columns = new String[] { KEY_GAME_ROWID, KEY_GAME_PLAYER1,
@@ -1051,7 +1055,7 @@ public class MagicHatDB {
 			return games;
 		}
 
-		public List<Game> getGames(SQLiteDatabase db, Deck d) {
+		private List<Game> getGames(SQLiteDatabase db, Deck d) {
 			List<Game> games = new ArrayList<Game>();
 
 			String[] gameColumns = new String[] { KEY_GAME_ROWID,
@@ -1097,7 +1101,7 @@ public class MagicHatDB {
 		// CARD SETS
 		// //////////////////////////////////
 
-		public int getCardSetId(SQLiteDatabase db, String shortName) {
+		private int getCardSetId(SQLiteDatabase db, String shortName) {
 			int cardSetId = 0;
 
 			String[] columns = new String[] { KEY_CARDSET_ROWID,
@@ -1119,6 +1123,16 @@ public class MagicHatDB {
 			csc.close();
 
 			return cardSetId;
+		}
+
+		private int getCardSetId(String shortName, List<CardSet> allCardSets) {
+			for (CardSet cs : allCardSets) {
+				if (cs.getShortName().equals(shortName)) {
+					return cs.getId();
+				}
+			}
+			System.out.println("The Card Set wasn't found in getCardSetId");
+			return 0;
 		}
 
 		private List<CardSet> getAllCardSets(SQLiteDatabase db) {
@@ -1146,16 +1160,6 @@ public class MagicHatDB {
 			Collections.sort(allCardSets);
 
 			return allCardSets;
-		}
-
-		private int getCardSetId(String shortName, List<CardSet> allCardSets) {
-			for (CardSet cs : allCardSets) {
-				if (cs.getShortName().equals(shortName)) {
-					return cs.getId();
-				}
-			}
-			System.out.println("The Card Set wasn't found in getCardSetId");
-			return 0;
 		}
 
 		// //////////////////////////////
@@ -1352,21 +1356,21 @@ public class MagicHatDB {
 		return ourHelper.getCardSetId(ourDatabase, shortName);
 	}
 
-	private List<CardSet> getAllCardSets() {
+	public List<CardSet> getAllCardSets() {
 		return ourHelper.getAllCardSets(ourDatabase);
 	}
 
-	private int getCardSetId(String shortName, List<CardSet> allCardSets) {
+	public int getCardSetId(String shortName, List<CardSet> allCardSets) {
 		return ourHelper.getCardSetId(shortName, allCardSets);
 	}
 
 	// ////////////////////////////// CARDS ////////////////////////////////////
 
-	private List<Card> getAllCards() {
+	public List<Card> getAllCards() {
 		return ourHelper.getAllCards(ourDatabase);
 	}
 
-	private int getCardId(String name, List<Card> allCards) {
+	public int getCardId(String name, List<Card> allCards) {
 		return ourHelper.getCardId(name, allCards);
 	}
 }

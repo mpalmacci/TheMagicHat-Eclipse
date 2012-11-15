@@ -146,7 +146,7 @@
             owner="2" />
         <Deck
             name="Angels &amp; Demons"
-            active="true"
+            active="false"
             number="101"
             owner="1" />
         <Deck
@@ -383,6 +383,16 @@
             name="Token"
             active="true"
             number="148"
+            owner="1" />
+        <Deck
+            name="Black Vampire"
+            active="true"
+            number="149"
+            owner="1" />
+        <Deck
+            name="Angels"
+            active="true"
+            number="150"
             owner="1" />
         <Deck
             name="Black"
