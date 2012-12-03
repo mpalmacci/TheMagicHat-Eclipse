@@ -19,7 +19,6 @@ import android.content.Context;
 public class SAXDataParser {
 
 	SAXDeckListActivityHandler saxDL_AH = new SAXDeckListActivityHandler();
-	SAXCardsActivityHandler saxC_AH = new SAXCardsActivityHandler();
 
 	protected void parseDeckListXml(Context cont) {
 
@@ -63,30 +62,5 @@ public class SAXDataParser {
 		}
 
 		return null;
-	}
-
-	protected void parseCardsXml(Context cont) {
-		InputStream istream = null;
-
-		try {
-			istream = cont.getResources().openRawResource(R.raw.cards);
-
-			XMLReader xr = setupSaxXR();
-			xr.setContentHandler(saxC_AH);
-
-			xr.parse(new InputSource(istream));
-		} catch (SAXException saxE) {
-			saxE.printStackTrace();
-		} catch (IOException ioE) {
-			ioE.printStackTrace();
-		}
-	}
-
-	protected List<CardSet> getAllCardSets() {
-		return saxC_AH.getAllCardSets();
-	}
-
-	protected List<Card> getAllCards() {
-		return saxC_AH.getAllCards();
 	}
 }

@@ -119,6 +119,8 @@ public class AddDeck extends Activity implements View.OnClickListener {
 					this.getCurrentFocus().getWindowToken(),
 					InputMethodManager.HIDE_NOT_ALWAYS);
 			break;
+		default:
+			break;
 		}
 	}
 

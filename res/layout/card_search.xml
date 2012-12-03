@@ -1,107 +1,284 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:layout_height="match_parent" >
 
-    <!--
-        <SlidingDrawer
-        android:id="@+id/slidingDrawer1"
+    <LinearLayout
+        android:id="@+id/llSearchResults"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+    </LinearLayout>
+
+    <SlidingDrawer
+        android:id="@+id/sdCardSearch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:content="@+id/content"
-        android:handle="@+id/handle" >
+        android:handle="@+id/bSearch"
+        android:visibility="visible" >
 
         <Button
-            android:id="@+id/handle"
+            android:id="@+id/bSearch"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Handle" />
+            android:layout_height="wrap_content" />
 
-        <LinearLayout
+        <ScrollView
             android:id="@+id/content"
             android:layout_width="match_parent"
             android:layout_height="match_parent" >
-    -->
-
-    <ScrollView
-        android:id="@+id/scrollView1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical" >
-
-            <TextView
-                android:id="@+id/textView1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="TextView" />
-
-            <EditText
-                android:id="@+id/editText1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="10" >
-
-                <requestFocus />
-            </EditText>
-
-            <TextView
-                android:id="@+id/textView2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="TextView" />
-
-            <EditText
-                android:id="@+id/editText2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="10" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal" >
+                android:orientation="vertical" >
 
-                <ToggleButton
-                    android:id="@+id/tbWhite"
-                    android:layout_width="wrap_content"
+                <EditText
+                    android:id="@+id/etName"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="White" />
+                    android:ems="10"
+                    android:hint="@string/card_name_contains"
+                    android:inputType="text" >
 
-                <ToggleButton
-                    android:id="@+id/tbBlue"
-                    android:layout_width="wrap_content"
+                    <requestFocus />
+                </EditText>
+
+                <EditText
+                    android:id="@+id/etRulesText"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Blue" />
+                    android:ems="10"
+                    android:hint="@string/rules_text_contains"
+                    android:inputType="text" />
 
-                <ToggleButton
-                    android:id="@+id/tbBlack"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Black" />
+                    android:orientation="horizontal" >
 
-                <ToggleButton
-                    android:id="@+id/tbRed"
-                    android:layout_width="wrap_content"
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="@string/expansion" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="right"
+                        android:orientation="horizontal" >
+
+                        <Spinner
+                            android:id="@+id/sExpansion"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Red" />
+                    android:orientation="horizontal" >
 
-                <ToggleButton
-                    android:id="@+id/tbGreen"
-                    android:layout_width="wrap_content"
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="@string/block" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="right"
+                        android:orientation="horizontal" >
+
+                        <Spinner
+                            android:id="@+id/sBlock"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Green" />
+                    android:orientation="horizontal"
+                    android:weightSum="4" >
 
+                    <CheckBox
+                        android:id="@+id/cbMythic"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/mythic"
+                        android:textSize="10dp" />
+
+                    <CheckBox
+                        android:id="@+id/cbRare"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/rare"
+                        android:textSize="10dp" />
+
+                    <CheckBox
+                        android:id="@+id/cbUncommon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/uncommon"
+                        android:textSize="10dp" />
+
+                    <CheckBox
+                        android:id="@+id/cbCommon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/common"
+                        android:textSize="10dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="5" >
+
+                    <ToggleButton
+                        android:id="@+id/tbWhite"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textOff="@string/white"
+                        android:textOn="@string/white" />
+
+                    <ToggleButton
+                        android:id="@+id/tbBlue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textOff="@string/blue"
+                        android:textOn="@string/blue" />
+
+                    <ToggleButton
+                        android:id="@+id/tbBlack"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textOff="@string/black"
+                        android:textOn="@string/black" />
+
+                    <ToggleButton
+                        android:id="@+id/tbRed"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textOff="@string/red"
+                        android:textOn="@string/red" />
+
+                    <ToggleButton
+                        android:id="@+id/tbGreen"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textOff="@string/green"
+                        android:textOn="@string/green" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal"
+                    android:weightSum="2" >
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="horizontal" >
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:text="@string/types" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="right"
+                            android:orientation="horizontal" >
+
+                            <Spinner
+                                android:id="@+id/sType"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:entries="@array/card_types" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="horizontal" >
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:text="@string/subtypes" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="right"
+                            android:orientation="horizontal" >
+
+                            <Spinner
+                                android:id="@+id/sSubtype"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="@string/conv_mana_cost" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="right"
+                        android:orientation="horizontal" >
+
+                        <Spinner
+                            android:id="@+id/sCMCEquality"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:entries="@array/equality" />
+
+                        <EditText
+                            android:id="@+id/etCMC"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:ems="10"
+                            android:hint="@string/cmc"
+                            android:inputType="number" />
+                    </LinearLayout>
+                </LinearLayout>
             </LinearLayout>
-        </LinearLayout>
-    </ScrollView>
-    <!--
-            </LinearLayout>
+        </ScrollView>
     </SlidingDrawer>
-    -->
 
-</LinearLayout>
+</FrameLayout>

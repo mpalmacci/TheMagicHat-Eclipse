@@ -206,6 +206,8 @@ public class ChangeActive extends Activity implements View.OnClickListener,
 						+ sOwnersDecks.getSelectedItem().toString() + "\n\n");
 			}
 			break;
+		default:
+			break;
 		}
 	}
 

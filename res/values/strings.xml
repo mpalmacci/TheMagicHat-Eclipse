@@ -16,13 +16,13 @@
     <string name="decklist_start">"Your current set of decks are&#8230;\n"</string>
 
     <!-- Game Statistics -->
-    <string name="select_a_player">"Select a Player"</string>
-    <string name="make_a_selection">"Make a Selection"</string>
-    <string name="total_games">"Total Games Played: "</string>
-    <string name="won">" Won, "</string>
-    <string name="lost">" Lost"</string>
-    <string name="stats_breakdown">"Stats Breakdown - By Opposing Deck"</string>
-    <string name="no_games_played">"No stats to display, play some games!"</string>
+    <string name="select_a_player">Select a Player</string>
+    <string name="make_a_selection">Make a Selection</string>
+    <string name="total_games">Total Games Played: </string>
+    <string name="won"> Won, </string>
+    <string name="lost"> Lost</string>
+    <string name="stats_breakdown">Stats Breakdown - By Opposing Deck</string>
+    <string name="no_games_played">No stats to display, play some games!</string>
 
     <!-- Add Deck -->
     <string name="add_the_deck">Add the New Deck</string>
@@ -45,8 +45,30 @@
     <!-- Change Active Status -->
     <string name="select_owner">"Select an Owner to update&#8230;"</string>
     <string name="select_deck">"Select a Deck to update&#8230;"</string>
-    <string name="flip_active_status">"Flip Active Status"</string>
+    <string name="flip_active_status">Flip Active Status</string>
 
+    <!-- Card Search -->
+    <string name="card_search">Card Search</string>
+    <string name="search">Search</string>
+    <string name="card_name_contains">"Card Name Contains&#8230;"</string>
+    <string name="rules_text_contains">"Rules Text Contains&#8230;"</string>
+    <string name="expansion">Expansion: </string>
+    <string name="block">Block: </string>
+    <string name="mythic">Mythic</string>
+    <string name="rare">Rare</string>
+    <string name="uncommon">Uncommon</string>
+    <string name="common">Common</string>
+    <string name="white">White</string>
+    <string name="blue">Blue</string>
+    <string name="black">Black</string>
+    <string name="red">Red</string>
+    <string name="green">Green</string>
+    <string name="types">Types: </string>
+    <string name="subtypes">Subtypes: </string>
+    <string name="conv_mana_cost">Convt. Mana Cost: </string>
+    <string name="cmc">CMC</string>
+
+    <!-- Colors -->
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
     <color name="grey">#888888</color>

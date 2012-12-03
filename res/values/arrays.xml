@@ -5,5 +5,24 @@
         <item>Decks</item>
         <item>Players</item>
     </string-array>
+    <string-array name="card_types">
+        <item>Any</item>
+        <item>Artifact</item>
+        <item>Creature</item>
+        <item>Enchantment</item>
+        <item>Instant</item>
+        <item>Land</item>
+        <item>Plane</item>
+        <item>Planeswalker</item>
+        <item>Scheme</item>
+        <item>Sorcery</item>
+    </string-array>
+    <string-array name="equality">
+        <item>=</item>
+        <item>&gt;</item>
+        <item>&lt;</item>
+        <item>=&gt;</item>
+        <item>=&lt;</item>
+    </string-array>
 
 </resources>

@@ -110,6 +110,8 @@ public class PlayGame extends Activity implements View.OnClickListener {
 				showWinnerDialog();
 			}
 			break;
+		default:
+			break;
 		}
 	}
 
@@ -193,7 +195,8 @@ public class PlayGame extends Activity implements View.OnClickListener {
 					d = allActiveDecks.get(r);
 				}
 			} else {
-				// See if the deck is unique to the decks already selected to be played
+				// See if the deck is unique to the decks already selected to be
+				// played
 				while (gameDecks.contains(d)) {
 					// try the next random integer that is smaller than the
 					// total number of decks

@@ -19,7 +19,7 @@ import android.widget.Toast;
 
 public class DeleteDeck extends Activity implements View.OnClickListener {
 	List<Deck> allDecks = new ArrayList<Deck>();
-	
+
 	List<Deck> deleteDecks = new ArrayList<Deck>();
 	String sDeleteDecks = "";
 
@@ -70,7 +70,6 @@ public class DeleteDeck extends Activity implements View.OnClickListener {
 		switch (v.getId()) {
 		case R.id.bDeleteDecks:
 
-
 			for (Deck d : allDecks) {
 				CheckBox cb = (CheckBox) findViewById(d.getId());
 				if (cb.isChecked()) {
@@ -96,10 +95,11 @@ public class DeleteDeck extends Activity implements View.OnClickListener {
 									}
 									deleteDecksDB.deleteDecks(dId);
 									deleteDecksDB.closeDB();
-									
+
 									Toast.makeText(
 											DeleteDeck.this,
-											sDeleteDecks + "\nHave been deleted.",
+											sDeleteDecks
+													+ "\nHave been deleted.",
 											Toast.LENGTH_LONG).show();
 
 									DeleteDeck.this.finish();
@@ -119,7 +119,8 @@ public class DeleteDeck extends Activity implements View.OnClickListener {
 			AlertDialog ad = adb.create();
 			ad.show();
 			break;
+		default:
+			break;
 		}
-
 	}
 }

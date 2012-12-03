@@ -47,20 +47,21 @@ public class UpdateDeck extends Activity implements OnClickListener,
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.update_deck);
-		
+
 		initialize();
 
 		sdUpdateDeckCriteria.open();
 		sdUpdateDeckCriteria.lock();
+		
+		mhDb.openReadableDB();
+		allOwners = mhDb.getAllOwners();
+		mhDb.closeDB();
+		
 		populateAllOwnersSpinner();
 	}
 
 	// TODO Duplicate Code with ChangeActive
 	private void populateAllOwnersSpinner() {
-		mhDb.openReadableDB();
-		allOwners = mhDb.getAllOwners();
-		mhDb.closeDB();
-
 		if (allOwners.isEmpty()) {
 			System.out.println("allOwners is empty!");
 			finish();
@@ -84,7 +85,8 @@ public class UpdateDeck extends Activity implements OnClickListener,
 	// TODO Duplicate Code with ChangeActive
 	private void populateDecksSpinner(Player p) {
 		mhDb.openReadableDB();
-		// TODO Defect found here where the decklist isn't showing correct information
+		// TODO Defect found here where the decklist isn't showing correct
+		// information
 		deckList = mhDb.getDeckList(p);
 		mhDb.closeDB();
 
@@ -136,9 +138,13 @@ public class UpdateDeck extends Activity implements OnClickListener,
 													.getText().toString(),
 											tbActiveDeck.isChecked());
 									mhDb.closeDB();
-									
-									Toast.makeText(UpdateDeck.this, originalDeck.toString() + " has been updated to "
-											+ updatedDeck.toString(), Toast.LENGTH_SHORT).show();
+
+									Toast.makeText(
+											UpdateDeck.this,
+											originalDeck.toString()
+													+ " has been updated to "
+													+ updatedDeck.toString(),
+											Toast.LENGTH_SHORT).show();
 
 									UpdateDeck.this.finish();
 									Intent openUpdateDeckActivity = new Intent(
@@ -156,6 +162,8 @@ public class UpdateDeck extends Activity implements OnClickListener,
 			AlertDialog ad = adb.create();
 			adb.setTitle("Deck Updation");
 			ad.show();
+			break;
+		default:
 			break;
 		}
 	}
@@ -218,7 +226,8 @@ public class UpdateDeck extends Activity implements OnClickListener,
 	}
 
 	@Override
-	public void onNothingSelected(AdapterView<?> arg0) { }
+	public void onNothingSelected(AdapterView<?> arg0) {
+	}
 
 	@Override
 	public void onDrawerClosed() {

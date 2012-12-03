@@ -33,13 +33,13 @@ public class MagicHatDB {
 	public static final String KEY_GAME_WINNER = "winner";
 	public static final String KEY_GAME_DATE = "game_date";
 
-	public static final String KEY_CARDSET_ROWID = "_id";
-	public static final String KEY_CARDSET_NAME = "card_set_name";
-	public static final String KEY_CARDSET_SHORTNAME = "card_set_shortname";
+	public static final String KEY_EXPANSION_ROWID = "_id";
+	public static final String KEY_EXPANSION_NAME = "expansion_name";
+	public static final String KEY_EXPANSION_SHORTNAME = "expansion_shortname";
 
 	public static final String KEY_CARD_ROWID = "_id";
 	public static final String KEY_CARD_NAME = "card_name";
-	public static final String KEY_CARD_DEFAULT_CARDSET = "card_def_set";
+	public static final String KEY_CARD_DEFAULT_EXPANSION = "card_def_expansion";
 	public static final String KEY_CARD_DEFAULT_PICURL = "card_def_picurl";
 	public static final String KEY_CARD_ISBLUE = "card_isblue";
 	public static final String KEY_CARD_ISBLACK = "card_isblack";
@@ -54,10 +54,10 @@ public class MagicHatDB {
 	public static final String KEY_CARD_TOUGHNESS = "card_toughness";
 	public static final String KEY_CARD_TEXT = "card_text";
 
-	public static final String KEY_CARDSET_PIC_ROWID = "_id";
-	public static final String KEY_CARDSET_PIC_CARD_ID = "cardset_pic_card_id";
-	public static final String KEY_CARDSET_PIC_CARDSET_ID = "cardset_pic_set_id";
-	public static final String KEY_CARDSET_PIC_PICURL = "cardset_pic_picurl";
+	public static final String KEY_EXPANSION_PIC_ROWID = "_id";
+	public static final String KEY_EXPANSION_PIC_CARD_ID = "expansion_pic_card_id";
+	public static final String KEY_EXPANSION_PIC_EXPANSION_ID = "expansion_pic_exp_id";
+	public static final String KEY_EXPANSION_PIC_PICURL = "expansion_pic_picurl";
 
 	private static final String DATABASE_NAME = "MagicHatDB";
 	// private static final String DATABASE_PATH =
@@ -65,9 +65,9 @@ public class MagicHatDB {
 	private static final String DATABASE_TABLE_ALLDECKS = "Decks";
 	private static final String DATABASE_TABLE_ALLPLAYERS = "Players";
 	private static final String DATABASE_TABLE_ALLGAMES = "Games";
-	private static final String DATABASE_TABLE_ALLCARDSETS = "CardSets";
+	private static final String DATABASE_TABLE_ALLEXPANSIONS = "Expansions";
 	private static final String DATABASE_TABLE_ALLCARDS = "Cards";
-	private static final String DATABASE_TABLE_CARDSET_PIC = "CardSetPics";
+	private static final String DATABASE_TABLE_EXPANSION_PIC = "ExpansionPics";
 
 	private static final int DATABASE_VERSION = 1;
 
@@ -87,10 +87,9 @@ public class MagicHatDB {
 		@Override
 		public void onCreate(SQLiteDatabase db) {
 			if (!isUpgrade) {
-				// TODO This is not displaying
 				Toast.makeText(context,
 						"Initializing database... Please wait...",
-						Toast.LENGTH_LONG).show();
+						Toast.LENGTH_SHORT).show();
 			}
 
 			db.execSQL("CREATE TABLE " + DATABASE_TABLE_ALLPLAYERS + " ("
@@ -124,15 +123,15 @@ public class MagicHatDB {
 					+ KEY_DECK_ROWID + "), FOREIGN KEY(" + KEY_GAME_WINNER
 					+ ") REFERENCES " + DATABASE_TABLE_ALLPLAYERS + "("
 					+ KEY_PLAYER_ROWID + "));");
-			db.execSQL("CREATE TABLE " + DATABASE_TABLE_ALLCARDSETS + " ("
-					+ KEY_CARDSET_ROWID
-					+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + KEY_CARDSET_NAME
-					+ " TEXT NOT NULL, " + KEY_CARDSET_SHORTNAME
-					+ " TEXT NOT NULL);");
+			db.execSQL("CREATE TABLE " + DATABASE_TABLE_ALLEXPANSIONS + " ("
+					+ KEY_EXPANSION_ROWID
+					+ " INTEGER PRIMARY KEY AUTOINCREMENT, "
+					+ KEY_EXPANSION_NAME + " TEXT NOT NULL, "
+					+ KEY_EXPANSION_SHORTNAME + " TEXT NOT NULL);");
 			db.execSQL("CREATE TABLE " + DATABASE_TABLE_ALLCARDS + " ("
 					+ KEY_CARD_ROWID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
 					+ KEY_CARD_NAME + " TEXT NOT NULL, "
-					+ KEY_CARD_DEFAULT_CARDSET + " INTEGER NOT NULL, "
+					+ KEY_CARD_DEFAULT_EXPANSION + " INTEGER NOT NULL, "
 					+ KEY_CARD_DEFAULT_PICURL + " TEXT NOT NULL, "
 					+ KEY_CARD_ISBLUE + " INTEGER NOT NULL, "
 					+ KEY_CARD_ISBLACK + " INTEGER NOT NULL, "
@@ -143,24 +142,24 @@ public class MagicHatDB {
 					+ " TEXT NOT NULL, " + KEY_CARD_SUBTYPES + " TEXT, "
 					+ KEY_CARD_POWER + " INTEGER, " + KEY_CARD_TOUGHNESS
 					+ " INTEGER, " + KEY_CARD_TEXT + " TEXT, FOREIGN KEY("
-					+ KEY_CARD_DEFAULT_CARDSET + ") REFERENCES "
-					+ DATABASE_TABLE_ALLCARDSETS + "(" + KEY_CARDSET_ROWID
+					+ KEY_CARD_DEFAULT_EXPANSION + ") REFERENCES "
+					+ DATABASE_TABLE_ALLEXPANSIONS + "(" + KEY_EXPANSION_ROWID
 					+ "));");
-			db.execSQL("CREATE TABLE " + DATABASE_TABLE_CARDSET_PIC + " ("
-					+ KEY_CARDSET_PIC_ROWID
+			db.execSQL("CREATE TABLE " + DATABASE_TABLE_EXPANSION_PIC + " ("
+					+ KEY_EXPANSION_PIC_ROWID
 					+ " INTEGER PRIMARY KEY AUTOINCREMENT, "
-					+ KEY_CARDSET_PIC_CARD_ID + " INTEGER NOT NULL, "
-					+ KEY_CARDSET_PIC_CARDSET_ID + " INTEGER NOT NULL, "
-					+ KEY_CARDSET_PIC_PICURL + " TEXT NOT NULL, FOREIGN KEY("
-					+ KEY_CARDSET_PIC_CARD_ID + ") REFERENCES "
+					+ KEY_EXPANSION_PIC_CARD_ID + " INTEGER NOT NULL, "
+					+ KEY_EXPANSION_PIC_EXPANSION_ID + " INTEGER NOT NULL, "
+					+ KEY_EXPANSION_PIC_PICURL + " TEXT NOT NULL, FOREIGN KEY("
+					+ KEY_EXPANSION_PIC_CARD_ID + ") REFERENCES "
 					+ DATABASE_TABLE_ALLCARDS + "(" + KEY_CARD_ROWID
-					+ "), FOREIGN KEY(" + KEY_CARDSET_PIC_CARDSET_ID
-					+ ") REFERENCES " + DATABASE_TABLE_ALLCARDSETS + "("
-					+ KEY_CARDSET_ROWID + "));");
+					+ "), FOREIGN KEY(" + KEY_EXPANSION_PIC_EXPANSION_ID
+					+ ") REFERENCES " + DATABASE_TABLE_ALLEXPANSIONS + "("
+					+ KEY_EXPANSION_ROWID + "));");
 
 			if (!isUpgrade) {
 				setupPlayersAndDecks(db, new ArrayList<Deck>());
-				setupCards(db);
+				//setupCards(db);
 				Toast.makeText(context, "Database Initialization Complete.",
 						Toast.LENGTH_SHORT).show();
 			}
@@ -168,28 +167,28 @@ public class MagicHatDB {
 
 		@Override
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-			// TODO This is not displaying
 			Toast.makeText(context, "Upgrading database... Please wait...",
-					Toast.LENGTH_LONG).show();
+					Toast.LENGTH_SHORT).show();
 			isUpgrade = true;
 			List<Game> allGames = new ArrayList<Game>();
 			List<Deck> allDecks = new ArrayList<Deck>();
 
+			// TODO This requires a certain db schema to be successful
 			allGames = getAllGames(db);
 			allDecks = getAllDecks(db);
 
 			db.execSQL("DROP TABLE IF EXISTS " + DATABASE_TABLE_ALLDECKS);
 			db.execSQL("DROP TABLE IF EXISTS " + DATABASE_TABLE_ALLPLAYERS);
 			db.execSQL("DROP TABLE IF EXISTS " + DATABASE_TABLE_ALLGAMES);
-			db.execSQL("DROP TABLE IF EXISTS " + DATABASE_TABLE_CARDSET_PIC);
+			db.execSQL("DROP TABLE IF EXISTS " + DATABASE_TABLE_EXPANSION_PIC);
 			db.execSQL("DROP TABLE IF EXISTS " + DATABASE_TABLE_ALLCARDS);
-			db.execSQL("DROP TABLE IF EXISTS " + DATABASE_TABLE_ALLCARDSETS);
+			db.execSQL("DROP TABLE IF EXISTS " + DATABASE_TABLE_ALLEXPANSIONS);
 
 			onCreate(db);
 
 			setupPlayersAndDecks(db, allDecks);
 			populateAllGames(db, allGames);
-			setupCards(db);
+			//setupCards(db);
 			Toast.makeText(context, "Database Upgrade Complete.",
 					Toast.LENGTH_SHORT).show();
 		}
@@ -261,7 +260,7 @@ public class MagicHatDB {
 							+ " Deck was added for " + p.toString() + "\n");
 				}
 			}
-			System.out.println("Done setting up new Decks.");
+			System.out.println("Done setting up Decks.");
 		}
 
 		private void populateAllGames(SQLiteDatabase db, List<Game> allGames) {
@@ -288,28 +287,28 @@ public class MagicHatDB {
 			System.out.println("Done Populating all Games.");
 		}
 
-		private void setupCards(SQLiteDatabase db) {
-			List<CardSet> allCardSets = new ArrayList<CardSet>();
+/*		private void setupCards(SQLiteDatabase db) {
+			List<Expansion> allExpansions = new ArrayList<Expansion>();
 			List<Card> allCards = new ArrayList<Card>();
 
 			SAXDataParser sdp = new SAXDataParser();
 			try {
-				sdp.parseDeckListXml(context);
+				sdp.parseCardsXml(context);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 
-			allCardSets = sdp.getAllCardSets();
+			allExpansions = sdp.getAllExpansions();
 
-			for (CardSet cs : allCardSets) {
+			for (Expansion cs : allExpansions) {
 				ContentValues cvCs = new ContentValues();
-				cvCs.put(KEY_CARDSET_NAME, cs.getName());
-				cvCs.put(KEY_CARDSET_SHORTNAME, cs.getShortName());
-				db.insert(DATABASE_TABLE_ALLCARDSETS, null, cvCs);
+				cvCs.put(KEY_EXPANSION_NAME, cs.getName());
+				cvCs.put(KEY_EXPANSION_SHORTNAME, cs.getShortName());
+				db.insert(DATABASE_TABLE_ALLEXPANSIONS, null, cvCs);
 			}
-			System.out.println("Done setting up Card Sets.");
+			System.out.println("Done setting up Expansions.");
 
-			allCardSets = getAllCardSets(db);
+			allExpansions = getAllExpansions(db);
 			allCards = sdp.getAllCards();
 
 			int iBlue, iBlack, iWhite, iGreen, iRed;
@@ -322,9 +321,9 @@ public class MagicHatDB {
 
 				ContentValues cvc = new ContentValues();
 				cvc.put(KEY_CARD_NAME, c.getName());
-				cvc.put(KEY_CARD_DEFAULT_CARDSET,
-						getCardSetId(c.getDefaultCardSet().getShortName(),
-								allCardSets));
+				cvc.put(KEY_CARD_DEFAULT_EXPANSION,
+						getExpansionId(c.getDefaultExpansion().getShortName(),
+								allExpansions));
 				cvc.put(KEY_CARD_DEFAULT_PICURL, c.getDefaultPicURL()
 						.toString());
 				cvc.put(KEY_CARD_ISBLACK, iBlack);
@@ -352,9 +351,9 @@ public class MagicHatDB {
 
 			for (Card c : allCards) {
 				ContentValues cvp = new ContentValues();
-				for (CardSet cs : c.getAllCardSets()) {
-					cvp.put(KEY_CARDSET_PIC_CARDSET_ID,
-							getCardSetId(cs.getShortName(), allCardSets));
+				for (Expansion cs : c.getAllExpansions()) {
+					cvp.put(KEY_EXPANSION_PIC_EXPANSION_ID,
+							getExpansionId(cs.getShortName(), allExpansions));
 					int cardId = 0;
 					for (Card cd : allCards) {
 						if (cd.getName().equals(cd.getName())) {
@@ -365,14 +364,14 @@ public class MagicHatDB {
 						System.out
 								.println("MagicHatDB.setupCards: Card Id was not found.");
 					}
-					cvp.put(KEY_CARDSET_PIC_CARD_ID, cardId);
-					cvp.put(KEY_CARDSET_PIC_PICURL, c.getSetsImages().get(cs)
-							.toString());
-					db.insert(DATABASE_TABLE_CARDSET_PIC, null, cvp);
+					cvp.put(KEY_EXPANSION_PIC_CARD_ID, cardId);
+					cvp.put(KEY_EXPANSION_PIC_PICURL, c.getExpansionImages()
+							.get(cs).toString());
+					db.insert(DATABASE_TABLE_EXPANSION_PIC, null, cvp);
 				}
 			}
 			System.out.println("Done setting up Card Pictures.");
-		}
+		}*/
 
 		// //////////////////////////////////
 		// DECKS
@@ -1098,68 +1097,70 @@ public class MagicHatDB {
 		}
 
 		// //////////////////////////////////
-		// CARD SETS
+		// EXPANSIONS
 		// //////////////////////////////////
 
-		private int getCardSetId(SQLiteDatabase db, String shortName) {
+		private int getExpansionId(SQLiteDatabase db, String shortName) {
 			int cardSetId = 0;
 
-			String[] columns = new String[] { KEY_CARDSET_ROWID,
-					KEY_CARDSET_NAME, KEY_CARDSET_SHORTNAME };
+			String[] columns = new String[] { KEY_EXPANSION_ROWID,
+					KEY_EXPANSION_NAME, KEY_EXPANSION_SHORTNAME };
 
-			Cursor csc = db.query(DATABASE_TABLE_ALLCARDSETS, columns,
-					KEY_CARDSET_SHORTNAME + " = '" + shortName + "'", null,
+			Cursor expC = db.query(DATABASE_TABLE_ALLEXPANSIONS, columns,
+					KEY_EXPANSION_SHORTNAME + " = '" + shortName + "'", null,
 					null, null, null);
 
-			int iCardSetId = csc.getColumnIndex(KEY_CARDSET_ROWID);
+			int iExpansionId = expC.getColumnIndex(KEY_EXPANSION_ROWID);
 
-			if (csc.getCount() == 1) {
-				csc.moveToFirst();
-				cardSetId = csc.getInt(iCardSetId);
+			if (expC.getCount() == 1) {
+				expC.moveToFirst();
+				cardSetId = expC.getInt(iExpansionId);
 			} else {
 				System.out
-						.println("No unique card set was found in MagicHatDB.getCardSetId.");
+						.println("No unique expansion was found in MagicHatDB.getExpansionId.");
 			}
-			csc.close();
+			expC.close();
 
 			return cardSetId;
 		}
 
-		private int getCardSetId(String shortName, List<CardSet> allCardSets) {
-			for (CardSet cs : allCardSets) {
-				if (cs.getShortName().equals(shortName)) {
-					return cs.getId();
+		private int getExpansionId(String shortName,
+				List<Expansion> allExpansions) {
+			for (Expansion exp : allExpansions) {
+				if (exp.getShortName().equals(shortName)) {
+					return exp.getId();
 				}
 			}
-			System.out.println("The Card Set wasn't found in getCardSetId");
+			System.out.println("The Expansion wasn't found in getExpansionId");
 			return 0;
 		}
 
-		private List<CardSet> getAllCardSets(SQLiteDatabase db) {
-			List<CardSet> allCardSets = new ArrayList<CardSet>();
-			String[] cardSetColumns = new String[] { KEY_CARDSET_ROWID,
-					KEY_CARDSET_NAME, KEY_CARDSET_SHORTNAME };
+		private List<Expansion> getAllExpansions(SQLiteDatabase db) {
+			List<Expansion> allExpansions = new ArrayList<Expansion>();
+			String[] expansionColumns = new String[] { KEY_EXPANSION_ROWID,
+					KEY_EXPANSION_NAME, KEY_EXPANSION_SHORTNAME };
 
-			Cursor csc = db.query(DATABASE_TABLE_ALLCARDSETS, cardSetColumns,
-					null, null, null, null, null);
+			Cursor expC = db.query(DATABASE_TABLE_ALLEXPANSIONS,
+					expansionColumns, null, null, null, null, null);
 
-			int iCardSetId = csc.getColumnIndex(KEY_CARDSET_ROWID);
-			int iCardSetName = csc.getColumnIndex(KEY_CARDSET_NAME);
-			int iCardSetShortName = csc.getColumnIndex(KEY_CARDSET_SHORTNAME);
+			int iExpansionId = expC.getColumnIndex(KEY_EXPANSION_ROWID);
+			int iExpansionName = expC.getColumnIndex(KEY_EXPANSION_NAME);
+			int iExpansionShortName = expC
+					.getColumnIndex(KEY_EXPANSION_SHORTNAME);
 
-			CardSet cs;
-			for (csc.moveToFirst(); !csc.isAfterLast(); csc.moveToNext()) {
-				cs = new CardSet(csc.getString(iCardSetName),
-						csc.getString(iCardSetShortName),
-						csc.getInt(iCardSetId));
+			Expansion exp;
+			for (expC.moveToFirst(); !expC.isAfterLast(); expC.moveToNext()) {
+				exp = new Expansion(expC.getInt(iExpansionId),
+						expC.getString(iExpansionName),
+						expC.getString(iExpansionShortName));
 
-				allCardSets.add(cs);
+				allExpansions.add(exp);
 			}
-			csc.close();
+			expC.close();
 
-			Collections.sort(allCardSets);
+			Collections.sort(allExpansions);
 
-			return allCardSets;
+			return allExpansions;
 		}
 
 		// //////////////////////////////
@@ -1173,12 +1174,12 @@ public class MagicHatDB {
 			Cursor cc = db.query(DATABASE_TABLE_ALLCARDS, cardColumns, null,
 					null, null, null, null);
 
-			int iCardId = cc.getColumnIndex(KEY_CARDSET_ROWID);
-			int iCardName = cc.getColumnIndex(KEY_CARDSET_NAME);
+			int iCardId = cc.getColumnIndex(KEY_EXPANSION_ROWID);
+			int iCardName = cc.getColumnIndex(KEY_EXPANSION_NAME);
 
 			Card c;
 			for (cc.moveToFirst(); !cc.isAfterLast(); cc.moveToNext()) {
-				c = new Card(cc.getString(iCardName), cc.getInt(iCardId));
+				c = new Card(cc.getInt(iCardId), cc.getString(iCardName));
 
 				allCards.add(c);
 			}
@@ -1195,7 +1196,7 @@ public class MagicHatDB {
 					return c.getId();
 				}
 			}
-			System.out.println("The Card Set wasn't found in getCardSetId");
+			System.out.println("The Expansion wasn't found in getExpansionId");
 			return 0;
 		}
 	}
@@ -1350,18 +1351,19 @@ public class MagicHatDB {
 		return ourHelper.getGames(ourDatabase, d);
 	}
 
-	// ///////////////////////////// CARD SET //////////////////////////////////
+	// ///////////////////////////// EXPANSION
+	// //////////////////////////////////
 
-	public int getCardSetId(String shortName) {
-		return ourHelper.getCardSetId(ourDatabase, shortName);
+	public int getExpansionId(String shortName) {
+		return ourHelper.getExpansionId(ourDatabase, shortName);
 	}
 
-	public List<CardSet> getAllCardSets() {
-		return ourHelper.getAllCardSets(ourDatabase);
+	public List<Expansion> getAllExpansions() {
+		return ourHelper.getAllExpansions(ourDatabase);
 	}
 
-	public int getCardSetId(String shortName, List<CardSet> allCardSets) {
-		return ourHelper.getCardSetId(shortName, allCardSets);
+	public int getExpansionId(String shortName, List<Expansion> allExpansions) {
+		return ourHelper.getExpansionId(shortName, allExpansions);
 	}
 
 	// ////////////////////////////// CARDS ////////////////////////////////////

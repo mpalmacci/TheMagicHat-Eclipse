@@ -53,5 +53,12 @@
         android:layout_height="wrap_content"
         android:text="@string/deck_display"
         android:textSize="25dp" />
+    
+        <Button
+        android:id="@+id/bCardSearch"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/card_search"
+        android:textSize="25dp" />
 
 </LinearLayout>

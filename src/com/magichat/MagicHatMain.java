@@ -11,13 +11,17 @@ import android.widget.Button;
 
 public class MagicHatMain extends Activity implements View.OnClickListener {
 
-	Button bPlayGame, bViewGameStats, bAddDeck, bUpdateDeck, bChangeActive, bDeleteDeck,
-			bDisplayAllDecks;
+	Button bPlayGame, bViewGameStats, bAddDeck, bUpdateDeck, bChangeActive,
+			bDeleteDeck, bDisplayAllDecks, bCardSearch;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.magic_hat_main);
+
+		MagicHatDB mhDb = new MagicHatDB(this);
+		mhDb.openReadableDB();
+		mhDb.closeDB();
 
 		initialize();
 	}
@@ -56,25 +60,14 @@ public class MagicHatMain extends Activity implements View.OnClickListener {
 					"com.magichat.DISPLAYALLDECKS");
 			startActivity(openDisplayAllDecksActivity);
 			break;
+		case R.id.bCardSearch:
+			Intent openCardSearchActivity = new Intent(
+					"com.magichat.CARDSEARCH");
+			startActivity(openCardSearchActivity);
+			break;
+		default:
+			break;
 		}
-	}
-
-	private void initialize() {
-		bPlayGame = (Button) findViewById(R.id.bEnterGame);
-		bViewGameStats = (Button) findViewById(R.id.bViewGameStats);
-		bAddDeck = (Button) findViewById(R.id.bAddDeck);
-		bUpdateDeck = (Button) findViewById(R.id.bUpdateDeck);
-		bDeleteDeck = (Button) findViewById(R.id.bDeleteDeck);
-		bChangeActive = (Button) findViewById(R.id.bChangeActive);
-		bDisplayAllDecks = (Button) findViewById(R.id.bDisplayAllDecks);
-
-		bPlayGame.setOnClickListener(this);
-		bViewGameStats.setOnClickListener(this);
-		bAddDeck.setOnClickListener(this);
-		bUpdateDeck.setOnClickListener(this);
-		bChangeActive.setOnClickListener(this);
-		bDeleteDeck.setOnClickListener(this);
-		bDisplayAllDecks.setOnClickListener(this);
 	}
 
 	@Override
@@ -96,7 +89,29 @@ public class MagicHatMain extends Activity implements View.OnClickListener {
 			Intent gameStatsPrefs = new Intent("com.magichat.GAMESTATSPREFS");
 			startActivity(gameStatsPrefs);
 			break;
+		default:
+			break;
 		}
 		return false;
+	}
+
+	private void initialize() {
+		bPlayGame = (Button) findViewById(R.id.bEnterGame);
+		bViewGameStats = (Button) findViewById(R.id.bViewGameStats);
+		bAddDeck = (Button) findViewById(R.id.bAddDeck);
+		bUpdateDeck = (Button) findViewById(R.id.bUpdateDeck);
+		bDeleteDeck = (Button) findViewById(R.id.bDeleteDeck);
+		bChangeActive = (Button) findViewById(R.id.bChangeActive);
+		bDisplayAllDecks = (Button) findViewById(R.id.bDisplayAllDecks);
+		bCardSearch = (Button) findViewById(R.id.bCardSearch);
+
+		bPlayGame.setOnClickListener(this);
+		bViewGameStats.setOnClickListener(this);
+		bAddDeck.setOnClickListener(this);
+		bUpdateDeck.setOnClickListener(this);
+		bChangeActive.setOnClickListener(this);
+		bDeleteDeck.setOnClickListener(this);
+		bDisplayAllDecks.setOnClickListener(this);
+		bCardSearch.setOnClickListener(this);
 	}
 }
