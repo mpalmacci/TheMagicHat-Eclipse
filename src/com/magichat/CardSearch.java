@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.SlidingDrawer;
@@ -28,8 +27,7 @@ public class CardSearch extends Activity implements OnDrawerOpenListener,
 	Button bSearch;
 	EditText etName, etRulesText, etCMC;
 	Spinner sExpansion, sBlock, sType, sSubtype, sCMCEquality;
-	CheckBox cbMythic, cbRare, cbUncommon, cbCommon;
-	ToggleButton tbWhite, tbBlue, tbBlack, tbRed, tbGreen;
+	ToggleButton tbWhite, tbBlue, tbBlack, tbRed, tbGreen, tbMythic, tbRare, tbUncommon, tbCommon;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +44,7 @@ public class CardSearch extends Activity implements OnDrawerOpenListener,
 		allExpansions = getAllInfoDB.getAllExpansions();
 		getAllInfoDB.closeDB();
 		
-		populateExpansionSpinner();
+		//populateExpansionSpinner();
 	}
 	
 	private void populateExpansionSpinner() {
@@ -100,10 +98,10 @@ public class CardSearch extends Activity implements OnDrawerOpenListener,
 		sBlock = (Spinner) findViewById(R.id.sBlock);
 		sType = (Spinner) findViewById(R.id.sType);
 		sSubtype = (Spinner) findViewById(R.id.sSubtype);
-		cbMythic = (CheckBox) findViewById(R.id.cbMythic);
-		cbRare = (CheckBox) findViewById(R.id.cbRare);
-		cbUncommon = (CheckBox) findViewById(R.id.cbUncommon);
-		cbCommon = (CheckBox) findViewById(R.id.cbCommon);
+		tbMythic = (ToggleButton) findViewById(R.id.tbMythic);
+		tbRare = (ToggleButton) findViewById(R.id.tbRare);
+		tbUncommon = (ToggleButton) findViewById(R.id.tbUncommon);
+		tbCommon = (ToggleButton) findViewById(R.id.tbCommon);
 		tbWhite = (ToggleButton) findViewById(R.id.tbWhite);
 		tbBlue = (ToggleButton) findViewById(R.id.tbBlue);
 		tbBlack = (ToggleButton) findViewById(R.id.tbBlack);

@@ -100,44 +100,60 @@
                     </LinearLayout>
                 </LinearLayout>
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/rarity" />
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:weightSum="4" >
 
-                    <CheckBox
-                        android:id="@+id/cbMythic"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                    <ToggleButton
+                        android:id="@+id/tbMythic"
+                        android:layout_width="25sp"
+                        android:layout_height="50sp"
                         android:layout_weight="1"
-                        android:text="@string/mythic"
-                        android:textSize="10dp" />
+                        android:background="@drawable/mythic"
+                        android:textOff=""
+                        android:textOn="" />
 
-                    <CheckBox
-                        android:id="@+id/cbRare"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                    <ToggleButton
+                        android:id="@+id/tbRare"
+                        android:layout_width="25sp"
+                        android:layout_height="50sp"
                         android:layout_weight="1"
-                        android:text="@string/rare"
-                        android:textSize="10dp" />
+                        android:background="@drawable/rare"
+                        android:textOff=""
+                        android:textOn="" />
 
-                    <CheckBox
-                        android:id="@+id/cbUncommon"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                    <ToggleButton
+                        android:id="@+id/tbUncommon"
+                        android:layout_width="25sp"
+                        android:layout_height="50sp"
                         android:layout_weight="1"
-                        android:text="@string/uncommon"
-                        android:textSize="10dp" />
+                        android:background="@drawable/uncommon"
+                        android:textOff=""
+                        android:textOn="" />
 
-                    <CheckBox
-                        android:id="@+id/cbCommon"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                    <ToggleButton
+                        android:id="@+id/tbCommon"
+                        android:layout_width="25sp"
+                        android:layout_height="50sp"
                         android:layout_weight="1"
-                        android:text="@string/common"
-                        android:textSize="10dp" />
+                        android:background="@drawable/common"
+                        android:textOff=""
+                        android:textOn="" />
                 </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/color" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -147,43 +163,48 @@
 
                     <ToggleButton
                         android:id="@+id/tbWhite"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="20sp"
+                        android:layout_height="55sp"
                         android:layout_weight="1"
-                        android:textOff="@string/white"
-                        android:textOn="@string/white" />
+                        android:background="@drawable/white_sel"
+                        android:textOff=""
+                        android:textOn="" />
 
                     <ToggleButton
                         android:id="@+id/tbBlue"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="20sp"
+                        android:layout_height="55sp"
                         android:layout_weight="1"
-                        android:textOff="@string/blue"
-                        android:textOn="@string/blue" />
+                        android:background="@drawable/blue_sel"
+                        android:textOff=""
+                        android:textOn="" />
 
                     <ToggleButton
                         android:id="@+id/tbBlack"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="20sp"
+                        android:layout_height="55sp"
                         android:layout_weight="1"
-                        android:textOff="@string/black"
-                        android:textOn="@string/black" />
+                        android:background="@drawable/black_sel"
+                        android:textOff=""
+                        android:textOn="" />
 
                     <ToggleButton
                         android:id="@+id/tbRed"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="20sp"
+                        android:layout_height="55sp"
                         android:layout_weight="1"
-                        android:textOff="@string/red"
-                        android:textOn="@string/red" />
+                        android:background="@drawable/red_sel"
+                        android:textOff=""
+                        android:textOn="" />
 
                     <ToggleButton
                         android:id="@+id/tbGreen"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="20sp"
+                        android:layout_height="55sp"
                         android:layout_weight="1"
-                        android:textOff="@string/green"
-                        android:textOn="@string/green" />
+                        android:background="@drawable/green_sel"
+                        android:textOff=""
+                        android:textOn="" />
                 </LinearLayout>
 
                 <LinearLayout

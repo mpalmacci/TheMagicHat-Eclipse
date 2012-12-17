@@ -32,7 +32,7 @@ public class Card implements Comparable<Card> {
 	public Card(int id, String name, List<Expansion> expansions) {
 		this(id, name);
 		this.expansions = expansions;
-		
+
 		if (expansions.isEmpty()) {
 			System.out.println(name + " is not in an expansion?");
 		} else {
@@ -92,32 +92,39 @@ public class Card implements Comparable<Card> {
 	public int convertManaCost(String manaCost) {
 		int CMC = 0;
 
-		String[] manaCostArray = manaCost.split("");
+		if (manaCost.isEmpty()) {
+			return 0;
+		} else {
+			String[] manaCostArray = manaCost.split("");
 
-		// Need to handle digits (including 0), or the colors
-		// { 'U', 'R', 'B', 'G', 'W' }
-		// Then also need to handle multiple colors
-		// so '(color/color)' will only really be an additional 1 mana
-		// 'X' is equal to 0 so can be ignored in this calculation
-		for (String s : manaCostArray) {
-			Pattern digit = Pattern.compile("/d");
-			Pattern slash = Pattern.compile("\\)");
-			Pattern color = Pattern.compile("[URBGW]");
-
-			Matcher mDigit = digit.matcher(s);
-			Matcher mSlash = slash.matcher(s);
-			Matcher mColor = color.matcher(s);
-
-			if (mDigit.matches()) {
-				CMC = CMC + Integer.parseInt(s);
+			// TODO This does not calculate in the digit portion of the manaCost properly
+			Pattern digit = Pattern.compile("\\d");
+			Matcher mDigit = digit.matcher(manaCost);
+			mDigit.find();
+			if (mDigit.groupCount() > 0) {
+				CMC += Integer.parseInt(mDigit.group(0));
 			}
-			if (mSlash.matches()) {
-				// This removes 1 from the CMC because the ")" represents a
-				// double color symbol. i.e. "(U/B)"
-				CMC--;
-			}
-			if (mColor.matches()) {
-				CMC++;
+
+			// Need to handle digits (including 0), or the colors
+			// { 'U', 'R', 'B', 'G', 'W' }
+			// Then also need to handle multiple colors
+			// so '(color/color)' will only really be an additional 1 mana
+			// 'X' is equal to 0 so can be ignored in this calculation
+			for (String s : manaCostArray) {
+				Pattern paren = Pattern.compile("\\)");
+				Pattern color = Pattern.compile("[URBGW]");
+
+				Matcher mParen = paren.matcher(s);
+				Matcher mColor = color.matcher(s);
+
+				if (mParen.matches()) {
+					// This removes 1 from the CMC because the ")" represents a
+					// double color symbol. i.e. "(U/B)"
+					CMC--;
+				}
+				if (mColor.matches()) {
+					CMC++;
+				}
 			}
 		}
 
@@ -163,8 +170,23 @@ public class Card implements Comparable<Card> {
 		return this.type;
 	}
 
-	public String getCardSubTypes() {
-		return this.subType.toString();
+	public String getCardSubType() {
+		if (this.subType == null) {
+			return "";
+		}
+
+		StringBuilder subTypes = new StringBuilder();
+		for (String s : this.subType) {
+			subTypes.append(s);
+			subTypes.append(" ");
+		}
+
+		// This will trim off the last space at the end of the String
+		return subTypes.toString().replaceAll("\\s+", " ");
+	}
+
+	public String[] getCardSubTypes() {
+		return this.subType;
 	}
 
 	public String getPower() {
@@ -186,50 +208,40 @@ public class Card implements Comparable<Card> {
 	}
 
 	public boolean isBlue() {
-		for (String color : colors) {
-			if (color.equals("U")) {
-				return true;
-			}
+		if (colors.contains("U")) {
+			return true;
 		}
 
 		return false;
 	}
 
 	public boolean isBlack() {
-		for (String color : colors) {
-			if (color.equals("B")) {
-				return true;
-			}
+		if (colors.contains("B")) {
+			return true;
 		}
 
 		return false;
 	}
 
 	public boolean isWhite() {
-		for (String color : colors) {
-			if (color.equals("W")) {
-				return true;
-			}
+		if (colors.contains("W")) {
+			return true;
 		}
 
 		return false;
 	}
 
 	public boolean isGreen() {
-		for (String color : colors) {
-			if (color.equals("G")) {
-				return true;
-			}
+		if (colors.contains("G")) {
+			return true;
 		}
 
 		return false;
 	}
 
 	public boolean isRed() {
-		for (String color : colors) {
-			if (color.equals("R")) {
-				return true;
-			}
+		if (colors.contains("R")) {
+			return true;
 		}
 
 		return false;

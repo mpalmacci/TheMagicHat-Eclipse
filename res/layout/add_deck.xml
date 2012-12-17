@@ -3,13 +3,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="25dp" >
+    android:padding="25sp" >
 
     <EditText
         android:id="@+id/etDeckName"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
         android:hint="@string/deck_name"
         android:inputType="text" >
 
@@ -34,7 +33,7 @@
             android:layout_gravity="center"
             android:layout_weight="3"
             android:text="@string/active_deck"
-            android:textSize="20dp" />
+            android:textSize="20sp" />
 
         <ToggleButton
             android:id="@+id/tbActiveDeck"
@@ -44,6 +43,7 @@
             android:checked="true"
             android:textOff="No"
             android:textOn="Yes" />
+
     </LinearLayout>
 
     <Button
@@ -52,6 +52,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:text="@string/add_the_deck"
-        android:textSize="20dp" />
+        android:textSize="20sp" />
 
 </LinearLayout>

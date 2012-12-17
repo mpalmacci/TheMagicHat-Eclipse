@@ -13,15 +13,13 @@ public class Splash extends Activity {
 		Thread timer = new Thread() {
 			public void run() {
 				try {
-					sleep(500);
+					sleep(300);
 				} catch (InterruptedException iE) {
 					iE.printStackTrace();
 				} finally {
-					if (hasWindowFocus()) {
 						Intent openMagicHatMain = new Intent(
 								"com.magichat.MAGICHATMAIN");
 						startActivity(openMagicHatMain);
-					}
 				}
 			}
 		};

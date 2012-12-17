@@ -30,13 +30,39 @@ public final class R {
     }
     public static final class drawable {
         public static final int black=0x7f020000;
-        public static final int blue=0x7f020001;
-        public static final int custom_toggle_button=0x7f020002;
-        public static final int green=0x7f020003;
-        public static final int red=0x7f020004;
-        public static final int salogo=0x7f020005;
-        public static final int splash_background=0x7f020006;
-        public static final int white=0x7f020007;
+        public static final int black1=0x7f020001;
+        public static final int black2=0x7f020002;
+        public static final int black_sel=0x7f020003;
+        public static final int blue=0x7f020004;
+        public static final int blue1=0x7f020005;
+        public static final int blue2=0x7f020006;
+        public static final int blue_sel=0x7f020007;
+        public static final int common=0x7f020008;
+        public static final int common_sel=0x7f020009;
+        public static final int common_unsel=0x7f02000a;
+        public static final int green=0x7f02000b;
+        public static final int green1=0x7f02000c;
+        public static final int green2=0x7f02000d;
+        public static final int green_sel=0x7f02000e;
+        public static final int main_icon=0x7f02000f;
+        public static final int mythic=0x7f020010;
+        public static final int mythic_sel=0x7f020011;
+        public static final int mythic_unsel=0x7f020012;
+        public static final int rare=0x7f020013;
+        public static final int rare_sel=0x7f020014;
+        public static final int rare_unsel=0x7f020015;
+        public static final int red=0x7f020016;
+        public static final int red1=0x7f020017;
+        public static final int red2=0x7f020018;
+        public static final int red_sel=0x7f020019;
+        public static final int splash_background=0x7f02001a;
+        public static final int uncommon=0x7f02001b;
+        public static final int uncommon_sel=0x7f02001c;
+        public static final int uncommon_unsel=0x7f02001d;
+        public static final int white=0x7f02001e;
+        public static final int white1=0x7f02001f;
+        public static final int white2=0x7f020020;
+        public static final int white_sel=0x7f020021;
     }
     public static final class id {
         public static final int bAddDeck=0x7f0c0003;
@@ -54,10 +80,6 @@ public final class R {
         public static final int bUpdateDeck=0x7f0c0034;
         public static final int bViewGameStats=0x7f0c0033;
         public static final int cUpdateDeck=0x7f0c0042;
-        public static final int cbCommon=0x7f0c000f;
-        public static final int cbMythic=0x7f0c000c;
-        public static final int cbRare=0x7f0c000d;
-        public static final int cbUncommon=0x7f0c000e;
         public static final int content=0x7f0c0006;
         public static final int etCMC=0x7f0c0018;
         public static final int etDeckName=0x7f0c0000;
@@ -92,8 +114,12 @@ public final class R {
         public static final int tbActiveDeck=0x7f0c0002;
         public static final int tbBlack=0x7f0c0012;
         public static final int tbBlue=0x7f0c0011;
+        public static final int tbCommon=0x7f0c000f;
         public static final int tbGreen=0x7f0c0014;
+        public static final int tbMythic=0x7f0c000c;
+        public static final int tbRare=0x7f0c000d;
         public static final int tbRed=0x7f0c0013;
+        public static final int tbUncommon=0x7f0c000e;
         public static final int tbWhite=0x7f0c0010;
         public static final int tlDeckList=0x7f0c001e;
         public static final int tvActiveStatusChanged=0x7f0c001a;
@@ -138,18 +164,16 @@ public final class R {
          */
         public static final int add_the_deck=0x7f080011;
         public static final int app_name=0x7f080000;
-        public static final int black=0x7f08002a;
         public static final int block=0x7f080023;
-        public static final int blue=0x7f080029;
         public static final int card_name_contains=0x7f080020;
         /**  Card Search 
          */
         public static final int card_search=0x7f08001e;
         public static final int change_active=0x7f080004;
         public static final int choose_delete=0x7f08001a;
-        public static final int cmc=0x7f080030;
-        public static final int common=0x7f080027;
-        public static final int conv_mana_cost=0x7f08002f;
+        public static final int cmc=0x7f080029;
+        public static final int color=0x7f080025;
+        public static final int conv_mana_cost=0x7f080028;
         /**  Delete 
          */
         public static final int deck_delete=0x7f080019;
@@ -162,16 +186,13 @@ public final class R {
         public static final int delete_deck=0x7f080005;
         public static final int expansion=0x7f080022;
         public static final int flip_active_status=0x7f08001d;
-        public static final int green=0x7f08002c;
         public static final int lost=0x7f08000e;
         public static final int make_a_selection=0x7f08000b;
-        public static final int mythic=0x7f080024;
         public static final int no_games_played=0x7f080010;
         /**  Main Menu 
          */
         public static final int play_button=0x7f080001;
-        public static final int rare=0x7f080025;
-        public static final int red=0x7f08002b;
+        public static final int rarity=0x7f080024;
         public static final int rules_text_contains=0x7f080021;
         public static final int search=0x7f08001f;
         public static final int select_a_deck=0x7f080016;
@@ -187,14 +208,12 @@ public final class R {
          */
         public static final int select_owner=0x7f08001b;
         public static final int stats_breakdown=0x7f08000f;
-        public static final int subtypes=0x7f08002e;
+        public static final int subtypes=0x7f080027;
         public static final int total_games=0x7f08000c;
-        public static final int types=0x7f08002d;
-        public static final int uncommon=0x7f080026;
+        public static final int types=0x7f080026;
         public static final int update_deck=0x7f080003;
         public static final int update_the_deck=0x7f080014;
         public static final int view_game_stats=0x7f080007;
-        public static final int white=0x7f080028;
         /**  Play Game 
          */
         public static final int winner=0x7f080008;
