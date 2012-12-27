@@ -12,8 +12,6 @@ public class Card implements Comparable<Card> {
 	int id;
 	String name;
 	List<Expansion> expansions;
-	Expansion defaultExpansion;
-	URL defaultPicURL;
 	List<String> colors;
 	String manaCost;
 	int CMC;
@@ -21,6 +19,7 @@ public class Card implements Comparable<Card> {
 	String[] subType;
 	String sPower;
 	String sToughness;
+	// String rarity;
 	String text;
 	Map<Expansion, URL> expansionImages = new HashMap<Expansion, URL>();
 
@@ -32,13 +31,6 @@ public class Card implements Comparable<Card> {
 	public Card(int id, String name, List<Expansion> expansions) {
 		this(id, name);
 		this.expansions = expansions;
-
-		if (expansions.isEmpty()) {
-			System.out.println(name + " is not in an expansion?");
-		} else {
-			this.defaultExpansion = expansions.get(0);
-			this.defaultPicURL = expansionImages.get(expansions.get(0));
-		}
 	}
 
 	public Card(String name, List<Expansion> expansions, List<URL> picURL,
@@ -47,6 +39,8 @@ public class Card implements Comparable<Card> {
 		this.name = name;
 		this.expansions = expansions;
 		this.colors = colors;
+		// TODO Add in Rarity for Cards
+		// this.rarity = rarity;
 		this.manaCost = manaCost;
 		this.CMC = convertManaCost(manaCost);
 
@@ -62,7 +56,6 @@ public class Card implements Comparable<Card> {
 			String sPower = pt.substring(0, pt.indexOf("/"));
 			String sToughness = pt.substring(pt.indexOf("/") + 1, pt.length());
 
-			// TODO Need to handle */*, */#, #/*, and #+*/#+* Creatures...
 			this.sPower = sPower;
 			this.sToughness = sToughness;
 
@@ -72,19 +65,12 @@ public class Card implements Comparable<Card> {
 			expansionImages.put(expansions.get(i), picURL.get(i));
 		}
 
-		if (expansions.isEmpty()) {
-			System.out.println(name + " is not in an expansion?");
-		} else {
-			this.defaultExpansion = expansions.get(0);
-			this.defaultPicURL = expansionImages.get(expansions.get(0));
-		}
-
 		this.text = text;
 	}
 
 	public Card(int id, String name, List<Expansion> expansions,
 			List<URL> picURL, List<String> colors, String manaCost,
-			String type, String pt, String text) {
+			String type, String pt, String rarity, String text) {
 		this(name, expansions, picURL, colors, manaCost, type, pt, text);
 		this.id = id;
 	}
@@ -97,12 +83,10 @@ public class Card implements Comparable<Card> {
 		} else {
 			String[] manaCostArray = manaCost.split("");
 
-			// TODO This does not calculate in the digit portion of the manaCost properly
-			Pattern digit = Pattern.compile("\\d");
-			Matcher mDigit = digit.matcher(manaCost);
-			mDigit.find();
-			if (mDigit.groupCount() > 0) {
-				CMC += Integer.parseInt(mDigit.group(0));
+			if (!manaCost.equals("")) {
+				if (!manaCost.replaceAll("\\D+", "").equals("")) {
+					CMC = Integer.parseInt(manaCost.replaceAll("\\D+", ""));
+				}
 			}
 
 			// Need to handle digits (including 0), or the colors
@@ -139,8 +123,12 @@ public class Card implements Comparable<Card> {
 		return this.name;
 	}
 
+	/*
+	 * public String getRarity() { return this.rarity; }
+	 */
+
 	public Expansion getDefaultExpansion() {
-		return this.defaultExpansion;
+		return this.expansions.get(0);
 	}
 
 	public List<Expansion> getAllExpansions() {
@@ -155,7 +143,7 @@ public class Card implements Comparable<Card> {
 	}
 
 	public URL getDefaultPicURL() {
-		return this.defaultPicURL;
+		return this.expansionImages.get(expansions.get(0));
 	}
 
 	public String getManaCost() {
@@ -208,7 +196,7 @@ public class Card implements Comparable<Card> {
 	}
 
 	public boolean isBlue() {
-		if (colors.contains("U")) {
+		if (this.colors.contains("U")) {
 			return true;
 		}
 
@@ -216,7 +204,7 @@ public class Card implements Comparable<Card> {
 	}
 
 	public boolean isBlack() {
-		if (colors.contains("B")) {
+		if (this.colors.contains("B")) {
 			return true;
 		}
 
@@ -224,7 +212,7 @@ public class Card implements Comparable<Card> {
 	}
 
 	public boolean isWhite() {
-		if (colors.contains("W")) {
+		if (this.colors.contains("W")) {
 			return true;
 		}
 
@@ -232,7 +220,7 @@ public class Card implements Comparable<Card> {
 	}
 
 	public boolean isGreen() {
-		if (colors.contains("G")) {
+		if (this.colors.contains("G")) {
 			return true;
 		}
 
@@ -240,7 +228,7 @@ public class Card implements Comparable<Card> {
 	}
 
 	public boolean isRed() {
-		if (colors.contains("R")) {
+		if (this.colors.contains("R")) {
 			return true;
 		}
 

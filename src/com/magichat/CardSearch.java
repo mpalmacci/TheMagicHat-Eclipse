@@ -40,7 +40,7 @@ public class CardSearch extends Activity implements OnDrawerOpenListener,
 
 		MagicHatDB getAllInfoDB = new MagicHatDB(this);
 		getAllInfoDB.openReadableDB();
-		allCards = getAllInfoDB.getAllCards();
+		allCards = getAllInfoDB.getAllCardIds();
 		allExpansions = getAllInfoDB.getAllExpansions();
 		getAllInfoDB.closeDB();
 		
