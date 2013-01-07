@@ -1,5 +1,10 @@
 package com.magichat;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Date;
 import java.util.List;
 
@@ -8,6 +13,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 
 public class MagicHatDB {
+	protected static final String MH_DB_NAME = "MagicHatDB";
+	private static final int MH_DB_VERSION = 1;
 
 	private MagicHatDbHelper mhHelper;
 	private SQLiteDatabase mhDb;
@@ -20,7 +27,7 @@ public class MagicHatDB {
 	}
 
 	public MagicHatDB openWritableDB() {
-		mhHelper = new MagicHatDbHelper(context);
+		mhHelper = new MagicHatDbHelper(context, MH_DB_NAME, MH_DB_VERSION);
 		try {
 			mhDb = mhHelper.getWritableDatabase();
 		} catch (SQLiteException e) {
@@ -31,7 +38,7 @@ public class MagicHatDB {
 	}
 
 	public MagicHatDB openReadableDB() {
-		mhHelper = new MagicHatDbHelper(context);
+		mhHelper = new MagicHatDbHelper(context, MH_DB_NAME, MH_DB_VERSION);
 		try {
 			mhDb = mhHelper.getReadableDatabase();
 		} catch (SQLiteException e) {
@@ -162,21 +169,5 @@ public class MagicHatDB {
 
 	public List<Game> getGames(Deck d) {
 		return mhHelper.getGames(d, mhDb);
-	}
-
-	// ///////////////////////// EXPANSION ////////////////////////////
-
-	public int getExpansionId(String shortName) {
-		return mhHelper.getExpansionId(shortName, mhDb);
-	}
-
-	public List<Expansion> getAllExpansions() {
-		return mhHelper.getAllExpansions(mhDb);
-	}
-
-	// ////////////////////////////// CARDS ////////////////////////////////////
-
-	public List<Card> getAllCardIds() {
-		return mhHelper.getAllCardIds(mhDb);
 	}
 }

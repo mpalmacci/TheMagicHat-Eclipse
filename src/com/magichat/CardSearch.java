@@ -19,7 +19,8 @@ import android.widget.SlidingDrawer.OnDrawerOpenListener;
 
 public class CardSearch extends Activity implements OnDrawerOpenListener,
 		OnDrawerCloseListener {
-	List<Card> allCards = new ArrayList<Card>();
+	// TODO Use a HashMap of Names and Ids?
+	List<Card> allCardIds = new ArrayList<Card>();
 	List<Expansion> allExpansions = new ArrayList<Expansion>();
 
 	LinearLayout llSearchResults;
@@ -27,7 +28,8 @@ public class CardSearch extends Activity implements OnDrawerOpenListener,
 	Button bSearch;
 	EditText etName, etRulesText, etCMC;
 	Spinner sExpansion, sBlock, sType, sSubtype, sCMCEquality;
-	ToggleButton tbWhite, tbBlue, tbBlack, tbRed, tbGreen, tbMythic, tbRare, tbUncommon, tbCommon;
+	ToggleButton tbWhite, tbBlue, tbBlack, tbRed, tbGreen, tbMythic, tbRare,
+			tbUncommon, tbCommon;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -38,29 +40,28 @@ public class CardSearch extends Activity implements OnDrawerOpenListener,
 
 		sdCardSearch.open();
 
-		MagicHatDB getAllInfoDB = new MagicHatDB(this);
-		getAllInfoDB.openReadableDB();
-		allCards = getAllInfoDB.getAllCardIds();
-		allExpansions = getAllInfoDB.getAllExpansions();
-		getAllInfoDB.closeDB();
-		
-		//populateExpansionSpinner();
+		CardDbUtil.getStaticDb();
+		allCardIds = CardDbUtil.getAllCardIds();
+		allExpansions = CardDbUtil.getAllExpansions();
+		CardDbUtil.close();
+
+		populateExpansionSpinner();
 	}
-	
+
 	private void populateExpansionSpinner() {
 		if (allExpansions.isEmpty()) {
 			System.out.println("allExpansions is empty!");
 			finish();
 		}
-		
+
 		String[] stAllExpansions = new String[allExpansions.size() + 1];
-		
+
 		stAllExpansions[0] = "Any";
-		
+
 		for (int i = 1; i < allExpansions.size() + 1; i++) {
 			stAllExpansions[i] = allExpansions.get(i - 1).toString();
 		}
-		
+
 		ArrayAdapter<String> expAdapter = new ArrayAdapter<String>(this,
 				android.R.layout.simple_spinner_item, stAllExpansions);
 

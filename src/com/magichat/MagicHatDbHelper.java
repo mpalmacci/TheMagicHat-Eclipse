@@ -1,9 +1,5 @@
 package com.magichat;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -61,10 +57,6 @@ public class MagicHatDbHelper extends SQLiteOpenHelper {
 	public static final String KEY_REL_EXP_ID = "exp_id";
 	public static final String KEY_REL_PIC_URL = "pic_url";
 
-	protected static final String DB_NAME = "MagicHatDB";
-	protected static String DB_PATH = "/data/data/com.magichat/databases/";
-	protected static String DB_FILE_PATH;
-
 	private static final String DB_TABLE_ALLDECKS = "Decks";
 	private static final String DB_TABLE_ALLPLAYERS = "Players";
 	private static final String DB_TABLE_ALLGAMES = "Games";
@@ -72,16 +64,15 @@ public class MagicHatDbHelper extends SQLiteOpenHelper {
 	public static final String DB_TABLE_ALLCARDS = "Cards";
 	public static final String DB_TABLE_REL_CARD_EXP = "Rel_CardExp";
 
-	private static final int DB_VERSION = 1;
-
 	private Context mhContext;
+	private String dbName = "";
 
 	private boolean isUpgrade = false;
 
-	public MagicHatDbHelper(Context mhContext) {
-		super(mhContext, DB_NAME, null, DB_VERSION);
+	public MagicHatDbHelper(Context mhContext, String dbName, int dbVersion) {
+		super(mhContext, dbName, null, dbVersion);
 		this.mhContext = mhContext;
-		DB_FILE_PATH = mhContext.getDatabasePath(DB_NAME).getAbsolutePath();
+		this.dbName = dbName;
 	}
 
 	@Override
@@ -90,47 +81,52 @@ public class MagicHatDbHelper extends SQLiteOpenHelper {
 			Toast.makeText(mhContext,
 					"Initializing database... Please wait...",
 					Toast.LENGTH_SHORT).show();
-
-			this.close();
-			try {
-				copyCardDataBase();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			this.getWritableDatabase();
 		}
 
-		db.execSQL("CREATE TABLE " + DB_TABLE_ALLPLAYERS + " ("
-				+ KEY_PLAYER_ROWID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-				+ KEY_PLAYER_NAME + " TEXT NOT NULL, " + KEY_PLAYER_ACTIVE
-				+ " INTEGER NOT NULL);");
-		db.execSQL("CREATE TABLE " + DB_TABLE_ALLDECKS + " (" + KEY_DECK_ROWID
-				+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + KEY_DECK_NAME
-				+ " TEXT NOT NULL, " + KEY_DECK_OWNERID + " INTEGER NOT NULL, "
-				+ KEY_DECK_ACTIVE + " INTEGER NOT NULL, " + KEY_DECK_MANUAL
-				+ " INTEGER NOT NULL, FOREIGN KEY(" + KEY_DECK_OWNERID
-				+ ") REFERENCES " + DB_TABLE_ALLPLAYERS + "("
-				+ KEY_PLAYER_ROWID + "));");
-		db.execSQL("CREATE TABLE IF NOT EXISTS " + DB_TABLE_ALLGAMES + " ("
-				+ KEY_GAME_ROWID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-				+ KEY_GAME_PLAYER1 + " INTEGER NOT NULL, " + KEY_GAME_PLAYER2
-				+ " INTEGER NOT NULL, " + KEY_GAME_DECK1
-				+ " INTEGER NOT NULL, " + KEY_GAME_DECK2
-				+ " INTEGER NOT NULL, " + KEY_GAME_WINNER
-				+ " INTEGER NOT NULL, " + KEY_GAME_DATE
-				+ " INTEGER NOT NULL, FOREIGN KEY(" + KEY_GAME_PLAYER1
-				+ ") REFERENCES " + DB_TABLE_ALLPLAYERS + "("
-				+ KEY_PLAYER_ROWID + "), FOREIGN KEY(" + KEY_GAME_PLAYER2
-				+ ") REFERENCES " + DB_TABLE_ALLPLAYERS + "("
-				+ KEY_PLAYER_ROWID + "), FOREIGN KEY(" + KEY_GAME_DECK1
-				+ ") REFERENCES " + DB_TABLE_ALLDECKS + "(" + KEY_DECK_ROWID
-				+ "), FOREIGN KEY(" + KEY_GAME_DECK2 + ") REFERENCES "
-				+ DB_TABLE_ALLDECKS + "(" + KEY_DECK_ROWID + "), FOREIGN KEY("
-				+ KEY_GAME_WINNER + ") REFERENCES " + DB_TABLE_ALLPLAYERS + "("
-				+ KEY_PLAYER_ROWID + "));");
+		if (dbName.equals(MagicHatDB.MH_DB_NAME)) {
+			System.out
+					.println("Code Path for MagicHatDb OnCreate was triggered.");
 
+			db.execSQL("CREATE TABLE " + DB_TABLE_ALLPLAYERS + " ("
+					+ KEY_PLAYER_ROWID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+					+ KEY_PLAYER_NAME + " TEXT NOT NULL, " + KEY_PLAYER_ACTIVE
+					+ " INTEGER NOT NULL);");
+			db.execSQL("CREATE TABLE " + DB_TABLE_ALLDECKS + " ("
+					+ KEY_DECK_ROWID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+					+ KEY_DECK_NAME + " TEXT NOT NULL, " + KEY_DECK_OWNERID
+					+ " INTEGER NOT NULL, " + KEY_DECK_ACTIVE
+					+ " INTEGER NOT NULL, " + KEY_DECK_MANUAL
+					+ " INTEGER NOT NULL, FOREIGN KEY(" + KEY_DECK_OWNERID
+					+ ") REFERENCES " + DB_TABLE_ALLPLAYERS + "("
+					+ KEY_PLAYER_ROWID + "));");
+			db.execSQL("CREATE TABLE IF NOT EXISTS " + DB_TABLE_ALLGAMES + " ("
+					+ KEY_GAME_ROWID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+					+ KEY_GAME_PLAYER1 + " INTEGER NOT NULL, "
+					+ KEY_GAME_PLAYER2 + " INTEGER NOT NULL, " + KEY_GAME_DECK1
+					+ " INTEGER NOT NULL, " + KEY_GAME_DECK2
+					+ " INTEGER NOT NULL, " + KEY_GAME_WINNER
+					+ " INTEGER NOT NULL, " + KEY_GAME_DATE
+					+ " INTEGER NOT NULL, FOREIGN KEY(" + KEY_GAME_PLAYER1
+					+ ") REFERENCES " + DB_TABLE_ALLPLAYERS + "("
+					+ KEY_PLAYER_ROWID + "), FOREIGN KEY(" + KEY_GAME_PLAYER2
+					+ ") REFERENCES " + DB_TABLE_ALLPLAYERS + "("
+					+ KEY_PLAYER_ROWID + "), FOREIGN KEY(" + KEY_GAME_DECK1
+					+ ") REFERENCES " + DB_TABLE_ALLDECKS + "("
+					+ KEY_DECK_ROWID + "), FOREIGN KEY(" + KEY_GAME_DECK2
+					+ ") REFERENCES " + DB_TABLE_ALLDECKS + "("
+					+ KEY_DECK_ROWID + "), FOREIGN KEY(" + KEY_GAME_WINNER
+					+ ") REFERENCES " + DB_TABLE_ALLPLAYERS + "("
+					+ KEY_PLAYER_ROWID + "));");
+
+			if (!isUpgrade) {
+				setupPlayersAndDecks(new ArrayList<Deck>(), db);
+			}
+		} else {
+			// This code path is triggered for CardDb
+			System.out.println("Code Path for CardDb onCreate was triggered.");
+
+		}
 		if (!isUpgrade) {
-			setupPlayersAndDecks(new ArrayList<Deck>(), db);
 			Toast.makeText(mhContext, "Database Initialization Complete.",
 					Toast.LENGTH_SHORT).show();
 		}
@@ -140,22 +136,31 @@ public class MagicHatDbHelper extends SQLiteOpenHelper {
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		Toast.makeText(mhContext, "Upgrading database... Please wait...",
 				Toast.LENGTH_SHORT).show();
-		isUpgrade = true;
-		List<Game> allGames = new ArrayList<Game>();
-		List<Deck> allDecks = new ArrayList<Deck>();
 
-		// TODO This requires a certain db schema to be successful
-		allGames = getAllGames(db);
-		allDecks = getAllDecks(db);
+		if (dbName.equals(MagicHatDB.MH_DB_NAME)) {
+			System.out
+					.println("Code Path for MagicHatDb onUpgrade was triggered.");
 
-		db.execSQL("DROP TABLE IF EXISTS " + DB_TABLE_ALLDECKS);
-		db.execSQL("DROP TABLE IF EXISTS " + DB_TABLE_ALLPLAYERS);
-		db.execSQL("DROP TABLE IF EXISTS " + DB_TABLE_ALLGAMES);
+			isUpgrade = true;
+			List<Game> allGames = new ArrayList<Game>();
+			List<Deck> allDecks = new ArrayList<Deck>();
 
-		onCreate(db);
+			// TODO This requires a certain db schema to be successful
+			allGames = getAllGames(db);
+			allDecks = getAllDecks(db);
 
-		setupPlayersAndDecks(allDecks, db);
-		populateAllGames(allGames, db);
+			db.execSQL("DROP TABLE IF EXISTS " + DB_TABLE_ALLDECKS);
+			db.execSQL("DROP TABLE IF EXISTS " + DB_TABLE_ALLPLAYERS);
+			db.execSQL("DROP TABLE IF EXISTS " + DB_TABLE_ALLGAMES);
+
+			onCreate(db);
+
+			setupPlayersAndDecks(allDecks, db);
+			populateAllGames(allGames, db);
+		} else {
+			// This code path is triggered for CardDb
+			System.out.println("Code Path for CardDb onUpgrade was triggered.");
+		}
 		Toast.makeText(mhContext, "Database Upgrade Complete.",
 				Toast.LENGTH_SHORT).show();
 	}
@@ -163,28 +168,6 @@ public class MagicHatDbHelper extends SQLiteOpenHelper {
 	// ///////////////////////////////////////////////////////////
 	// INITIAL SETUP
 	// ///////////////////////////////////////////////////////////
-
-	private void copyCardDataBase() throws IOException {
-		// Open your local db as the input stream
-		InputStream isDb = mhContext.getAssets().open("cards.db");
-
-		// Open the empty db as the output stream
-		OutputStream osDb = new FileOutputStream(DB_FILE_PATH);
-
-		// transfer bytes from the inputfile to the outputfile
-		byte[] buffer = new byte[1024];
-		int length;
-		while ((length = isDb.read(buffer)) > 0) {
-			osDb.write(buffer, 0, length);
-		}
-
-		// Close the streams
-		osDb.flush();
-		osDb.close();
-		isDb.close();
-
-		System.out.println("Done setting up Cards and Expansions.");
-	}
 
 	protected void setupPlayersAndDecks(List<Deck> allDecks, SQLiteDatabase db) {
 		List<Deck> allNewDecks = new ArrayList<Deck>();
@@ -1048,8 +1031,8 @@ public class MagicHatDbHelper extends SQLiteOpenHelper {
 		Cursor cc = db.query(DB_TABLE_ALLCARDS, cardColumns, null, null, null,
 				null, null);
 
-		int iCardId = cc.getColumnIndex(KEY_EXPANSION_ROWID);
-		int iCardName = cc.getColumnIndex(KEY_EXPANSION_NAME);
+		int iCardId = cc.getColumnIndex(KEY_CARD_ROWID);
+		int iCardName = cc.getColumnIndex(KEY_CARD_NAME);
 
 		Card c;
 		for (cc.moveToFirst(); !cc.isAfterLast(); cc.moveToNext()) {

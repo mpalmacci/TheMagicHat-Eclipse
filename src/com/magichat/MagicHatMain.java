@@ -1,5 +1,7 @@
 package com.magichat;
 
+import java.io.IOException;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -22,6 +24,12 @@ public class MagicHatMain extends Activity implements View.OnClickListener {
 		MagicHatDB mhDb = new MagicHatDB(this);
 		mhDb.openReadableDB();
 		mhDb.closeDB();
+
+		try {
+			CardDbUtil.initCardDb(this);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
 		initialize();
 	}
