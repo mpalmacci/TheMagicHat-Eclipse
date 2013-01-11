@@ -1,13 +1,17 @@
 package com.magichat;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.SparseArray;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -20,13 +24,14 @@ import android.widget.SlidingDrawer.OnDrawerOpenListener;
 public class CardSearch extends Activity implements OnDrawerOpenListener,
 		OnDrawerCloseListener {
 	// TODO Use a HashMap of Names and Ids?
-	List<Card> allCardIds = new ArrayList<Card>();
+	SparseArray<String> allCardNames = new SparseArray<String>();
 	List<Expansion> allExpansions = new ArrayList<Expansion>();
 
 	LinearLayout llSearchResults;
 	SlidingDrawer sdCardSearch;
 	Button bSearch;
-	EditText etName, etRulesText, etCMC;
+	EditText etRulesText, etCMC;
+	AutoCompleteTextView etName;
 	Spinner sExpansion, sBlock, sType, sSubtype, sCMCEquality;
 	ToggleButton tbWhite, tbBlue, tbBlack, tbRed, tbGreen, tbMythic, tbRare,
 			tbUncommon, tbCommon;
@@ -41,11 +46,24 @@ public class CardSearch extends Activity implements OnDrawerOpenListener,
 		sdCardSearch.open();
 
 		CardDbUtil.getStaticDb();
-		allCardIds = CardDbUtil.getAllCardIds();
+		allCardNames = CardDbUtil.getAllCardNames();
 		allExpansions = CardDbUtil.getAllExpansions();
 		CardDbUtil.close();
 
+		setupAutoFill();
 		populateExpansionSpinner();
+	}
+
+	private void setupAutoFill() {
+		String[] stAllCardNames = new String[allCardNames.size()];
+
+		for (int i = 0; i < allCardNames.size() - 1; i++) {
+			stAllCardNames[i] = allCardNames.get(i);
+		}
+
+		ArrayAdapter<String> cardNameAdapter = new ArrayAdapter<String>(this,
+				android.R.layout.simple_list_item_1, stAllCardNames);
+		etName.setAdapter(cardNameAdapter);
 	}
 
 	private void populateExpansionSpinner() {
@@ -91,7 +109,7 @@ public class CardSearch extends Activity implements OnDrawerOpenListener,
 		llSearchResults = (LinearLayout) findViewById(R.id.llSearchResults);
 		sdCardSearch = (SlidingDrawer) findViewById(R.id.sdCardSearch);
 		bSearch = (Button) findViewById(R.id.bSearch);
-		etName = (EditText) findViewById(R.id.etName);
+		etName = (AutoCompleteTextView) findViewById(R.id.etName);
 		etRulesText = (EditText) findViewById(R.id.etRulesText);
 		etCMC = (EditText) findViewById(R.id.etCMC);
 		sCMCEquality = (Spinner) findViewById(R.id.sCMCEquality);

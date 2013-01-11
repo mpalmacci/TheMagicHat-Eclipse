@@ -7,12 +7,15 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
+import android.util.SparseArray;
 
 public class CardDbUtil {
 	public static final String KEY_EXPANSION_ROWID = "_id";
@@ -176,9 +179,9 @@ public class CardDbUtil {
 
 	// ////////////////////////////// CARDS ////////////////////////////////////
 
-	public static List<Card> getAllCardIds() {
+	public static SparseArray<String> getAllCardNames() {
 		// return mhHelper.getAllCardIds(cDb);
-		List<Card> allCards = new ArrayList<Card>();
+		SparseArray<String> allCards = new SparseArray<String>();
 		String[] cardColumns = new String[] { KEY_CARD_ROWID, KEY_CARD_NAME };
 
 		Cursor cc = cDb.query(DB_TABLE_ALLCARDS, cardColumns, null, null, null,
@@ -187,15 +190,10 @@ public class CardDbUtil {
 		int iCardId = cc.getColumnIndex(KEY_CARD_ROWID);
 		int iCardName = cc.getColumnIndex(KEY_CARD_NAME);
 
-		Card c;
 		for (cc.moveToFirst(); !cc.isAfterLast(); cc.moveToNext()) {
-			c = new Card(cc.getInt(iCardId), cc.getString(iCardName));
-
-			allCards.add(c);
+			allCards.put(cc.getInt(iCardId), cc.getString(iCardName));
 		}
 		cc.close();
-
-		Collections.sort(allCards);
 
 		return allCards;
 	}

@@ -33,16 +33,14 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical" >
 
-                <EditText
+                <AutoCompleteTextView
                     android:id="@+id/etName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ems="10"
                     android:hint="@string/card_name_contains"
-                    android:inputType="text" >
-
-                    <requestFocus />
-                </EditText>
+                    android:completionThreshold="3"
+                    android:inputType="text" />
 
                 <EditText
                     android:id="@+id/etRulesText"
@@ -164,7 +162,7 @@
                     <ToggleButton
                         android:id="@+id/tbWhite"
                         android:layout_width="20sp"
-                        android:layout_height="55sp"
+                        android:layout_height="65sp"
                         android:layout_weight="1"
                         android:background="@drawable/white_sel"
                         android:textOff=""
@@ -173,7 +171,7 @@
                     <ToggleButton
                         android:id="@+id/tbBlue"
                         android:layout_width="20sp"
-                        android:layout_height="55sp"
+                        android:layout_height="65sp"
                         android:layout_weight="1"
                         android:background="@drawable/blue_sel"
                         android:textOff=""
@@ -182,7 +180,7 @@
                     <ToggleButton
                         android:id="@+id/tbBlack"
                         android:layout_width="20sp"
-                        android:layout_height="55sp"
+                        android:layout_height="65sp"
                         android:layout_weight="1"
                         android:background="@drawable/black_sel"
                         android:textOff=""
@@ -191,7 +189,7 @@
                     <ToggleButton
                         android:id="@+id/tbRed"
                         android:layout_width="20sp"
-                        android:layout_height="55sp"
+                        android:layout_height="65sp"
                         android:layout_weight="1"
                         android:background="@drawable/red_sel"
                         android:textOff=""
@@ -200,7 +198,7 @@
                     <ToggleButton
                         android:id="@+id/tbGreen"
                         android:layout_width="20sp"
-                        android:layout_height="55sp"
+                        android:layout_height="65sp"
                         android:layout_weight="1"
                         android:background="@drawable/green_sel"
                         android:textOff=""
