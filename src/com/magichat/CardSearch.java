@@ -91,7 +91,7 @@ public class CardSearch extends Activity implements OnDrawerOpenListener,
 		llSearchResults.setVisibility(LinearLayout.GONE);
 		bSearch.setText("Perform Search");
 
-		// TODO Show the Keyboard by default
+
 	}
 
 	@Override

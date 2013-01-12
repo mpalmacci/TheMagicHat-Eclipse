@@ -9,9 +9,10 @@ package com.magichat;
 
 public final class R {
     public static final class array {
+        public static final int blocks=0x7f060002;
         public static final int card_types=0x7f060001;
         public static final int decks_or_players=0x7f060000;
-        public static final int equality=0x7f060002;
+        public static final int equality=0x7f060003;
     }
     public static final class attr {
     }

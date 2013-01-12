@@ -17,6 +17,27 @@
         <item>Scheme</item>
         <item>Sorcery</item>
     </string-array>
+    <string-array name="blocks">
+        <item>Ice Age</item>
+        <item>Mirage</item>
+        <item>Tempest</item>
+        <item>Urza</item>
+        <item>Masques</item>
+        <item>Invasion</item>
+        <item>Odyssey</item>
+        <item>Onslaught</item>
+        <item>Mirrodin</item>
+        <item>Kamigawa</item>
+        <item>Ravnica</item>
+        <item>Time Spiral</item>
+        <item>Lorwyn-Shadowmoor</item>
+        <item>Shards of Alara</item>
+        <item>Zendikar</item>
+        <item>Scars of Mirrodin</item>
+        <item>Innistrad</item>
+        <item>Return to Ravnica</item>
+        <item>Core Sets</item>
+    </string-array>
     <string-array name="equality">
         <item>=</item>
         <item>&gt;</item>
