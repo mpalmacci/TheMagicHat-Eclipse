@@ -4,7 +4,10 @@ import java.io.IOException;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -16,22 +19,42 @@ public class MagicHatMain extends Activity implements View.OnClickListener {
 	Button bPlayGame, bViewGameStats, bAddDeck, bUpdateDeck, bChangeActive,
 			bDeleteDeck, bDisplayAllDecks, bCardSearch;
 
+	String decksOrPlayersPref = "";
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.magic_hat_main);
 
-		MagicHatDB mhDb = new MagicHatDB(this);
-		mhDb.openReadableDB();
-		mhDb.closeDB();
-
-		try {
-			CardDbUtil.initCardDb(this);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		new setupDb().execute();
 
 		initialize();
+	}
+
+	private class setupDb extends AsyncTask<String, Integer, String> {
+
+		@Override
+		protected String doInBackground(String... params) {
+			MagicHatDB mhDb = new MagicHatDB(MagicHatMain.this);
+			mhDb.openReadableDB();
+			mhDb.closeDB();
+			try {
+				CardDbUtil.initCardDb(MagicHatMain.this);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+
+		SharedPreferences getPrefs = PreferenceManager
+				.getDefaultSharedPreferences(getBaseContext());
+		decksOrPlayersPref = getPrefs
+				.getString("viewByDecksOrPlayers", "Decks");
 	}
 
 	public void onClick(View v) {
@@ -41,8 +64,15 @@ public class MagicHatMain extends Activity implements View.OnClickListener {
 			startActivity(openGameActivity);
 			break;
 		case R.id.bViewGameStats:
-			Intent openGameStatsActivity = new Intent("com.magichat.GAMESTATS");
-			startActivity(openGameStatsActivity);
+			if (decksOrPlayersPref.contentEquals("Decks")) {
+				Intent openGameStatsActivity = new Intent(
+						"com.magichat.GAMESTATSFORDECK");
+				startActivity(openGameStatsActivity);
+			} else {
+				Intent openGameStatsActivity = new Intent(
+						"com.magichat.GAMESTATSFORPLAYER");
+				startActivity(openGameStatsActivity);
+			}
 			break;
 		case R.id.bAddDeck:
 			Intent openAddDeckActivity = new Intent("com.magichat.ADDDECK");

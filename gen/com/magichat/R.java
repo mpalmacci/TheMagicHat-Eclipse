@@ -93,16 +93,16 @@ public final class R {
         public static final int gameStatsPrefs=0x7f0c0044;
         public static final int hSelectADeck=0x7f0c0043;
         public static final int llByDecks=0x7f0c0024;
-        public static final int llByPlayers=0x7f0c002a;
+        public static final int llByPlayers=0x7f0c002c;
         public static final int llDeckList=0x7f0c001d;
-        public static final int llNonePlayed=0x7f0c0030;
+        public static final int llNonePlayed=0x7f0c002a;
         public static final int llSearchResults=0x7f0c0004;
         public static final int llSelectDeck=0x7f0c003e;
         public static final int llUpdateDeckMain=0x7f0c003f;
         public static final int llWonLostStatsD=0x7f0c0029;
-        public static final int llWonLostStatsP=0x7f0c002f;
+        public static final int llWonLostStatsP=0x7f0c0031;
         public static final int pbTotalWonLostD=0x7f0c0026;
-        public static final int pbTotalWonLostP=0x7f0c002c;
+        public static final int pbTotalWonLostP=0x7f0c002e;
         public static final int playGamePrefs=0x7f0c0045;
         public static final int sAllOwners=0x7f0c0001;
         public static final int sBlock=0x7f0c000b;
@@ -131,13 +131,13 @@ public final class R {
         public static final int tvDeckListEnd=0x7f0c0022;
         public static final int tvDisplayAllDecks=0x7f0c0021;
         public static final int tvDisplayGames=0x7f0c003a;
-        public static final int tvEmptyList=0x7f0c0031;
+        public static final int tvEmptyList=0x7f0c002b;
         public static final int tvGamesLostD=0x7f0c0028;
-        public static final int tvGamesLostP=0x7f0c002e;
+        public static final int tvGamesLostP=0x7f0c0030;
         public static final int tvGamesWonD=0x7f0c0027;
-        public static final int tvGamesWonP=0x7f0c002d;
+        public static final int tvGamesWonP=0x7f0c002f;
         public static final int tvTotalGamesD=0x7f0c0025;
-        public static final int tvTotalGamesP=0x7f0c002b;
+        public static final int tvTotalGamesP=0x7f0c002d;
         public static final int tvUpdateDeckResults=0x7f0c0040;
         public static final int tvWinner=0x7f0c003b;
     }
@@ -147,11 +147,12 @@ public final class R {
         public static final int change_active=0x7f030002;
         public static final int delete_deck=0x7f030003;
         public static final int display_all_decks=0x7f030004;
-        public static final int game_stats=0x7f030005;
-        public static final int magic_hat_main=0x7f030006;
-        public static final int play_game=0x7f030007;
-        public static final int splash=0x7f030008;
-        public static final int update_deck=0x7f030009;
+        public static final int game_stats_for_deck=0x7f030005;
+        public static final int game_stats_for_player=0x7f030006;
+        public static final int magic_hat_main=0x7f030007;
+        public static final int play_game=0x7f030008;
+        public static final int splash=0x7f030009;
+        public static final int update_deck=0x7f03000a;
     }
     public static final class menu {
         public static final int game_stats_menu=0x7f0b0000;

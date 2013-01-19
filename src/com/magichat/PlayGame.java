@@ -10,6 +10,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.Menu;
@@ -36,36 +37,50 @@ public class PlayGame extends Activity implements View.OnClickListener {
 		setContentView(R.layout.play_game);
 
 		initialize();
+		
+		new getAllInfo().execute();
+	}
+	
+	private class getAllInfo extends AsyncTask<String, Integer, String> {
 
-		MagicHatDB getAllInfoDB = new MagicHatDB(this);
-		getAllInfoDB.openReadableDB();
-		allActiveDecks = getAllInfoDB.getAllActiveDecks();
-		Players = getAllInfoDB.getActivePlayers();
-		getAllInfoDB.closeDB();
-
-		// TODO Add in handling in case the player doesn't have any active decks
-		if (Players.size() == 0) {
-			bPlayGame.setEnabled(false);
-			tvDisplayGames.setText("\n\nYou don't have any active Players.");
-		} else if (Players.size() == 1) {
-			getNewGame();
-			tvDisplayGames.setText(printNewGame(gameDecks, Players));
-		} else if (Players.size() == 2) {
-			bPlayGame.setEnabled(true);
-			tvWinner.setVisibility(LinearLayout.VISIBLE);
-			bPlayer1.setText(Players.get(0).getName());
-			bPlayer1.setVisibility(LinearLayout.VISIBLE);
-			bPlayer2.setText(Players.get(1).getName());
-			bPlayer2.setVisibility(LinearLayout.VISIBLE);
-
-			getNewGame();
-			tvDisplayGames.setText(printNewGame(gameDecks, Players));
-		} else {
-			bPlayGame.setEnabled(true);
-
-			getNewGame();
-			tvDisplayGames.setText(printNewGame(gameDecks, Players));
+		@Override
+		protected String doInBackground(String... params) {
+			MagicHatDB getAllInfoDB = new MagicHatDB(PlayGame.this);
+			getAllInfoDB.openReadableDB();
+			allActiveDecks = getAllInfoDB.getAllActiveDecks();
+			Players = getAllInfoDB.getActivePlayers();
+			getAllInfoDB.closeDB();
+			return null;
 		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			super.onPostExecute(result);
+			// TODO Add in handling in case the player doesn't have any active decks
+			if (Players.size() == 0) {
+				bPlayGame.setEnabled(false);
+				tvDisplayGames.setText("\n\nYou don't have any active Players.");
+			} else if (Players.size() == 1) {
+				getNewGame();
+				tvDisplayGames.setText(printNewGame(gameDecks, Players));
+			} else if (Players.size() == 2) {
+				bPlayGame.setEnabled(true);
+				tvWinner.setVisibility(LinearLayout.VISIBLE);
+				bPlayer1.setText(Players.get(0).getName());
+				bPlayer1.setVisibility(LinearLayout.VISIBLE);
+				bPlayer2.setText(Players.get(1).getName());
+				bPlayer2.setVisibility(LinearLayout.VISIBLE);
+
+				getNewGame();
+				tvDisplayGames.setText(printNewGame(gameDecks, Players));
+			} else {
+				bPlayGame.setEnabled(true);
+
+				getNewGame();
+				tvDisplayGames.setText(printNewGame(gameDecks, Players));
+			}
+		}
+		
 	}
 
 	@Override
@@ -82,37 +97,51 @@ public class PlayGame extends Activity implements View.OnClickListener {
 			break;
 		case R.id.bPlayer1:
 			++p1GameCount;
-			MagicHatDB addGameResult1 = new MagicHatDB(this);
-			addGameResult1.openWritableDB();
-			addGameResult1.addGameResult(Players, gameDecks, Players.get(0),
-					new Date());
-			addGameResult1.closeDB();
-			if (p1GameCount + p2GameCount > 1) {
-				if (p1GameCount == 2) {
-					showCompletedDialog();
-				}
-			} else {
-				showWinnerDialog();
-			}
+			new addGameResult().execute(0);
 			break;
 		case R.id.bPlayer2:
 			++p2GameCount;
-			MagicHatDB addGameResult2 = new MagicHatDB(this);
-			addGameResult2.openWritableDB();
-			addGameResult2.addGameResult(Players, gameDecks, Players.get(1),
-					new Date());
-			addGameResult2.closeDB();
-			if (p1GameCount + p2GameCount > 1) {
-				if (p2GameCount == 2) {
-					showCompletedDialog();
-				}
-			} else {
-				showWinnerDialog();
-			}
+			new addGameResult().execute(1);
 			break;
 		default:
 			break;
 		}
+	}
+
+	private class addGameResult extends AsyncTask<Integer, Integer, Integer> {
+
+		@Override
+		protected Integer doInBackground(Integer... params) {
+			MagicHatDB mhAddGameResult = new MagicHatDB(PlayGame.this);
+			mhAddGameResult.openWritableDB();
+			mhAddGameResult.addGameResult(Players, gameDecks,
+					Players.get(params[0]), new Date());
+			mhAddGameResult.closeDB();
+			return params[0];
+		}
+
+		@Override
+		protected void onPostExecute(Integer result) {
+			super.onPostExecute(result);
+			if(result == 0) {
+				if (p1GameCount + p2GameCount > 1) {
+					if (p1GameCount == 2) {
+						showCompletedDialog();
+					}
+				} else {
+					showWinnerDialog();
+				}
+			} else if (result == 1) {
+				if (p1GameCount + p2GameCount > 1) {
+					if (p2GameCount == 2) {
+						showCompletedDialog();
+					}
+				} else {
+					showWinnerDialog();
+				}
+			}
+		}
+
 	}
 
 	private void showWinnerDialog() {

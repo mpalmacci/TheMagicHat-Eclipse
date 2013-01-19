@@ -48,10 +48,19 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".GameStats"
+            android:name="com.magichat.GameStatsForDeck"
             android:label="@string/app_name" >
             <intent-filter>
-                <action android:name="com.magichat.GAMESTATS" />
+                <action android:name="com.magichat.GAMESTATSFORDECK" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+                <activity
+            android:name=".GameStatsForPlayer"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="com.magichat.GAMESTATSFORPLAYER" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>

@@ -801,6 +801,8 @@ public class MagicHatDbHelper extends SQLiteOpenHelper {
 
 	protected Deck flipActiveStatus(String deckName, String ownerName,
 			SQLiteDatabase db) {
+
+		// TODO Enhance this to take a deckId and return the full deck
 		int deckId = getDeckId(deckName, ownerName, db);
 
 		Deck d = getDeck(deckId, db);

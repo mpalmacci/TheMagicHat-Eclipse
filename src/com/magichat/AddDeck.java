@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -32,27 +33,42 @@ public class AddDeck extends Activity implements View.OnClickListener {
 		setContentView(R.layout.add_deck);
 		initialize();
 
-		mhDB.openReadableDB();
-		allOwners = mhDB.getAllPlayers();
-		mhDB.closeDB();
+		new populateAllPlayers().execute();
+	}
 
-		if (allOwners.isEmpty()) {
-			System.out.println("allOwners is empty!");
-			finish();
+	private class populateAllPlayers extends
+			AsyncTask<String, Integer, ArrayAdapter<String>> {
+
+		@Override
+		protected ArrayAdapter<String> doInBackground(String... params) {
+			mhDB.openReadableDB();
+			allOwners = mhDB.getAllPlayers();
+			mhDB.closeDB();
+
+			if (allOwners.isEmpty()) {
+				System.out.println("allOwners is empty!");
+				finish();
+			}
+
+			String[] stAllOwners = new String[allOwners.size()];
+
+			for (int i = 0; i < allOwners.size(); i++) {
+				stAllOwners[i] = allOwners.get(i).toString();
+			}
+
+			ArrayAdapter<String> ownerAdapter = new ArrayAdapter<String>(
+					AddDeck.this, android.R.layout.simple_spinner_item,
+					stAllOwners);
+
+			return ownerAdapter;
 		}
 
-		String[] stAllOwners = new String[allOwners.size()];
-
-		for (int i = 0; i < allOwners.size(); i++) {
-			stAllOwners[i] = allOwners.get(i).toString();
+		@Override
+		protected void onPostExecute(ArrayAdapter<String> ownerAdapter) {
+			super.onPostExecute(ownerAdapter);
+			sAllOwners.setAdapter(ownerAdapter);
 		}
 
-		ArrayAdapter<String> ownerAdapter = new ArrayAdapter<String>(this,
-				android.R.layout.simple_spinner_item, stAllOwners);
-
-		sAllOwners.setAdapter(ownerAdapter);
-
-		bAddDeck.setOnClickListener(this);
 	}
 
 	@Override
@@ -76,22 +92,31 @@ public class AddDeck extends Activity implements View.OnClickListener {
 				break;
 			}
 
-			int iActive;
+			new addDeck().execute();
+			break;
+		default:
+			break;
+		}
+	}
 
-			iActive = tbActiveDeck.isChecked() ? 1 : 0;
+	private class addDeck extends AsyncTask<String, Integer, Boolean> {
 
-			Deck d = new Deck(0, etDeckName.getText().toString(), new Player(
+		@Override
+		protected Boolean doInBackground(String... params) {
+			int iActive = tbActiveDeck.isChecked() ? 1 : 0;
+			Boolean isDup = false;
+
+			Deck d = new Deck(etDeckName.getText().toString(), new Player(
 					sAllOwners.getSelectedItem().toString()),
 					tbActiveDeck.isChecked());
 
 			mhDB.openWritableDB();
 			int ownerId = mhDB.getPlayerId(sAllOwners.getSelectedItem()
 					.toString());
-			Player p = mhDB.getOwner(ownerId);
 
 			if (mhDB.deckExists(d)) {
 				mhDB.closeDB();
-				showDuplicateMessage();
+				isDup = true;
 			} else {
 				mhDB.addDeck(etDeckName.getText().toString(), ownerId, iActive);
 				mhDB.closeDB();
@@ -99,28 +124,33 @@ public class AddDeck extends Activity implements View.OnClickListener {
 
 			// TODO Enhance how to send information back and forth (Build a
 			// Server)
-			Email eAddDeck = new Email(this);
-			eAddDeck.addDeck(new Deck(etDeckName.getText().toString(), p,
-					tbActiveDeck.isChecked()));
+			Email eAddDeck = new Email(AddDeck.this);
+			eAddDeck.addDeck(d);
 
-			Toast.makeText(
-					AddDeck.this,
-					sAllOwners.getSelectedItem().toString() + "'s "
-							+ etDeckName.getText().toString()
-							+ " Deck was added successfully.",
-					Toast.LENGTH_LONG).show();
+			return isDup;
+		}
 
-			etDeckName.setText("");
+		@Override
+		protected void onPostExecute(Boolean isDup) {
+			super.onPostExecute(isDup);
+			if (isDup) {
+				showDuplicateMessage();
+			} else {
+				Toast.makeText(
+						AddDeck.this,
+						sAllOwners.getSelectedItem().toString() + "'s "
+								+ etDeckName.getText().toString()
+								+ " Deck was added successfully.",
+						Toast.LENGTH_LONG).show();
+
+				etDeckName.setText("");
+			}
 
 			// The next two lines of code hide the keyboard after addition
-			InputMethodManager imm = (InputMethodManager) this
+			InputMethodManager imm = (InputMethodManager) AddDeck.this
 					.getSystemService(Context.INPUT_METHOD_SERVICE);
-			imm.hideSoftInputFromWindow(
-					this.getCurrentFocus().getWindowToken(),
-					InputMethodManager.HIDE_NOT_ALWAYS);
-			break;
-		default:
-			break;
+			imm.hideSoftInputFromWindow(AddDeck.this.getCurrentFocus()
+					.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 		}
 	}
 
@@ -132,21 +162,7 @@ public class AddDeck extends Activity implements View.OnClickListener {
 				.setPositiveButton("Yes",
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int id) {
-								// TODO Minimize Duplicate code
-								int iActive;
-
-								if (tbActiveDeck.isChecked()) {
-									iActive = 1;
-								} else {
-									iActive = 0;
-								}
-
-								mhDB.openWritableDB();
-								int ownerId = mhDB.getPlayerId(sAllOwners
-										.getSelectedItem().toString());
-								mhDB.addDeck(etDeckName.getText().toString(),
-										ownerId, iActive);
-								mhDB.closeDB();
+								new addDupDeck().execute();
 							}
 						})
 				.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -159,10 +175,42 @@ public class AddDeck extends Activity implements View.OnClickListener {
 		ad.show();
 	}
 
+	private class addDupDeck extends AsyncTask<String, Integer, String> {
+
+		@Override
+		protected String doInBackground(String... params) {
+			int iActive = tbActiveDeck.isChecked() ? 1 : 0;
+
+			mhDB.openWritableDB();
+			int ownerId = mhDB.getPlayerId(sAllOwners.getSelectedItem()
+					.toString());
+			mhDB.addDeck(etDeckName.getText().toString(), ownerId, iActive);
+			mhDB.closeDB();
+
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			super.onPostExecute(result);
+			Toast.makeText(
+					AddDeck.this,
+					sAllOwners.getSelectedItem().toString() + "'s "
+							+ etDeckName.getText().toString()
+							+ " Deck was added successfully.",
+					Toast.LENGTH_LONG).show();
+
+			etDeckName.setText("");
+		}
+
+	}
+
 	private void initialize() {
 		etDeckName = (EditText) findViewById(R.id.etDeckName);
 		sAllOwners = (Spinner) findViewById(R.id.sAllOwners);
 		tbActiveDeck = (ToggleButton) findViewById(R.id.tbActiveDeck);
 		bAddDeck = (Button) findViewById(R.id.bAddDeck);
+
+		bAddDeck.setOnClickListener(this);
 	}
 }

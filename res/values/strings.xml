@@ -18,9 +18,9 @@
     <!-- Game Statistics -->
     <string name="select_a_player">Select a Player</string>
     <string name="make_a_selection">Make a Selection</string>
-    <string name="total_games">Total Games Played: </string>
-    <string name="won"> Won, </string>
-    <string name="lost"> Lost</string>
+    <string name="total_games">"Total Games Played: "</string>
+    <string name="won">" Won, "</string>
+    <string name="lost">" Lost"</string>
     <string name="stats_breakdown">Stats Breakdown - By Opposing Deck</string>
     <string name="no_games_played">No stats to display, play some games!</string>
 
@@ -52,13 +52,13 @@
     <string name="search">Search</string>
     <string name="card_name_contains">"Card Name Contains&#8230;"</string>
     <string name="rules_text_contains">"Rules Text Contains&#8230;"</string>
-    <string name="expansion">Expansion:</string>
-    <string name="block">Block:</string>
+    <string name="expansion">"Expansion: "</string>
+    <string name="block">"Block: "</string>
     <string name="rarity">Rarity:</string>
     <string name="color">Color:</string>
-    <string name="types">Types: </string>
-    <string name="subtypes">Subtypes: </string>
-    <string name="conv_mana_cost">Convt. Mana Cost: </string>
+    <string name="types">"Types: "</string>
+    <string name="subtypes">"Subtypes: "</string>
+    <string name="conv_mana_cost">"Convt. Mana Cost: "</string>
     <string name="cmc">CMC</string>
 
     <!-- Colors -->
