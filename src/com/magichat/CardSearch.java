@@ -1,12 +1,11 @@
 package com.magichat;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.SparseArray;
 import android.view.inputmethod.InputMethodManager;
@@ -45,13 +44,26 @@ public class CardSearch extends Activity implements OnDrawerOpenListener,
 
 		sdCardSearch.open();
 
-		CardDbUtil.getStaticDb();
-		allCardNames = CardDbUtil.getAllCardNames();
-		allExpansions = CardDbUtil.getAllExpansions();
-		CardDbUtil.close();
+		new initialSetup().execute();
+	}
 
-		setupAutoFill();
-		populateExpansionSpinner();
+	private class initialSetup extends AsyncTask<String, Integer, String> {
+
+		@Override
+		protected String doInBackground(String... params) {
+			CardDbUtil.getStaticDb();
+			allCardNames = CardDbUtil.getAllCardNames();
+			allExpansions = CardDbUtil.getAllExpansions();
+			CardDbUtil.close();
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			super.onPostExecute(result);
+			setupAutoFill();
+			new populateExpansionSpinner().execute();
+		}
 	}
 
 	private void setupAutoFill() {
@@ -66,31 +78,40 @@ public class CardSearch extends Activity implements OnDrawerOpenListener,
 		etName.setAdapter(cardNameAdapter);
 	}
 
-	private void populateExpansionSpinner() {
-		if (allExpansions.isEmpty()) {
-			System.out.println("allExpansions is empty!");
-			finish();
+	private class populateExpansionSpinner extends
+			AsyncTask<String, Integer, String[]> {
+
+		@Override
+		protected String[] doInBackground(String... params) {
+			if (allExpansions.isEmpty()) {
+				System.out.println("allExpansions is empty!");
+				finish();
+			}
+
+			String[] stAllExpansions = new String[allExpansions.size() + 1];
+
+			stAllExpansions[0] = "Any";
+
+			for (int i = 1; i < allExpansions.size() + 1; i++) {
+				stAllExpansions[i] = allExpansions.get(i - 1).toString();
+			}
+			
+			return stAllExpansions;
 		}
 
-		String[] stAllExpansions = new String[allExpansions.size() + 1];
+		@Override
+		protected void onPostExecute(String[] stAllExpansions) {
+			ArrayAdapter<String> expAdapter = new ArrayAdapter<String>(CardSearch.this,
+					android.R.layout.simple_spinner_item, stAllExpansions);
 
-		stAllExpansions[0] = "Any";
-
-		for (int i = 1; i < allExpansions.size() + 1; i++) {
-			stAllExpansions[i] = allExpansions.get(i - 1).toString();
+			sExpansion.setAdapter(expAdapter);
 		}
-
-		ArrayAdapter<String> expAdapter = new ArrayAdapter<String>(this,
-				android.R.layout.simple_spinner_item, stAllExpansions);
-
-		sExpansion.setAdapter(expAdapter);
 	}
 
 	@Override
 	public void onDrawerOpened() {
 		llSearchResults.setVisibility(LinearLayout.GONE);
 		bSearch.setText("Perform Search");
-
 
 	}
 
