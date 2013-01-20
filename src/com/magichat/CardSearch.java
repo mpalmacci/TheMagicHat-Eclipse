@@ -61,21 +61,34 @@ public class CardSearch extends Activity implements OnDrawerOpenListener,
 		@Override
 		protected void onPostExecute(String result) {
 			super.onPostExecute(result);
-			setupAutoFill();
+			new setupAutoFill().execute();
 			new populateExpansionSpinner().execute();
 		}
 	}
 
-	private void setupAutoFill() {
-		String[] stAllCardNames = new String[allCardNames.size()];
+	private class setupAutoFill extends AsyncTask<String, Integer, String[]> {
+		@Override
+		protected String[] doInBackground(String... params) {
+			String[] stAllCardNames = new String[allCardNames.size()];
 
-		for (int i = 0; i < allCardNames.size() - 1; i++) {
-			stAllCardNames[i] = allCardNames.get(i);
+			for (int i = 0; i < allCardNames.size() - 1; i++) {
+				stAllCardNames[i] = allCardNames.get(i);
+				System.out.println("\n" + stAllCardNames[i]);
+			}
+			
+			System.out.println("AutoFill Cards complete");
+
+			return stAllCardNames;
 		}
 
-		ArrayAdapter<String> cardNameAdapter = new ArrayAdapter<String>(this,
-				android.R.layout.simple_list_item_1, stAllCardNames);
-		etName.setAdapter(cardNameAdapter);
+		@Override
+		protected void onPostExecute(String[] stAllCardNames) {
+			super.onPostExecute(stAllCardNames);
+			ArrayAdapter<String> cardNameAdapter = new ArrayAdapter<String>(
+					CardSearch.this, android.R.layout.simple_list_item_1,
+					stAllCardNames);
+			etName.setAdapter(cardNameAdapter);
+		}
 	}
 
 	private class populateExpansionSpinner extends
@@ -95,14 +108,16 @@ public class CardSearch extends Activity implements OnDrawerOpenListener,
 			for (int i = 1; i < allExpansions.size() + 1; i++) {
 				stAllExpansions[i] = allExpansions.get(i - 1).toString();
 			}
-			
+
 			return stAllExpansions;
 		}
 
 		@Override
 		protected void onPostExecute(String[] stAllExpansions) {
-			ArrayAdapter<String> expAdapter = new ArrayAdapter<String>(CardSearch.this,
-					android.R.layout.simple_spinner_item, stAllExpansions);
+			super.onPostExecute(stAllExpansions);
+			ArrayAdapter<String> expAdapter = new ArrayAdapter<String>(
+					CardSearch.this, android.R.layout.simple_spinner_item,
+					stAllExpansions);
 
 			sExpansion.setAdapter(expAdapter);
 		}
