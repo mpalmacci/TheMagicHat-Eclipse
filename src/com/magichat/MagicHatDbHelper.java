@@ -11,7 +11,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.widget.Toast;
 
 public class MagicHatDbHelper extends SQLiteOpenHelper {
 	public static final String KEY_DECK_ROWID = "_id";
@@ -77,65 +76,51 @@ public class MagicHatDbHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {
+
+		// if (dbName.equals(MagicHatDB.MH_DB_NAME)) {
+		System.out.println("Code Path for MagicHatDb OnCreate was triggered.");
+
+		db.execSQL("CREATE TABLE " + DB_TABLE_ALLPLAYERS + " ("
+				+ KEY_PLAYER_ROWID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+				+ KEY_PLAYER_NAME + " TEXT NOT NULL, " + KEY_PLAYER_ACTIVE
+				+ " INTEGER NOT NULL);");
+		db.execSQL("CREATE TABLE " + DB_TABLE_ALLDECKS + " (" + KEY_DECK_ROWID
+				+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + KEY_DECK_NAME
+				+ " TEXT NOT NULL, " + KEY_DECK_OWNERID + " INTEGER NOT NULL, "
+				+ KEY_DECK_ACTIVE + " INTEGER NOT NULL, " + KEY_DECK_MANUAL
+				+ " INTEGER NOT NULL, FOREIGN KEY(" + KEY_DECK_OWNERID
+				+ ") REFERENCES " + DB_TABLE_ALLPLAYERS + "("
+				+ KEY_PLAYER_ROWID + "));");
+		db.execSQL("CREATE TABLE IF NOT EXISTS " + DB_TABLE_ALLGAMES + " ("
+				+ KEY_GAME_ROWID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+				+ KEY_GAME_PLAYER1 + " INTEGER NOT NULL, " + KEY_GAME_PLAYER2
+				+ " INTEGER NOT NULL, " + KEY_GAME_DECK1
+				+ " INTEGER NOT NULL, " + KEY_GAME_DECK2
+				+ " INTEGER NOT NULL, " + KEY_GAME_WINNER
+				+ " INTEGER NOT NULL, " + KEY_GAME_DATE
+				+ " INTEGER NOT NULL, FOREIGN KEY(" + KEY_GAME_PLAYER1
+				+ ") REFERENCES " + DB_TABLE_ALLPLAYERS + "("
+				+ KEY_PLAYER_ROWID + "), FOREIGN KEY(" + KEY_GAME_PLAYER2
+				+ ") REFERENCES " + DB_TABLE_ALLPLAYERS + "("
+				+ KEY_PLAYER_ROWID + "), FOREIGN KEY(" + KEY_GAME_DECK1
+				+ ") REFERENCES " + DB_TABLE_ALLDECKS + "(" + KEY_DECK_ROWID
+				+ "), FOREIGN KEY(" + KEY_GAME_DECK2 + ") REFERENCES "
+				+ DB_TABLE_ALLDECKS + "(" + KEY_DECK_ROWID + "), FOREIGN KEY("
+				+ KEY_GAME_WINNER + ") REFERENCES " + DB_TABLE_ALLPLAYERS + "("
+				+ KEY_PLAYER_ROWID + "));");
+
 		if (!isUpgrade) {
-			Toast.makeText(mhContext,
-					"Initializing database... Please wait...",
-					Toast.LENGTH_SHORT).show();
+			setupPlayersAndDecks(new ArrayList<Deck>(), db);
 		}
+		// } else {
+		// This code path is triggered for CardDb
+		// System.out.println("Code Path for CardDb onCreate was triggered.");
 
-		if (dbName.equals(MagicHatDB.MH_DB_NAME)) {
-			System.out
-					.println("Code Path for MagicHatDb OnCreate was triggered.");
-
-			db.execSQL("CREATE TABLE " + DB_TABLE_ALLPLAYERS + " ("
-					+ KEY_PLAYER_ROWID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-					+ KEY_PLAYER_NAME + " TEXT NOT NULL, " + KEY_PLAYER_ACTIVE
-					+ " INTEGER NOT NULL);");
-			db.execSQL("CREATE TABLE " + DB_TABLE_ALLDECKS + " ("
-					+ KEY_DECK_ROWID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-					+ KEY_DECK_NAME + " TEXT NOT NULL, " + KEY_DECK_OWNERID
-					+ " INTEGER NOT NULL, " + KEY_DECK_ACTIVE
-					+ " INTEGER NOT NULL, " + KEY_DECK_MANUAL
-					+ " INTEGER NOT NULL, FOREIGN KEY(" + KEY_DECK_OWNERID
-					+ ") REFERENCES " + DB_TABLE_ALLPLAYERS + "("
-					+ KEY_PLAYER_ROWID + "));");
-			db.execSQL("CREATE TABLE IF NOT EXISTS " + DB_TABLE_ALLGAMES + " ("
-					+ KEY_GAME_ROWID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-					+ KEY_GAME_PLAYER1 + " INTEGER NOT NULL, "
-					+ KEY_GAME_PLAYER2 + " INTEGER NOT NULL, " + KEY_GAME_DECK1
-					+ " INTEGER NOT NULL, " + KEY_GAME_DECK2
-					+ " INTEGER NOT NULL, " + KEY_GAME_WINNER
-					+ " INTEGER NOT NULL, " + KEY_GAME_DATE
-					+ " INTEGER NOT NULL, FOREIGN KEY(" + KEY_GAME_PLAYER1
-					+ ") REFERENCES " + DB_TABLE_ALLPLAYERS + "("
-					+ KEY_PLAYER_ROWID + "), FOREIGN KEY(" + KEY_GAME_PLAYER2
-					+ ") REFERENCES " + DB_TABLE_ALLPLAYERS + "("
-					+ KEY_PLAYER_ROWID + "), FOREIGN KEY(" + KEY_GAME_DECK1
-					+ ") REFERENCES " + DB_TABLE_ALLDECKS + "("
-					+ KEY_DECK_ROWID + "), FOREIGN KEY(" + KEY_GAME_DECK2
-					+ ") REFERENCES " + DB_TABLE_ALLDECKS + "("
-					+ KEY_DECK_ROWID + "), FOREIGN KEY(" + KEY_GAME_WINNER
-					+ ") REFERENCES " + DB_TABLE_ALLPLAYERS + "("
-					+ KEY_PLAYER_ROWID + "));");
-
-			if (!isUpgrade) {
-				setupPlayersAndDecks(new ArrayList<Deck>(), db);
-			}
-		} else {
-			// This code path is triggered for CardDb
-			System.out.println("Code Path for CardDb onCreate was triggered.");
-
-		}
-		if (!isUpgrade) {
-			Toast.makeText(mhContext, "Database Initialization Complete.",
-					Toast.LENGTH_SHORT).show();
-		}
+		// }
 	}
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		Toast.makeText(mhContext, "Upgrading database... Please wait...",
-				Toast.LENGTH_SHORT).show();
 
 		if (dbName.equals(MagicHatDB.MH_DB_NAME)) {
 			System.out
@@ -161,8 +146,7 @@ public class MagicHatDbHelper extends SQLiteOpenHelper {
 			// This code path is triggered for CardDb
 			System.out.println("Code Path for CardDb onUpgrade was triggered.");
 		}
-		Toast.makeText(mhContext, "Database Upgrade Complete.",
-				Toast.LENGTH_SHORT).show();
+
 	}
 
 	// ///////////////////////////////////////////////////////////
@@ -965,87 +949,5 @@ public class MagicHatDbHelper extends SQLiteOpenHelper {
 		gc.close();
 
 		return games;
-	}
-
-	// //////////////////////////////////
-	// EXPANSIONS
-	// //////////////////////////////////
-
-	protected int getExpansionId(String shortName, SQLiteDatabase db) {
-		int cardSetId = 0;
-
-		String[] columns = new String[] { KEY_EXPANSION_ROWID,
-				KEY_EXPANSION_NAME, KEY_EXPANSION_SHORTNAME };
-
-		Cursor expC = db.query(DB_TABLE_ALLEXPANSIONS, columns,
-				KEY_EXPANSION_SHORTNAME + " = '" + shortName + "'", null, null,
-				null, null);
-
-		int iExpansionId = expC.getColumnIndex(KEY_EXPANSION_ROWID);
-
-		if (expC.getCount() == 1) {
-			expC.moveToFirst();
-			cardSetId = expC.getInt(iExpansionId);
-		} else {
-			System.out
-					.println("No unique expansion was found in MagicHatDB.getExpansionId.");
-		}
-		expC.close();
-
-		return cardSetId;
-	}
-
-	protected List<Expansion> getAllExpansions(SQLiteDatabase db) {
-		List<Expansion> allExpansions = new ArrayList<Expansion>();
-		String[] expansionColumns = new String[] { KEY_EXPANSION_ROWID,
-				KEY_EXPANSION_NAME, KEY_EXPANSION_SHORTNAME };
-
-		Cursor expC = db.query(DB_TABLE_ALLEXPANSIONS, expansionColumns, null,
-				null, null, null, null);
-
-		int iExpansionId = expC.getColumnIndex(KEY_EXPANSION_ROWID);
-		int iExpansionName = expC.getColumnIndex(KEY_EXPANSION_NAME);
-		int iExpansionShortName = expC.getColumnIndex(KEY_EXPANSION_SHORTNAME);
-
-		Expansion exp;
-		for (expC.moveToFirst(); !expC.isAfterLast(); expC.moveToNext()) {
-			exp = new Expansion(expC.getInt(iExpansionId),
-					expC.getString(iExpansionName),
-					expC.getString(iExpansionShortName));
-
-			allExpansions.add(exp);
-		}
-		expC.close();
-
-		Collections.sort(allExpansions);
-
-		return allExpansions;
-	}
-
-	// //////////////////////////////
-	// CARDS
-	// //////////////////////////////
-
-	protected List<Card> getAllCardIds(SQLiteDatabase db) {
-		List<Card> allCards = new ArrayList<Card>();
-		String[] cardColumns = new String[] { KEY_CARD_ROWID, KEY_CARD_NAME };
-
-		Cursor cc = db.query(DB_TABLE_ALLCARDS, cardColumns, null, null, null,
-				null, null);
-
-		int iCardId = cc.getColumnIndex(KEY_CARD_ROWID);
-		int iCardName = cc.getColumnIndex(KEY_CARD_NAME);
-
-		Card c;
-		for (cc.moveToFirst(); !cc.isAfterLast(); cc.moveToNext()) {
-			c = new Card(cc.getInt(iCardId), cc.getString(iCardName));
-
-			allCards.add(c);
-		}
-		cc.close();
-
-		Collections.sort(allCards);
-
-		return allCards;
 	}
 }

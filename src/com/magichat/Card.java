@@ -19,6 +19,7 @@ public class Card implements Comparable<Card> {
 	String[] subType;
 	String sPower;
 	String sToughness;
+	// TODO Handle Card Rarities
 	// String rarity;
 	String text;
 	Map<Expansion, URL> expansionImages = new HashMap<Expansion, URL>();

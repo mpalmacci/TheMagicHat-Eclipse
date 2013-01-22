@@ -1,5 +1,6 @@
 package com.magichat;
 
+import java.io.File;
 import java.util.Date;
 import java.util.List;
 
@@ -8,6 +9,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 
 public class MagicHatDB {
+
+	private static final String DB_PATH = "/data/data/com.magichat/databases/";
 	protected static final String MH_DB_NAME = "MagicHatDB";
 	private static final int MH_DB_VERSION = 1;
 
@@ -49,6 +52,26 @@ public class MagicHatDB {
 		} catch (SQLiteException e) {
 			e.printStackTrace();
 		}
+	}
+
+	protected static boolean isCreated() {
+		File dbFile = new File(DB_PATH + MH_DB_NAME);
+		return dbFile.exists();
+	}
+
+	protected boolean isUpgrade() {
+		mhHelper = new MagicHatDbHelper(context, MH_DB_NAME, MH_DB_VERSION);
+		boolean result = false;
+
+		try {
+			mhDb = mhHelper.getReadableDatabase();
+			result = mhDb.getVersion() == MH_DB_VERSION ? false : true;
+			mhDb.close();
+		} catch (SQLiteException e) {
+			e.printStackTrace();
+		}
+
+		return result;
 	}
 
 	// //////////////////////////////// DECKS //////////////////////////////////

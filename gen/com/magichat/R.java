@@ -90,6 +90,7 @@ public final class R {
         public static final int etDeckName=0x7f0c0000;
         public static final int etName=0x7f0c0008;
         public static final int etRulesText=0x7f0c0009;
+        public static final int etSubtype=0x7f0c0016;
         public static final int gameStatsPrefs=0x7f0c0044;
         public static final int hSelectADeck=0x7f0c0043;
         public static final int llByDecks=0x7f0c0024;
@@ -110,7 +111,6 @@ public final class R {
         public static final int sCurrentSelection=0x7f0c0023;
         public static final int sExpansion=0x7f0c000a;
         public static final int sOwnersDecks=0x7f0c0019;
-        public static final int sSubtype=0x7f0c0016;
         public static final int sType=0x7f0c0015;
         public static final int scrollView1=0x7f0c0020;
         public static final int sdCardSearch=0x7f0c0005;

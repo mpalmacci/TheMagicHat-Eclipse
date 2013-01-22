@@ -37,9 +37,9 @@
                     android:id="@+id/etName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:completionThreshold="3"
                     android:ems="10"
                     android:hint="@string/card_name_contains"
-                    android:completionThreshold="3"
                     android:inputType="text" />
 
                 <EditText
@@ -210,60 +210,36 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:baselineAligned="false"
-                    android:orientation="horizontal"
-                    android:weightSum="2" >
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="@string/types" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
+                        android:gravity="right"
                         android:orientation="horizontal" >
 
-                        <TextView
+                        <Spinner
+                            android:id="@+id/sType"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:text="@string/types" />
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="right"
-                            android:orientation="horizontal" >
-
-                            <Spinner
-                                android:id="@+id/sType"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:entries="@array/card_types" />
-                        </LinearLayout>
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="horizontal" >
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:text="@string/subtypes" />
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="right"
-                            android:orientation="horizontal" >
-
-                            <Spinner
-                                android:id="@+id/sSubtype"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
-                        </LinearLayout>
+                            android:entries="@array/card_types" />
                     </LinearLayout>
                 </LinearLayout>
+
+                <AutoCompleteTextView
+                    android:id="@+id/etSubtype"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:completionThreshold="3"
+                    android:ems="10"
+                    android:hint="@string/subtypes"
+                    android:inputType="text" />
 
                 <LinearLayout
                     android:layout_width="match_parent"

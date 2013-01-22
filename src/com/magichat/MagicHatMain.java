@@ -1,11 +1,8 @@
 package com.magichat;
 
-import java.io.IOException;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.Menu;
@@ -26,25 +23,7 @@ public class MagicHatMain extends Activity implements View.OnClickListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.magic_hat_main);
 
-		new setupDb().execute();
-
 		initialize();
-	}
-
-	private class setupDb extends AsyncTask<String, Integer, String> {
-
-		@Override
-		protected String doInBackground(String... params) {
-			MagicHatDB mhDb = new MagicHatDB(MagicHatMain.this);
-			mhDb.openReadableDB();
-			mhDb.closeDB();
-			try {
-				CardDbUtil.initCardDb(MagicHatMain.this);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			return null;
-		}
 	}
 
 	@Override

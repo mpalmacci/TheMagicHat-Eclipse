@@ -57,7 +57,7 @@
     <string name="rarity">Rarity:</string>
     <string name="color">Color:</string>
     <string name="types">"Types: "</string>
-    <string name="subtypes">"Subtypes: "</string>
+    <string name="subtypes">"Card Subtypes..."</string>
     <string name="conv_mana_cost">"Convt. Mana Cost: "</string>
     <string name="cmc">CMC</string>
 

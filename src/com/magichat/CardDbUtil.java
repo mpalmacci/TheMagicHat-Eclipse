@@ -6,13 +6,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.SparseArray;
 
 public class CardDbUtil {
 	public static final String KEY_EXPANSION_ROWID = "_id";
@@ -40,15 +40,19 @@ public class CardDbUtil {
 	public static final String KEY_REL_EXP_ID = "exp_id";
 	public static final String KEY_REL_PIC_URL = "pic_url";
 
+	public static final String KEY_SUB_TYPE_ROWID = "_id";
+	public static final String KEY_SUB_TYPE_NAME = "SubType_Name";
+
 	public static final String DB_TABLE_ALLEXPANSIONS = "Expansions";
 	public static final String DB_TABLE_ALLCARDS = "Cards";
 	public static final String DB_TABLE_REL_CARD_EXP = "Rel_CardExp";
+	public static final String DB_TABLE_SUB_TYPES = "SubTypes";
 
 	private static final String DB_PATH = "/data/data/com.magichat/databases/";
 	private static final String DB_NAME = "cards.db";
-	private static final int DB_VERSION = 1;
+	// private static final int DB_VERSION = 1;
 
-	private static MagicHatDbHelper mhHelper;
+	// private static MagicHatDbHelper mhHelper;
 	private static SQLiteDatabase cDb;
 
 	public static void initCardDb(Context context) throws IOException {
@@ -176,9 +180,33 @@ public class CardDbUtil {
 
 	// ////////////////////////////// CARDS ////////////////////////////////////
 
-	public static SparseArray<String> getAllCardNames() {
+	public static String[] getAllCardNames() {
 		// return mhHelper.getAllCardIds(cDb);
-		SparseArray<String> allCards = new SparseArray<String>();
+		// SparseArray<String> allCards = new SparseArray<String>();
+		String[] cardColumns = new String[] { KEY_CARD_ROWID, KEY_CARD_NAME };
+		String[] cardNames;
+
+		Cursor cc = cDb.query(DB_TABLE_ALLCARDS, cardColumns, null, null, null,
+				null, null);
+
+		// int iCardId = cc.getColumnIndex(KEY_CARD_ROWID);
+		int iCardName = cc.getColumnIndex(KEY_CARD_NAME);
+		cardNames = new String[cc.getCount()];
+		int i = 0;
+
+		for (cc.moveToFirst(); !cc.isAfterLast(); cc.moveToNext()) {
+			cardNames[i] = cc.getString(iCardName);
+			i++;
+		}
+		cc.close();
+
+		Arrays.sort(cardNames);
+
+		return cardNames;
+	}
+
+	protected static List<Card> getAllCardIds() {
+		List<Card> allCards = new ArrayList<Card>();
 		String[] cardColumns = new String[] { KEY_CARD_ROWID, KEY_CARD_NAME };
 
 		Cursor cc = cDb.query(DB_TABLE_ALLCARDS, cardColumns, null, null, null,
@@ -187,11 +215,45 @@ public class CardDbUtil {
 		int iCardId = cc.getColumnIndex(KEY_CARD_ROWID);
 		int iCardName = cc.getColumnIndex(KEY_CARD_NAME);
 
+		Card c;
 		for (cc.moveToFirst(); !cc.isAfterLast(); cc.moveToNext()) {
-			allCards.put(cc.getInt(iCardId), cc.getString(iCardName));
+			c = new Card(cc.getInt(iCardId), cc.getString(iCardName));
+
+			allCards.add(c);
 		}
 		cc.close();
 
+		Collections.sort(allCards);
+
 		return allCards;
+	}
+
+	protected static String[] getAllCardSubTypes() {
+		String[] cardColumns = new String[] { KEY_SUB_TYPE_NAME };
+		String[] allSubTypes;
+
+		Cursor cc = cDb.query(DB_TABLE_SUB_TYPES, cardColumns, null, null,
+				null, null, null);
+
+		int iCardSubTypes = cc.getColumnIndex(KEY_SUB_TYPE_NAME);
+
+		// Even though it seems like the size of the array should be
+		// [cc.getCount() + 1], one of them is null, so that is going to be
+		// ignored
+		allSubTypes = new String[cc.getCount()];
+		// allSubTypes[0] = " Any";
+		int i = 0;
+
+		for (cc.moveToFirst(); !cc.isAfterLast(); cc.moveToNext()) {
+			if (!cc.getString(iCardSubTypes).isEmpty()) {
+				allSubTypes[i] = cc.getString(iCardSubTypes).trim();
+				i++;
+			}
+		}
+		cc.close();
+
+		// Arrays.sort(allSubTypes);
+
+		return allSubTypes;
 	}
 }

@@ -1,13 +1,11 @@
 package com.magichat;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.SparseArray;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -22,16 +20,13 @@ import android.widget.SlidingDrawer.OnDrawerOpenListener;
 
 public class CardSearch extends Activity implements OnDrawerOpenListener,
 		OnDrawerCloseListener {
-	// TODO Use a HashMap of Names and Ids?
-	SparseArray<String> allCardNames = new SparseArray<String>();
-	List<Expansion> allExpansions = new ArrayList<Expansion>();
 
 	LinearLayout llSearchResults;
 	SlidingDrawer sdCardSearch;
 	Button bSearch;
 	EditText etRulesText, etCMC;
-	AutoCompleteTextView etName;
-	Spinner sExpansion, sBlock, sType, sSubtype, sCMCEquality;
+	AutoCompleteTextView etName, etSubtype;
+	Spinner sExpansion, sBlock, sType, sCMCEquality;
 	ToggleButton tbWhite, tbBlue, tbBlack, tbRed, tbGreen, tbMythic, tbRare,
 			tbUncommon, tbCommon;
 
@@ -44,58 +39,21 @@ public class CardSearch extends Activity implements OnDrawerOpenListener,
 
 		sdCardSearch.open();
 
-		new initialSetup().execute();
+		new populateExpansions().execute();
+		// TODO Find a way to do better multi-threading here
+		// new populateSubTypes().execute();
+		// new populateAutoFillCardNames().execute();
 	}
 
-	private class initialSetup extends AsyncTask<String, Integer, String> {
-
-		@Override
-		protected String doInBackground(String... params) {
-			CardDbUtil.getStaticDb();
-			allCardNames = CardDbUtil.getAllCardNames();
-			allExpansions = CardDbUtil.getAllExpansions();
-			CardDbUtil.close();
-			return null;
-		}
-
-		@Override
-		protected void onPostExecute(String result) {
-			super.onPostExecute(result);
-			new setupAutoFill().execute();
-			new populateExpansionSpinner().execute();
-		}
-	}
-
-	private class setupAutoFill extends AsyncTask<String, Integer, String[]> {
-		@Override
-		protected String[] doInBackground(String... params) {
-			String[] stAllCardNames = new String[allCardNames.size()];
-
-			for (int i = 0; i < allCardNames.size() - 1; i++) {
-				stAllCardNames[i] = allCardNames.get(i);
-				System.out.println("\n" + stAllCardNames[i]);
-			}
-			
-			System.out.println("AutoFill Cards complete");
-
-			return stAllCardNames;
-		}
-
-		@Override
-		protected void onPostExecute(String[] stAllCardNames) {
-			super.onPostExecute(stAllCardNames);
-			ArrayAdapter<String> cardNameAdapter = new ArrayAdapter<String>(
-					CardSearch.this, android.R.layout.simple_list_item_1,
-					stAllCardNames);
-			etName.setAdapter(cardNameAdapter);
-		}
-	}
-
-	private class populateExpansionSpinner extends
+	private class populateExpansions extends
 			AsyncTask<String, Integer, String[]> {
 
 		@Override
 		protected String[] doInBackground(String... params) {
+			CardDbUtil.getStaticDb();
+			List<Expansion> allExpansions = CardDbUtil.getAllExpansions();
+			CardDbUtil.close();
+
 			if (allExpansions.isEmpty()) {
 				System.out.println("allExpansions is empty!");
 				finish();
@@ -115,11 +73,59 @@ public class CardSearch extends Activity implements OnDrawerOpenListener,
 		@Override
 		protected void onPostExecute(String[] stAllExpansions) {
 			super.onPostExecute(stAllExpansions);
+			new populateSubTypes().execute();
+
 			ArrayAdapter<String> expAdapter = new ArrayAdapter<String>(
 					CardSearch.this, android.R.layout.simple_spinner_item,
 					stAllExpansions);
 
 			sExpansion.setAdapter(expAdapter);
+		}
+	}
+
+	private class populateSubTypes extends AsyncTask<String, Integer, String[]> {
+
+		@Override
+		protected String[] doInBackground(String... params) {
+			CardDbUtil.getStaticDb();
+			String[] stAllSubTypes = CardDbUtil.getAllCardSubTypes();
+			CardDbUtil.close();
+
+			return stAllSubTypes;
+		}
+
+		@Override
+		protected void onPostExecute(String[] stAllSubTypes) {
+			super.onPostExecute(stAllSubTypes);
+			new populateAutoFillCardNames().execute();
+
+			ArrayAdapter<String> cardSubTypesAdapter = new ArrayAdapter<String>(
+					CardSearch.this,
+					android.R.layout.simple_dropdown_item_1line, stAllSubTypes);
+			etSubtype.setAdapter(cardSubTypesAdapter);
+		}
+	}
+
+	private class populateAutoFillCardNames extends
+			AsyncTask<String, Integer, String[]> {
+
+		@Override
+		protected String[] doInBackground(String... params) {
+			CardDbUtil.getStaticDb();
+			String[] stAllCardNames = CardDbUtil.getAllCardNames();
+			CardDbUtil.close();
+
+			return stAllCardNames;
+		}
+
+		@Override
+		protected void onPostExecute(String[] stAllCardNames) {
+			super.onPostExecute(stAllCardNames);
+
+			ArrayAdapter<String> cardNameAdapter = new ArrayAdapter<String>(
+					CardSearch.this,
+					android.R.layout.simple_dropdown_item_1line, stAllCardNames);
+			etName.setAdapter(cardNameAdapter);
 		}
 	}
 
@@ -141,6 +147,12 @@ public class CardSearch extends Activity implements OnDrawerOpenListener,
 				InputMethodManager.HIDE_NOT_ALWAYS);
 	}
 
+	@Override
+	protected void onPause() {
+		super.onPause();
+		finish();
+	}
+
 	private void initialize() {
 		llSearchResults = (LinearLayout) findViewById(R.id.llSearchResults);
 		sdCardSearch = (SlidingDrawer) findViewById(R.id.sdCardSearch);
@@ -152,7 +164,7 @@ public class CardSearch extends Activity implements OnDrawerOpenListener,
 		sExpansion = (Spinner) findViewById(R.id.sExpansion);
 		sBlock = (Spinner) findViewById(R.id.sBlock);
 		sType = (Spinner) findViewById(R.id.sType);
-		sSubtype = (Spinner) findViewById(R.id.sSubtype);
+		etSubtype = (AutoCompleteTextView) findViewById(R.id.etSubtype);
 		tbMythic = (ToggleButton) findViewById(R.id.tbMythic);
 		tbRare = (ToggleButton) findViewById(R.id.tbRare);
 		tbUncommon = (ToggleButton) findViewById(R.id.tbUncommon);
