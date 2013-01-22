@@ -60,13 +60,10 @@ public class MagicHatDB {
 	}
 
 	protected boolean isUpgrade() {
-		mhHelper = new MagicHatDbHelper(context, MH_DB_NAME, MH_DB_VERSION);
 		boolean result = false;
 
 		try {
-			mhDb = mhHelper.getReadableDatabase();
 			result = mhDb.getVersion() == MH_DB_VERSION ? false : true;
-			mhDb.close();
 		} catch (SQLiteException e) {
 			e.printStackTrace();
 		}

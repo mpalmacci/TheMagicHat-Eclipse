@@ -34,7 +34,6 @@ public class Splash extends Activity {
 	}
 
 	private class setupDb extends AsyncTask<String, Integer, String> {
-		MagicHatDB mhDb = new MagicHatDB(Splash.this);
 		boolean isCreated = false, isUpgrade = false;
 
 		@Override
@@ -46,19 +45,20 @@ public class Splash extends Activity {
 						"Initializing database... Please wait...",
 						Toast.LENGTH_SHORT).show();
 				isCreated = true;
-			} else if (mhDb.isUpgrade()) {
-				Toast.makeText(Splash.this,
-						"Upgrading database... Please wait...",
+			} else {
+				Toast.makeText(Splash.this, "Checking database...",
 						Toast.LENGTH_SHORT).show();
-				isUpgrade = true;
 			}
 		}
 
 		@Override
 		protected String doInBackground(String... params) {
+			MagicHatDB mhDb = new MagicHatDB(Splash.this);
 
 			mhDb.openReadableDB();
+			isUpgrade = mhDb.isUpgrade();
 			mhDb.closeDB();
+
 			try {
 				CardDbUtil.initCardDb(Splash.this);
 			} catch (IOException e) {
