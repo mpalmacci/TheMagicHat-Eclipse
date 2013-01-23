@@ -146,7 +146,10 @@ public class MagicHatDbHelper extends SQLiteOpenHelper {
 			// This code path is triggered for CardDb
 			System.out.println("Code Path for CardDb onUpgrade was triggered.");
 		}
-
+	}
+	
+	public boolean isUpgrade() {
+		return this.isUpgrade;
 	}
 
 	// ///////////////////////////////////////////////////////////

@@ -140,11 +140,23 @@ public class CardSearch extends Activity implements OnDrawerOpenListener,
 	public void onDrawerClosed() {
 		llSearchResults.setVisibility(LinearLayout.VISIBLE);
 		bSearch.setText("Perform Another Search");
+		
+		new performSearch().execute();
 
 		// The next two lines of code hide the keyboard
 		InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 		imm.hideSoftInputFromWindow(bSearch.getWindowToken(),
 				InputMethodManager.HIDE_NOT_ALWAYS);
+	}
+	
+	private class performSearch extends AsyncTask<String, Integer, String> {
+
+		@Override
+		protected String doInBackground(String... arg0) {
+			
+			return null;
+		}
+		
 	}
 
 	@Override

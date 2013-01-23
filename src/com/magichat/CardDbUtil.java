@@ -183,7 +183,7 @@ public class CardDbUtil {
 	public static String[] getAllCardNames() {
 		// return mhHelper.getAllCardIds(cDb);
 		// SparseArray<String> allCards = new SparseArray<String>();
-		String[] cardColumns = new String[] { KEY_CARD_ROWID, KEY_CARD_NAME };
+		String[] cardColumns = new String[] { KEY_CARD_NAME };
 		String[] cardNames;
 
 		Cursor cc = cDb.query(DB_TABLE_ALLCARDS, cardColumns, null, null, null,
@@ -251,8 +251,6 @@ public class CardDbUtil {
 			}
 		}
 		cc.close();
-
-		// Arrays.sort(allSubTypes);
 
 		return allSubTypes;
 	}

@@ -78,6 +78,9 @@ public class Splash extends Activity {
 			} else if (isUpgrade) {
 				Toast.makeText(Splash.this, "Database Upgrade Complete.",
 						Toast.LENGTH_SHORT).show();
+			} else {
+				Toast.makeText(Splash.this, "No Database Changes Needed.",
+						Toast.LENGTH_SHORT).show();
 			}
 		}
 	}
