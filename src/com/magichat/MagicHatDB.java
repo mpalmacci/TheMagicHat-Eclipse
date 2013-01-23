@@ -12,7 +12,7 @@ public class MagicHatDB {
 
 	private static final String DB_PATH = "/data/data/com.magichat/databases/";
 	protected static final String MH_DB_NAME = "MagicHatDB";
-	private static final int MH_DB_VERSION = 4;
+	private static final int MH_DB_VERSION = 1;
 
 	private MagicHatDbHelper mhHelper;
 	private SQLiteDatabase mhDb;
