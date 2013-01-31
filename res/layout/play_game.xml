@@ -1,38 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="25dp" >
-
-    <Button
-        android:id="@+id/bPlayGame"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/play_button"
-        android:textSize="20dp" />
-
-    <ScrollView
-        android:id="@+id/scrollView1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
-
-            <TextView
-                android:id="@+id/tvDisplayGames"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textSize="25dp" />
-        </LinearLayout>
-    </ScrollView>
+    android:padding="25dp"
+    android:weightSum="4" >
 
     <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="top"
+        android:orientation="vertical" >
+
+        <com.magichat.UpsideDownTextView
+            android:id="@+id/tvPlayer2Deck"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="30sp" />
+
+        <Button
+            android:id="@+id/bPlayGame"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/play_button"
+            android:textSize="25sp" />
+
+        <TextView
+            android:id="@+id/tvPlayer1Deck"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="30sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="3"
         android:gravity="bottom"
         android:orientation="vertical" >
 
@@ -41,18 +47,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/winner"
-            android:textSize="25dp"
+            android:textSize="25sp"
             android:visibility="invisible" />
 
         <LinearLayout
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal" >
 
             <Button
                 android:id="@+id/bPlayer1"
                 style="?android:attr/buttonStyleSmall"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:visibility="invisible" />
@@ -60,7 +66,7 @@
             <Button
                 android:id="@+id/bPlayer2"
                 style="?android:attr/buttonStyleSmall"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:visibility="invisible" />

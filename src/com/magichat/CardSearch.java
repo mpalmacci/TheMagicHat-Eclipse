@@ -4,6 +4,7 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.inputmethod.InputMethodManager;
@@ -140,28 +141,37 @@ public class CardSearch extends Activity implements OnDrawerOpenListener,
 	public void onDrawerClosed() {
 		llSearchResults.setVisibility(LinearLayout.VISIBLE);
 		bSearch.setText("Perform Another Search");
-		
-		new performSearch().execute();
+
+		// Temporary code for testing
+		Bundle cardName = new Bundle();
+		cardName.putString("cardName", etName.getText().toString());
+
+		Intent openCardViewActivity = new Intent("com.magichat.CARDVIEW");
+		openCardViewActivity.putExtras(cardName);
+		startActivity(openCardViewActivity);
+
+		// new performSearch().execute();
 
 		// The next two lines of code hide the keyboard
 		InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 		imm.hideSoftInputFromWindow(bSearch.getWindowToken(),
 				InputMethodManager.HIDE_NOT_ALWAYS);
 	}
-	
+
 	private class performSearch extends AsyncTask<String, Integer, String> {
 
 		@Override
 		protected String doInBackground(String... arg0) {
-			
+
 			return null;
 		}
-		
+
 	}
 
 	@Override
 	protected void onPause() {
 		super.onPause();
+		// TODO - Store search entry items, and clear device memory usage
 		finish();
 	}
 

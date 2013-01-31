@@ -5,10 +5,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -205,6 +209,99 @@ public class CardDbUtil {
 		return cardNames;
 	}
 
+	protected static Map<Expansion, URL> getCardImages(String name) {
+		Map<Expansion, URL> allExpansionImages = new HashMap<Expansion, URL>();
+
+		String[] relColumns = new String[] { KEY_REL_EXP_ID, KEY_REL_PIC_URL };
+
+		int cardId = getCardId(name);
+
+		if (cardId == 0) {
+			return null;
+		}
+
+		Cursor rc = cDb.query(DB_TABLE_REL_CARD_EXP, relColumns,
+				KEY_REL_CARD_ID + " = " + cardId, null, null, null, null);
+
+		int iRelExpId = rc.getColumnIndex(KEY_REL_EXP_ID);
+		int iUrl = rc.getColumnIndex(KEY_REL_PIC_URL);
+
+		Expansion exp = null;
+		URL expUrl = null;
+
+		for (rc.moveToFirst(); !rc.isAfterLast(); rc.moveToNext()) {
+			int relExpId = rc.getInt(iRelExpId);
+
+			exp = getExpansion(relExpId);
+
+			if (exp == null) {
+				return null;
+			}
+
+			try {
+				expUrl = new URL(rc.getString(iUrl));
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			}
+
+			allExpansionImages.put(exp, expUrl);
+		}
+		rc.close();
+		return allExpansionImages;
+	}
+
+	protected static int getCardId(String name) {
+		String[] cardColumns = new String[] { KEY_CARD_ROWID };
+		int cardId = 0;
+
+		Cursor cc = cDb.query(DB_TABLE_ALLCARDS, cardColumns, "lower(" + KEY_CARD_NAME
+				+ ") = lower('" + name + "')", null, null, null, null);
+
+		if (cc.getCount() == 1) {
+			cc.moveToFirst();
+			int iCardId = cc.getColumnIndex(KEY_CARD_ROWID);
+			cardId = cc.getInt(iCardId);
+		} else {
+			System.out
+					.println("CardDbUtil.getCardImages - No unique card was found.");
+		}
+
+		cc.close();
+		return cardId;
+	}
+
+	protected static Expansion getExpansion(int expId) {
+		Expansion exp = null;
+		String[] expColumns = new String[] { KEY_EXPANSION_ROWID,
+				KEY_EXPANSION_NAME, KEY_EXPANSION_SHORTNAME };
+
+		Cursor ec = cDb.query(DB_TABLE_ALLEXPANSIONS, expColumns,
+				KEY_EXPANSION_ROWID + " = " + expId, null, null, null, null);
+
+		if (ec.getCount() == 1) {
+			ec.moveToFirst();
+			int iExpName = ec.getColumnIndex(KEY_EXPANSION_NAME);
+			int iExpShortName = ec.getColumnIndex(KEY_EXPANSION_SHORTNAME);
+
+			String expName = ec.getString(iExpName);
+			String expShortName = ec.getString(iExpShortName);
+
+			exp = new Expansion(expId, expName, expShortName);
+		} else {
+			System.out
+					.println("CardDbUtil.getCardImages - No unique expansion was found.");
+		}
+		ec.close();
+		return exp;
+
+	}
+
+	protected static List<Expansion> getExpansions(String name) {
+		List<Expansion> expansions = new ArrayList<Expansion>();
+
+		return expansions;
+	}
+
 	protected static List<Card> getAllCardIds() {
 		List<Card> allCards = new ArrayList<Card>();
 		String[] cardColumns = new String[] { KEY_CARD_ROWID, KEY_CARD_NAME };
@@ -237,18 +334,13 @@ public class CardDbUtil {
 
 		int iCardSubTypes = cc.getColumnIndex(KEY_SUB_TYPE_NAME);
 
-		// Even though it seems like the size of the array should be
-		// [cc.getCount() + 1], one of them is null, so that is going to be
-		// ignored
 		allSubTypes = new String[cc.getCount()];
-		// allSubTypes[0] = " Any";
+
 		int i = 0;
 
 		for (cc.moveToFirst(); !cc.isAfterLast(); cc.moveToNext()) {
-			if (!cc.getString(iCardSubTypes).isEmpty()) {
-				allSubTypes[i] = cc.getString(iCardSubTypes).trim();
-				i++;
-			}
+			allSubTypes[i] = cc.getString(iCardSubTypes).trim();
+			i++;
 		}
 		cc.close();
 

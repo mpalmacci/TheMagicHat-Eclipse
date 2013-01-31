@@ -28,7 +28,8 @@ public class PlayGame extends Activity implements View.OnClickListener {
 
 	int p1GameCount = 0, p2GameCount = 0;
 
-	TextView tvDisplayGames, tvWinner;
+	TextView tvPlayer1Deck, tvWinner;
+	UpsideDownTextView tvPlayer2Deck;
 	Button bPlayGame, bPlayer1, bPlayer2;
 
 	@Override
@@ -37,10 +38,10 @@ public class PlayGame extends Activity implements View.OnClickListener {
 		setContentView(R.layout.play_game);
 
 		initialize();
-		
+
 		new getAllInfo().execute();
 	}
-	
+
 	private class getAllInfo extends AsyncTask<String, Integer, String> {
 
 		@Override
@@ -56,31 +57,35 @@ public class PlayGame extends Activity implements View.OnClickListener {
 		@Override
 		protected void onPostExecute(String result) {
 			super.onPostExecute(result);
-			// TODO Add in handling in case the player doesn't have any active decks
-			if (Players.size() == 0) {
-				bPlayGame.setEnabled(false);
-				tvDisplayGames.setText("\n\nYou don't have any active Players.");
-			} else if (Players.size() == 1) {
-				getNewGame();
-				tvDisplayGames.setText(printNewGame(gameDecks, Players));
-			} else if (Players.size() == 2) {
-				bPlayGame.setEnabled(true);
-				tvWinner.setVisibility(LinearLayout.VISIBLE);
-				bPlayer1.setText(Players.get(0).getName());
-				bPlayer1.setVisibility(LinearLayout.VISIBLE);
-				bPlayer2.setText(Players.get(1).getName());
-				bPlayer2.setVisibility(LinearLayout.VISIBLE);
-
-				getNewGame();
-				tvDisplayGames.setText(printNewGame(gameDecks, Players));
-			} else {
-				bPlayGame.setEnabled(true);
-
-				getNewGame();
-				tvDisplayGames.setText(printNewGame(gameDecks, Players));
-			}
+			displayNewGame();
 		}
-		
+	}
+
+	private void displayNewGame() {
+		// TODO Add in handling in case the player doesn't have any active decks
+		if (Players.size() == 0) {
+			bPlayGame.setEnabled(false);
+			tvPlayer1Deck.setText("\n\nYou don't have any active Players.");
+		} else if (Players.size() == 1) {
+			getNewRandomGame();
+			tvPlayer1Deck.setText(printGame(gameDecks.get(0), Players.get(0)));
+		} else if (Players.size() == 2) {
+			bPlayGame.setEnabled(true);
+			tvWinner.setVisibility(LinearLayout.VISIBLE);
+			bPlayer1.setText(Players.get(0).getName());
+			bPlayer1.setVisibility(LinearLayout.VISIBLE);
+			bPlayer2.setText(Players.get(1).getName());
+			bPlayer2.setVisibility(LinearLayout.VISIBLE);
+
+			getNewRandomGame();
+			tvPlayer1Deck.setText(printGame(gameDecks.get(1), Players.get(1)));
+			tvPlayer2Deck.setText(printGame(gameDecks.get(0), Players.get(0)));
+		} else {
+			bPlayGame.setEnabled(true);
+
+			getNewRandomGame();
+			tvPlayer1Deck.setText(printGame(gameDecks, Players));
+		}
 	}
 
 	@Override
@@ -92,8 +97,7 @@ public class PlayGame extends Activity implements View.OnClickListener {
 			p1GameCount = 0;
 			p2GameCount = 0;
 
-			getNewGame();
-			tvDisplayGames.setText(printNewGame(gameDecks, Players));
+			displayNewGame();
 			break;
 		case R.id.bPlayer1:
 			++p1GameCount;
@@ -123,7 +127,7 @@ public class PlayGame extends Activity implements View.OnClickListener {
 		@Override
 		protected void onPostExecute(Integer result) {
 			super.onPostExecute(result);
-			if(result == 0) {
+			if (result == 0) {
 				if (p1GameCount + p2GameCount > 1) {
 					if (p1GameCount == 2) {
 						showCompletedDialog();
@@ -160,9 +164,8 @@ public class PlayGame extends Activity implements View.OnClickListener {
 						gameDecks = new ArrayList<Deck>();
 						p1GameCount = 0;
 						p2GameCount = 0;
-						getNewGame();
-						tvDisplayGames
-								.setText(printNewGame(gameDecks, Players));
+
+						displayNewGame();
 						dialog.dismiss();
 					}
 				});
@@ -181,9 +184,8 @@ public class PlayGame extends Activity implements View.OnClickListener {
 								gameDecks = new ArrayList<Deck>();
 								p1GameCount = 0;
 								p2GameCount = 0;
-								getNewGame();
-								tvDisplayGames.setText(printNewGame(gameDecks,
-										Players));
+
+								displayNewGame();
 								dialog.dismiss();
 							}
 						})
@@ -196,7 +198,7 @@ public class PlayGame extends Activity implements View.OnClickListener {
 		ad.show();
 	}
 
-	private void getNewGame() {
+	private void getNewRandomGame() {
 		Random ran = new Random();
 
 		int maxVal = allActiveDecks.size();
@@ -209,6 +211,7 @@ public class PlayGame extends Activity implements View.OnClickListener {
 		// Iterates through the total number of players
 		// to find that many random decks
 		for (Player p : Players) {
+			// TODO Allow user to choose who they are - set them as Player 1
 			r = ran.nextInt(maxVal);
 			Deck d = allActiveDecks.get(r);
 
@@ -237,21 +240,45 @@ public class PlayGame extends Activity implements View.OnClickListener {
 		}
 	}
 
-	private String printNewGame(List<Deck> gameDecks, List<Player> Players) {
+	private String printGame(Deck d, Player p) {
+		String output = "\n";
+
+		// Decks and Players should have the same number of items in it
+		if (gameDecks.size() != Players.size()) {
+			bPlayGame.setEnabled(false);
+			output = "Players and Decks are not of equal size\n\n";
+			output = output.concat("Players size is " + Players.size()).concat(
+					" and the Decks size is " + gameDecks.size());
+		} else if (Players.size() == 0) {
+			bPlayGame.setEnabled(false);
+			output = "No active players were found!\n\n";
+		} else {
+			output = output.concat(p.toString() + " will play " + d.toString())
+					.concat("\n");
+		}
+
+		return output;
+	}
+
+	private String printGame(List<Deck> gameDecks, List<Player> Players) {
 		String output = "\n\n";
 
 		// Decks and Players should have the same number of items in it
 		if (gameDecks.size() != Players.size()) {
-			output = "Players and Decks are not equal\n\n";
-			output = output.concat("Players size is " + Players.size()).concat(
-					" and the Decks size is " + gameDecks.size());
+			bPlayGame.setEnabled(false);
+			output = "Players and Decks are not of equal size\n";
+			output = output.concat("Players size is ")
+					.concat(Integer.toString(Players.size()))
+					.concat(" and the Decks size is ")
+					.concat(Integer.toString(gameDecks.size()));
 		} else if (Players.size() == 0) {
+			bPlayGame.setEnabled(false);
 			output = "No active players were found!\n\n";
 		} else {
 			for (int i = 0; i < Players.size() - 1; i++) {
 				output = output.concat(Players.get(i).toString()
-						+ " will play " + gameDecks.get(i).toString()
-						+ "\nand\n");
+						.concat(" will play ")
+						.concat(gameDecks.get(i).toString()).concat("\nand\n"));
 			}
 
 			output = output.concat(Players.get(Players.size() - 1).toString()
@@ -284,7 +311,8 @@ public class PlayGame extends Activity implements View.OnClickListener {
 
 	private void initialize() {
 		bPlayGame = (Button) findViewById(R.id.bPlayGame);
-		tvDisplayGames = (TextView) findViewById(R.id.tvDisplayGames);
+		tvPlayer1Deck = (TextView) findViewById(R.id.tvPlayer1Deck);
+		tvPlayer2Deck = (UpsideDownTextView) findViewById(R.id.tvPlayer2Deck);
 		bPlayer1 = (Button) findViewById(R.id.bPlayer1);
 		bPlayer2 = (Button) findViewById(R.id.bPlayer2);
 		tvWinner = (TextView) findViewById(R.id.tvWinner);

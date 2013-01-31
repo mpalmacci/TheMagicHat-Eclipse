@@ -6,10 +6,13 @@
     <uses-sdk
         android:minSdkVersion="9"
         android:targetSdkVersion="15" />
+    <uses-permission  android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
         android:icon="@drawable/main_icon"
         android:label="@string/app_name"
+        android:allowBackup="true"
         android:theme="@android:style/Theme.Black" >
         <activity
             android:name=".Splash"
@@ -31,7 +34,9 @@
         </activity>
         <activity
             android:name=".PlayGame"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|keyboardHidden" >
             <intent-filter>
                 <action android:name="com.magichat.PLAYGAME" />
 
@@ -48,17 +53,21 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.magichat.GameStatsForDeck"
-            android:label="@string/app_name" >
+            android:name=".GameStatsForDeck"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|keyboardHidden" >
             <intent-filter>
                 <action android:name="com.magichat.GAMESTATSFORDECK" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-                <activity
+        <activity
             android:name=".GameStatsForPlayer"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|keyboardHidden" >
             <intent-filter>
                 <action android:name="com.magichat.GAMESTATSFORPLAYER" />
 
@@ -76,7 +85,9 @@
         </activity>
         <activity
             android:name=".AddDeck"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|keyboardHidden" >
             <intent-filter>
                 <action android:name="com.magichat.ADDDECK" />
 
@@ -85,7 +96,9 @@
         </activity>
         <activity
             android:name=".UpdateDeck"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|keyboardHidden" >
             <intent-filter>
                 <action android:name="com.magichat.UPDATEDECK" />
 
@@ -94,7 +107,9 @@
         </activity>
         <activity
             android:name=".ChangeActive"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|keyboardHidden" >
             <intent-filter>
                 <action android:name="com.magichat.CHANGEACTIVE" />
 
@@ -103,7 +118,9 @@
         </activity>
         <activity
             android:name=".DeleteDeck"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|keyboardHidden" >
             <intent-filter>
                 <action android:name="com.magichat.DELETEDECK" />
 
@@ -112,7 +129,9 @@
         </activity>
         <activity
             android:name=".DisplayAllDecks"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|keyboardHidden" >
             <intent-filter>
                 <action android:name="com.magichat.DISPLAYALLDECKS" />
 
@@ -121,9 +140,22 @@
         </activity>
         <activity
             android:name=".CardSearch"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|keyboardHidden" >
             <intent-filter>
                 <action android:name="com.magichat.CARDSEARCH" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".CardView"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|keyboardHidden" >
+            <intent-filter>
+                <action android:name="com.magichat.CARDVIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
