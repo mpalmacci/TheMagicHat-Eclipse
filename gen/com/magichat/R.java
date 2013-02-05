@@ -79,35 +79,37 @@ public final class R {
         public static final int bDisplayAllDecks=0x7f0c003a;
         public static final int bEnterGame=0x7f0c0035;
         public static final int bFlipActiveStatus=0x7f0c001e;
-        public static final int bPlayGame=0x7f0c003d;
-        public static final int bPlayer1=0x7f0c0040;
-        public static final int bPlayer2=0x7f0c0041;
+        public static final int bPlayGame=0x7f0c003c;
+        public static final int bPlayer1=0x7f0c003f;
+        public static final int bPlayer2=0x7f0c0040;
         public static final int bSearch=0x7f0c0007;
         public static final int bUpdateDeck=0x7f0c0037;
         public static final int bViewGameStats=0x7f0c0036;
-        public static final int cUpdateDeck=0x7f0c0046;
+        public static final int cUpdateDeck=0x7f0c0045;
         public static final int content=0x7f0c0006;
         public static final int etCMC=0x7f0c0018;
         public static final int etDeckName=0x7f0c0000;
         public static final int etName=0x7f0c0008;
         public static final int etRulesText=0x7f0c0009;
         public static final int etSubtype=0x7f0c0016;
-        public static final int gameStatsPrefs=0x7f0c0048;
-        public static final int hSelectADeck=0x7f0c0047;
+        public static final int gameStatsPrefs=0x7f0c0047;
+        public static final int hSelectADeck=0x7f0c0046;
         public static final int ivCard=0x7f0c001b;
         public static final int llByDecks=0x7f0c0027;
         public static final int llByPlayers=0x7f0c002f;
         public static final int llCardList=0x7f0c0019;
         public static final int llDeckList=0x7f0c0020;
+        public static final int llMatchupView=0x7f0c003d;
         public static final int llNonePlayed=0x7f0c002d;
         public static final int llSearchResults=0x7f0c0004;
-        public static final int llSelectDeck=0x7f0c0042;
-        public static final int llUpdateDeckMain=0x7f0c0043;
+        public static final int llSelectDeck=0x7f0c0041;
+        public static final int llUpdateDeckMain=0x7f0c0042;
+        public static final int llWinnerSection=0x7f0c003e;
         public static final int llWonLostStatsD=0x7f0c002c;
         public static final int llWonLostStatsP=0x7f0c0034;
         public static final int pbTotalWonLostD=0x7f0c0029;
         public static final int pbTotalWonLostP=0x7f0c0031;
-        public static final int playGamePrefs=0x7f0c0049;
+        public static final int playGamePrefs=0x7f0c0048;
         public static final int sAllOwners=0x7f0c0001;
         public static final int sBlock=0x7f0c000b;
         public static final int sCMCEquality=0x7f0c0017;
@@ -117,7 +119,7 @@ public final class R {
         public static final int sType=0x7f0c0015;
         public static final int scrollView1=0x7f0c0023;
         public static final int sdCardSearch=0x7f0c0005;
-        public static final int sdUpdateDeckCriteria=0x7f0c0045;
+        public static final int sdUpdateDeckCriteria=0x7f0c0044;
         public static final int svDeckList=0x7f0c001f;
         public static final int tbActiveDeck=0x7f0c0002;
         public static final int tbBlack=0x7f0c0012;
@@ -139,12 +141,9 @@ public final class R {
         public static final int tvGamesLostP=0x7f0c0033;
         public static final int tvGamesWonD=0x7f0c002a;
         public static final int tvGamesWonP=0x7f0c0032;
-        public static final int tvPlayer1Deck=0x7f0c003e;
-        public static final int tvPlayer2Deck=0x7f0c003c;
         public static final int tvTotalGamesD=0x7f0c0028;
         public static final int tvTotalGamesP=0x7f0c0030;
-        public static final int tvUpdateDeckResults=0x7f0c0044;
-        public static final int tvWinner=0x7f0c003f;
+        public static final int tvUpdateDeckResults=0x7f0c0043;
     }
     public static final class layout {
         public static final int add_deck=0x7f030000;
@@ -169,66 +168,67 @@ public final class R {
         public static final int deck_list=0x7f050000;
     }
     public static final class string {
-        public static final int active_deck=0x7f080018;
+        public static final int active_deck=0x7f080019;
         public static final int add_deck=0x7f080002;
         /**  Add Deck 
          */
-        public static final int add_the_deck=0x7f080011;
+        public static final int add_the_deck=0x7f080012;
         public static final int app_name=0x7f080000;
-        public static final int block=0x7f080023;
-        public static final int card_name_contains=0x7f080020;
+        public static final int block=0x7f080024;
+        public static final int card_name_contains=0x7f080021;
         /**  Card Search 
          */
-        public static final int card_search=0x7f08001e;
+        public static final int card_search=0x7f08001f;
         public static final int change_active=0x7f080004;
-        public static final int choose_delete=0x7f08001a;
-        public static final int cmc=0x7f080029;
-        public static final int color=0x7f080025;
-        public static final int conv_mana_cost=0x7f080028;
+        public static final int choose_delete=0x7f08001b;
+        public static final int cmc=0x7f08002a;
+        public static final int color=0x7f080026;
+        public static final int conv_mana_cost=0x7f080029;
         /**  Delete 
          */
-        public static final int deck_delete=0x7f080019;
+        public static final int deck_delete=0x7f08001a;
         public static final int deck_display=0x7f080006;
         /**  Add & Update Deck 
          */
-        public static final int deck_name=0x7f080017;
-        public static final int deck_name_colon=0x7f080013;
-        public static final int decklist_start=0x7f080009;
+        public static final int deck_name=0x7f080018;
+        public static final int deck_name_colon=0x7f080014;
+        public static final int decklist_start=0x7f08000a;
         public static final int delete_deck=0x7f080005;
-        public static final int expansion=0x7f080022;
-        public static final int flip_active_status=0x7f08001d;
-        public static final int lost=0x7f08000e;
-        public static final int make_a_selection=0x7f08000b;
-        public static final int no_games_played=0x7f080010;
+        public static final int expansion=0x7f080023;
+        public static final int flip_active_status=0x7f08001e;
+        public static final int lost=0x7f08000f;
+        public static final int make_a_selection=0x7f08000c;
+        public static final int no_games_played=0x7f080011;
         /**  Main Menu 
          */
         public static final int play_button=0x7f080001;
-        public static final int rarity=0x7f080024;
-        public static final int rules_text_contains=0x7f080021;
-        public static final int search=0x7f08001f;
-        public static final int select_a_deck=0x7f080016;
-        /**  Update Deck 
-         */
-        public static final int select_a_deck_update=0x7f080012;
-        /**  Game Statistics 
-         */
-        public static final int select_a_player=0x7f08000a;
-        public static final int select_an_owner=0x7f080015;
-        public static final int select_deck=0x7f08001c;
-        /**  Change Active Status 
-         */
-        public static final int select_owner=0x7f08001b;
-        public static final int stats_breakdown=0x7f08000f;
-        public static final int subtypes=0x7f080027;
-        public static final int total_games=0x7f08000c;
-        public static final int types=0x7f080026;
-        public static final int update_deck=0x7f080003;
-        public static final int update_the_deck=0x7f080014;
-        public static final int view_game_stats=0x7f080007;
         /**  Play Game 
          */
-        public static final int winner=0x7f080008;
-        public static final int won=0x7f08000d;
+        public static final int randomize=0x7f080008;
+        public static final int rarity=0x7f080025;
+        public static final int rules_text_contains=0x7f080022;
+        public static final int search=0x7f080020;
+        public static final int select_a_deck=0x7f080017;
+        /**  Update Deck 
+         */
+        public static final int select_a_deck_update=0x7f080013;
+        /**  Game Statistics 
+         */
+        public static final int select_a_player=0x7f08000b;
+        public static final int select_an_owner=0x7f080016;
+        public static final int select_deck=0x7f08001d;
+        /**  Change Active Status 
+         */
+        public static final int select_owner=0x7f08001c;
+        public static final int stats_breakdown=0x7f080010;
+        public static final int subtypes=0x7f080028;
+        public static final int total_games=0x7f08000d;
+        public static final int types=0x7f080027;
+        public static final int update_deck=0x7f080003;
+        public static final int update_the_deck=0x7f080015;
+        public static final int view_game_stats=0x7f080007;
+        public static final int winner=0x7f080009;
+        public static final int won=0x7f08000e;
     }
     public static final class style {
         public static final int AppTheme=0x7f0a0000;

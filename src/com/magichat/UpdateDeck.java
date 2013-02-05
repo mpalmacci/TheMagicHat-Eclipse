@@ -36,12 +36,7 @@ public class UpdateDeck extends Activity implements OnClickListener,
 	Spinner sAllOwners, sOwnersDecks;
 	LinearLayout llSelectDeck, llUpdateDeckMain;
 
-	List<Player> allOwners = new ArrayList<Player>();
-	List<Deck> deckList = new ArrayList<Deck>();
-
 	Deck originalDeck, updatedDeck = new Deck();
-	// The Owner doesn't change over time
-	String ownerName, selectedDeckName = "";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -58,10 +53,12 @@ public class UpdateDeck extends Activity implements OnClickListener,
 
 	// TODO Duplicate Code with ChangeActive
 	private class populateAllOwnersSpinner extends
-			AsyncTask<String, Integer, String[]> {
+			AsyncTask<String, Integer, ArrayAdapter<Player>> {
 
 		@Override
-		protected String[] doInBackground(String... params) {
+		protected ArrayAdapter<Player> doInBackground(String... params) {
+			List<Player> allOwners = new ArrayList<Player>();
+
 			MagicHatDB mhDb = new MagicHatDB(UpdateDeck.this);
 			mhDb.openReadableDB();
 			allOwners = mhDb.getAllOwners();
@@ -71,24 +68,16 @@ public class UpdateDeck extends Activity implements OnClickListener,
 				finish();
 			}
 
-			String[] stAllOwners = new String[allOwners.size()];
+			ArrayAdapter<Player> ownerAdapter = new ArrayAdapter<Player>(
+					UpdateDeck.this, android.R.layout.simple_spinner_item,
+					allOwners);
 
-			for (int i = 0; i < allOwners.size(); i++) {
-				stAllOwners[i] = allOwners.get(i).toString();
-				if (!allOwners.get(i).isActive()) {
-					stAllOwners[i] = stAllOwners[i].concat(" (inactive)");
-				}
-			}
-
-			return stAllOwners;
+			return ownerAdapter;
 		}
 
 		@Override
-		protected void onPostExecute(String[] stAllOwners) {
-			super.onPostExecute(stAllOwners);
-			ArrayAdapter<String> ownerAdapter = new ArrayAdapter<String>(
-					UpdateDeck.this, android.R.layout.simple_spinner_item,
-					stAllOwners);
+		protected void onPostExecute(ArrayAdapter<Player> ownerAdapter) {
+			super.onPostExecute(ownerAdapter);
 
 			sAllOwners.setAdapter(ownerAdapter);
 		}
@@ -97,10 +86,12 @@ public class UpdateDeck extends Activity implements OnClickListener,
 
 	// TODO Duplicate Code with ChangeActive
 	private class populateDecksSpinner extends
-			AsyncTask<Player, Integer, List<Deck>> {
+			AsyncTask<Player, Integer, ArrayAdapter<Deck>> {
 
 		@Override
-		protected List<Deck> doInBackground(Player... p) {
+		protected ArrayAdapter<Deck> doInBackground(Player... p) {
+			List<Deck> deckList = new ArrayList<Deck>();
+
 			MagicHatDB mhDb = new MagicHatDB(UpdateDeck.this);
 			mhDb.openReadableDB();
 			// TODO Defect found here where the deck-list isn't showing correct
@@ -108,39 +99,25 @@ public class UpdateDeck extends Activity implements OnClickListener,
 			deckList = mhDb.getDeckList(p[0]);
 			mhDb.closeDB();
 
-			return deckList;
+			if (deckList.isEmpty()) {
+				System.out.println("Deck List is empty!");
+				String sEmpty = "No Decks";
+
+				deckList.add(new Deck(sEmpty, p[0]));
+			} else {
+				deckList.add(0, new Deck());
+			}
+			ArrayAdapter<Deck> deckAdapter = new ArrayAdapter<Deck>(UpdateDeck.this,
+					android.R.layout.simple_spinner_item, deckList);
+
+			return deckAdapter;
 		}
 
 		@Override
-		protected void onPostExecute(List<Deck> deckList) {
-			super.onPostExecute(deckList);
-			if (deckList.isEmpty()) {
-				System.out.println("Deck List is empty!");
-				String[] sEmpty = { "No Decks" };
-				ArrayAdapter<String> ownerAdapter = new ArrayAdapter<String>(
-						UpdateDeck.this, android.R.layout.simple_spinner_item,
-						sEmpty);
+		protected void onPostExecute(ArrayAdapter<Deck> deckAdapter) {
+			super.onPostExecute(deckAdapter);
 
-				sOwnersDecks.setAdapter(ownerAdapter);
-			} else {
-				String[] sDeckList = new String[deckList.size() + 1];
-
-				sDeckList[0] = "";
-
-				String deckName = "";
-				for (int i = 1; i < deckList.size() + 1; i++) {
-					deckName = deckList.get(i - 1).toString();
-					// This removes the name of the Owner from the deckName
-					sDeckList[i] = deckName
-							.substring(deckName.indexOf("'s ") + 3);
-				}
-
-				ArrayAdapter<String> ownerAdapter = new ArrayAdapter<String>(
-						UpdateDeck.this, android.R.layout.simple_spinner_item,
-						sDeckList);
-
-				sOwnersDecks.setAdapter(ownerAdapter);
-			}
+			sOwnersDecks.setAdapter(deckAdapter);
 		}
 	}
 
@@ -148,8 +125,9 @@ public class UpdateDeck extends Activity implements OnClickListener,
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.bUpdateDeck:
-			updatedDeck = new Deck(etDeckName.getText().toString(), new Player(
-					ownerName), tbActiveDeck.isChecked());
+			updatedDeck = new Deck(originalDeck.getId(), etDeckName.getText()
+					.toString(), originalDeck.getOwner(),
+					tbActiveDeck.isChecked());
 
 			AlertDialog.Builder adb = new AlertDialog.Builder(this);
 			adb.setMessage(
@@ -178,17 +156,14 @@ public class UpdateDeck extends Activity implements OnClickListener,
 			break;
 		}
 	}
-	
+
 	private class updateDeck extends AsyncTask<String, Integer, String> {
 
 		@Override
 		protected String doInBackground(String... params) {
 			MagicHatDB mhDb = new MagicHatDB(UpdateDeck.this);
 			mhDb.openWritableDB();
-			mhDb.updateDeck(ownerName,
-					selectedDeckName, etDeckName
-							.getText().toString(),
-					tbActiveDeck.isChecked());
+			mhDb.updateDeck(originalDeck, updatedDeck);
 			mhDb.closeDB();
 			return null;
 		}
@@ -198,69 +173,49 @@ public class UpdateDeck extends Activity implements OnClickListener,
 			super.onPostExecute(results);
 			Toast.makeText(
 					UpdateDeck.this,
-					originalDeck.toString()
-							+ " has been updated to "
-							+ updatedDeck.toString(),
-					Toast.LENGTH_SHORT).show();
+					originalDeck.toString() + " has been updated to "
+							+ updatedDeck.toString(), Toast.LENGTH_SHORT)
+					.show();
 
 			UpdateDeck.this.finish();
 			Intent openUpdateDeckActivity = new Intent(
 					"com.magichat.UPDATEDECK");
 			startActivity(openUpdateDeckActivity);
 		}
-		
 	}
 
 	@Override
 	public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2,
 			long arg3) {
-		String selectedOwnerNameWithInactive = sAllOwners.getSelectedItem()
-				.toString();
-
-		// The name of the owner could be populated with " (inactive)"
-		// at the end
-		if (selectedOwnerNameWithInactive.endsWith(")")) {
-			ownerName = selectedOwnerNameWithInactive.substring(0,
-					selectedOwnerNameWithInactive.indexOf("(") - 1);
-		} else {
-			ownerName = selectedOwnerNameWithInactive;
-		}
+		Player selectedOwner = (Player) sAllOwners.getSelectedItem();
 
 		switch (arg0.getId()) {
 		case R.id.sAllOwners:
-			Player p = new Player(ownerName);
 
-			new populateDecksSpinner().execute(p);
+			new populateDecksSpinner().execute(selectedOwner);
 
 			break;
 		case R.id.sOwnersDecks:
-			if (!sOwnersDecks.getSelectedItem().toString().equals("")) {
-				String deckName = sOwnersDecks.getSelectedItem().toString();
+			originalDeck = (Deck) sOwnersDecks.getSelectedItem();
 
-				if (deckName.endsWith(")")) {
-					tbActiveDeck.setChecked(false);
-				} else {
+			if (!originalDeck.getName().isEmpty()) {
+
+				if (originalDeck.isActive()) {
 					tbActiveDeck.setChecked(true);
+				} else {
+					tbActiveDeck.setChecked(false);
 				}
 
-				// This removes the word Deck from the end of the deckName
-				selectedDeckName = deckName.substring(0,
-						deckName.indexOf(" Deck"));
-
-				etDeckName.setText(selectedDeckName);
+				etDeckName.setText(originalDeck.getName());
 
 				sdUpdateDeckCriteria.unlock();
 				sdUpdateDeckCriteria.close();
 				llSelectDeck.setVisibility(LinearLayout.GONE);
 				llUpdateDeckMain.setVisibility(LinearLayout.VISIBLE);
 
-				originalDeck = new Deck(selectedDeckName,
-						new Player(ownerName), tbActiveDeck.isChecked());
-
 				tvUpdateDeckResults.setText("\n\nWould you like to update "
 						+ originalDeck.toString() + "?");
 			} else {
-				selectedDeckName = "";
 				sdUpdateDeckCriteria.open();
 				sdUpdateDeckCriteria.lock();
 			}

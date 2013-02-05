@@ -1,9 +1,12 @@
 package com.magichat;
 
+import java.util.List;
+
 public class Player implements Comparable<Player> {
 	String name;
 	int id;
 	boolean active;
+	List<Deck> deckList;
 	
 	public Player() {
 	}
@@ -33,11 +36,21 @@ public class Player implements Comparable<Player> {
 	public void setActive(boolean active) {
 		this.active = active;
 	}
+	
+	public void setDeckList(List<Deck> deckList) {
+		this.deckList = deckList;
+	}
+	
+	public List<Deck> getDeckList() {
+		return this.deckList;
+	}
 
 	@Override
 	public String toString() {
-		// TODO Return "playerName (inactive)" from here?
-		return getName();
+		if (!this.active) {
+			return this.getName() + " (inactive)";
+		}
+		return this.getName();
 	}
 
 	@Override

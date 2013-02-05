@@ -37,10 +37,10 @@ public class AddDeck extends Activity implements View.OnClickListener {
 	}
 
 	private class populateAllPlayers extends
-			AsyncTask<String, Integer, ArrayAdapter<String>> {
+			AsyncTask<String, Integer, ArrayAdapter<Player>> {
 
 		@Override
-		protected ArrayAdapter<String> doInBackground(String... params) {
+		protected ArrayAdapter<Player> doInBackground(String... params) {
 			mhDB.openReadableDB();
 			allOwners = mhDB.getAllPlayers();
 			mhDB.closeDB();
@@ -56,15 +56,15 @@ public class AddDeck extends Activity implements View.OnClickListener {
 				stAllOwners[i] = allOwners.get(i).toString();
 			}
 
-			ArrayAdapter<String> ownerAdapter = new ArrayAdapter<String>(
+			ArrayAdapter<Player> ownerAdapter = new ArrayAdapter<Player>(
 					AddDeck.this, android.R.layout.simple_spinner_item,
-					stAllOwners);
+					allOwners);
 
 			return ownerAdapter;
 		}
 
 		@Override
-		protected void onPostExecute(ArrayAdapter<String> ownerAdapter) {
+		protected void onPostExecute(ArrayAdapter<Player> ownerAdapter) {
 			super.onPostExecute(ownerAdapter);
 			sAllOwners.setAdapter(ownerAdapter);
 		}
@@ -105,20 +105,18 @@ public class AddDeck extends Activity implements View.OnClickListener {
 		protected Boolean doInBackground(String... params) {
 			int iActive = tbActiveDeck.isChecked() ? 1 : 0;
 			Boolean isDup = false;
+			Player p = (Player) sAllOwners.getSelectedItem();
 
-			Deck d = new Deck(etDeckName.getText().toString(), new Player(
-					sAllOwners.getSelectedItem().toString()),
+			Deck d = new Deck(etDeckName.getText().toString(), p,
 					tbActiveDeck.isChecked());
 
 			mhDB.openWritableDB();
-			int ownerId = mhDB.getPlayerId(sAllOwners.getSelectedItem()
-					.toString());
 
 			if (mhDB.deckExists(d)) {
 				mhDB.closeDB();
 				isDup = true;
 			} else {
-				mhDB.addDeck(etDeckName.getText().toString(), ownerId, iActive);
+				mhDB.addDeck(etDeckName.getText().toString(), p.getId(), iActive);
 				mhDB.closeDB();
 			}
 
@@ -180,11 +178,11 @@ public class AddDeck extends Activity implements View.OnClickListener {
 		@Override
 		protected String doInBackground(String... params) {
 			int iActive = tbActiveDeck.isChecked() ? 1 : 0;
+			
+			Player p = (Player) sAllOwners.getSelectedItem();
 
 			mhDB.openWritableDB();
-			int ownerId = mhDB.getPlayerId(sAllOwners.getSelectedItem()
-					.toString());
-			mhDB.addDeck(etDeckName.getText().toString(), ownerId, iActive);
+			mhDB.addDeck(etDeckName.getText().toString(), p.getId(), iActive);
 			mhDB.closeDB();
 
 			return null;

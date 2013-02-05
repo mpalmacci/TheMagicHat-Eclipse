@@ -1,7 +1,6 @@
 package com.magichat;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import android.app.Activity;
 import android.os.AsyncTask;
@@ -38,8 +37,6 @@ public class DisplayAllDecks extends Activity {
 				sAllDecks = "You have no decks in your Database!";
 				return null;
 			} else {
-				// Order the Decks before displaying them
-				Collections.sort(allDecks);
 
 				for (Deck d : allDecks) {
 					sAllDecks = sAllDecks.concat(d.toString()).concat("\n");

@@ -3,6 +3,7 @@ package com.magichat;
 import java.io.File;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -69,9 +70,8 @@ public class MagicHatDB {
 		mhHelper.addDeck(name, OwnerId, active, mhDb);
 	}
 
-	public void updateDeck(String owner, String oldDeckName,
-			String newDeckName, boolean newActive) {
-		mhHelper.updateDeck(owner, oldDeckName, newDeckName, newActive, mhDb);
+	public void updateDeck(Deck oldDeck, Deck newDeck) {
+		mhHelper.updateDeck(oldDeck, newDeck, mhDb);
 	}
 
 	public void deleteDecks(int[] id) {
@@ -100,6 +100,10 @@ public class MagicHatDB {
 
 	public List<Deck> getDeckList(Player p) {
 		return mhHelper.getDeckList(p, mhDb);
+	}
+
+	public List<Deck> getActiveDeckList(Player p) {
+		return mhHelper.getActiveDeckList(p, mhDb);
 	}
 
 	public int getDeckId(String sDeckName, String sOwnerName) {
@@ -151,19 +155,20 @@ public class MagicHatDB {
 	 * null, null); }
 	 */
 
-	public Player flipActiveStatus(Player pFake) {
-		return mhHelper.flipActiveStatus(pFake, mhDb);
+	public Player flipActiveStatus(Player p) {
+		return mhHelper.flipActiveStatus(p, mhDb);
 	}
 
-	public Deck flipActiveStatus(String deckName, String ownerName) {
-		return mhHelper.flipActiveStatus(deckName, ownerName, mhDb);
+	public Deck flipActiveStatus(Deck d) {
+		return mhHelper.flipActiveStatus(d, mhDb);
 	}
 
 	// /////////////////// GAMES ///////////////////////////////////////////
 
-	public void addGameResult(List<Player> Players, List<Deck> gameDecks,
-			Player pWinner, Date gameDate) {
-		mhHelper.addGameResult(Players, gameDecks, pWinner, gameDate, mhDb);
+	public void addGameResult(List<Player> Players,
+			Map<Player, Deck> gamePlayersDecks, Player pWinner, Date gameDate) {
+		mhHelper.addGameResult(Players, gamePlayersDecks, pWinner, gameDate,
+				mhDb);
 	}
 
 	public List<Game> getAllGames() {

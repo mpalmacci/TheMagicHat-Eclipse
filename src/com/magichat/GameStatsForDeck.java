@@ -26,11 +26,11 @@ public class GameStatsForDeck extends Activity implements
 	List<Deck> playersDecks = new ArrayList<Deck>();
 
 	LinearLayout llByDecks, llWonLostStats, llNonePlayed;
-	Spinner sCurrentSelection;
+	Spinner sDeckSelection;
 	TextView tvTotalGames, tvGamesWon, tvGamesLost, tvEmptyList;
 	ProgressBar pbTotalWonLost;
 
-	String currentDeck, currentPlayer;
+	Deck currentDeck;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -60,70 +60,38 @@ public class GameStatsForDeck extends Activity implements
 
 			if (allDecks.isEmpty()) {
 				llByDecks.setVisibility(LinearLayout.GONE);
-				sCurrentSelection.setVisibility(LinearLayout.GONE);
+				sDeckSelection.setVisibility(LinearLayout.GONE);
 				llNonePlayed.setVisibility(LinearLayout.VISIBLE);
 				tvEmptyList.setText("There are No Decks in the Database!");
 			} else {
-				new convertDecklistToString().execute();
-			}
-		}
-
-		private class convertDecklistToString extends
-				AsyncTask<String, Integer, String[]> {
-
-			@Override
-			protected String[] doInBackground(String... params) {
-				String[] stAllDecks = new String[allDecks.size()];
-
-				for (int i = 0; i < allDecks.size(); i++) {
-					stAllDecks[i] = allDecks.get(i).toString();
-				}
-				return stAllDecks;
-			}
-
-			@Override
-			protected void onPostExecute(String[] stAllDecks) {
-				super.onPostExecute(stAllDecks);
-
-				ArrayAdapter<String> deckAdapter = new ArrayAdapter<String>(
+				ArrayAdapter<Deck> deckAdapter = new ArrayAdapter<Deck>(
 						GameStatsForDeck.this,
-						android.R.layout.simple_spinner_item, stAllDecks);
-				sCurrentSelection.setAdapter(deckAdapter);
+						android.R.layout.simple_spinner_item, allDecks);
+				sDeckSelection.setAdapter(deckAdapter);
 
-				currentDeck = sCurrentSelection.getSelectedItem().toString();
-
-				new populateScreen().execute();
+				currentDeck = (Deck) sDeckSelection.getSelectedItem();
 			}
 		}
 	}
 
-	private class populateScreen extends AsyncTask<String, Integer, Deck> {
-		Deck d = new Deck();
+	private class populateScreen extends AsyncTask<String, Integer, String> {
 		List<Game> games = new ArrayList<Game>();
 
 		@Override
-		protected Deck doInBackground(String... params) {
+		protected String doInBackground(String... params) {
 			MagicHatDB mhDB = new MagicHatDB(GameStatsForDeck.this);
-
-			// Parse the Deck's Name for the owner and Deck Name separately
-			String currentDeckName = currentDeck.substring(
-					currentDeck.indexOf("'s ") + 3,
-					currentDeck.indexOf(" Deck"));
-
 			mhDB.openReadableDB();
-			d = mhDB.getDeck(currentDeckName,
-					currentDeck.substring(0, currentDeck.indexOf("'s")));
-			games = mhDB.getGames(d);
+			games = mhDB.getGames(currentDeck);
 			mhDB.closeDB();
 
-			getStats(d, games);
+			getStats(games);
 
-			return d;
+			return null;
 		}
 
 		@Override
-		protected void onPostExecute(Deck d) {
-			super.onPostExecute(d);
+		protected void onPostExecute(String results) {
+			super.onPostExecute(results);
 			if (games.isEmpty()) {
 				llByDecks.setVisibility(LinearLayout.GONE);
 				llNonePlayed.setVisibility(LinearLayout.VISIBLE);
@@ -146,7 +114,7 @@ public class GameStatsForDeck extends Activity implements
 							gameList.add(g);
 						}
 					}
-					populateGamesForDecks(gameList, d);
+					populateGamesForDecks(gameList);
 
 				}
 
@@ -155,7 +123,7 @@ public class GameStatsForDeck extends Activity implements
 		}
 	}
 
-	private void populateGamesForDecks(List<Game> gameList, Deck d) {
+	private void populateGamesForDecks(List<Game> gameList) {
 		List<Game> lGamesWon = new ArrayList<Game>();
 		TextView tvTotalGamesAgainstOpp = new TextView(GameStatsForDeck.this);
 		ProgressBar pbGames = new ProgressBar(GameStatsForDeck.this, null,
@@ -165,7 +133,7 @@ public class GameStatsForDeck extends Activity implements
 		Player p = new Player();
 		String sTotalGamesAgainstOpp, sPercentWonAgainstOpp;
 
-		if (gameList.get(0).getDeck(1).equals(d)) {
+		if (gameList.get(0).getDeck(1).equals(currentDeck)) {
 			dOpp = gameList.get(0).getDeck(2);
 			p = gameList.get(0).getPlayer(1);
 		} else {
@@ -197,13 +165,13 @@ public class GameStatsForDeck extends Activity implements
 		llWonLostStats.addView(tvPercentWonAgainstOpp);
 	}
 
-	private void getStats(Deck d, List<Game> games) {
+	private void getStats(List<Game> games) {
 		Player p = new Player();
 		List<Game> gamesWon = new ArrayList<Game>(), gamesLost = new ArrayList<Game>();
 
 		for (Game g : games) {
 			// Only add the Deck if opponents doesn't consist of the Deck yet
-			if (g.getDeck(1).equals(d)) {
+			if (g.getDeck(1).equals(currentDeck)) {
 				// Deck owner != Player of that deck in all situations
 				p = g.getPlayer(1);
 
@@ -237,7 +205,7 @@ public class GameStatsForDeck extends Activity implements
 		playersDecks = new ArrayList<Deck>();
 		llNonePlayed.setVisibility(LinearLayout.GONE);
 
-		currentDeck = sCurrentSelection.getSelectedItem().toString();
+		currentDeck = (Deck) sDeckSelection.getSelectedItem();
 		new populateScreen().execute();
 	}
 
@@ -248,7 +216,7 @@ public class GameStatsForDeck extends Activity implements
 	private void initialize() {
 		llNonePlayed = (LinearLayout) findViewById(R.id.llNonePlayed);
 		llByDecks = (LinearLayout) findViewById(R.id.llByDecks);
-		sCurrentSelection = (Spinner) findViewById(R.id.sCurrentSelection);
+		sDeckSelection = (Spinner) findViewById(R.id.sCurrentSelection);
 		tvEmptyList = (TextView) findViewById(R.id.tvEmptyList);
 
 		llWonLostStats = (LinearLayout) findViewById(R.id.llWonLostStatsD);
@@ -257,6 +225,6 @@ public class GameStatsForDeck extends Activity implements
 		tvGamesLost = (TextView) findViewById(R.id.tvGamesLostD);
 		pbTotalWonLost = (ProgressBar) findViewById(R.id.pbTotalWonLostD);
 
-		sCurrentSelection.setOnItemSelectedListener(this);
+		sDeckSelection.setOnItemSelectedListener(this);
 	}
 }

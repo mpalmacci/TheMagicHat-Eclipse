@@ -27,8 +27,7 @@ public class ChangeActive extends Activity implements View.OnClickListener,
 	Button bFlipActiveStatus;
 	TextView tvActiveStatusChanged;
 
-	String defaultDeck = "All Decks";
-	String currentOwnerName;
+	public final static String DEFAULT_DECK = "All Decks";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -42,40 +41,32 @@ public class ChangeActive extends Activity implements View.OnClickListener,
 
 	// TODO Duplicate Code with UpdateDeck
 	private class populateAllOwnersSpinner extends
-			AsyncTask<String, Integer, List<Player>> {
+			AsyncTask<String, Integer, ArrayAdapter<Player>> {
 
 		@Override
-		protected List<Player> doInBackground(String... params) {
+		protected ArrayAdapter<Player> doInBackground(String... params) {
 			List<Player> allOwners = new ArrayList<Player>();
 
 			mhDb.openReadableDB();
 			allOwners = mhDb.getAllOwners();
 			mhDb.closeDB();
 
-			return allOwners;
-		}
-
-		@Override
-		protected void onPostExecute(List<Player> allOwners) {
-			super.onPostExecute(allOwners);
-
 			if (allOwners.isEmpty()) {
 				System.out.println("allOwners is empty!");
 				finish();
 			}
 
-			String[] stAllOwners = new String[allOwners.size()];
-
-			for (int i = 0; i < allOwners.size(); i++) {
-				stAllOwners[i] = allOwners.get(i).toString();
-				if (!allOwners.get(i).isActive()) {
-					stAllOwners[i] = stAllOwners[i].concat(" (inactive)");
-				}
-			}
-
-			ArrayAdapter<String> ownerAdapter = new ArrayAdapter<String>(
+			ArrayAdapter<Player> ownerAdapter = new ArrayAdapter<Player>(
 					ChangeActive.this, android.R.layout.simple_spinner_item,
-					stAllOwners);
+					allOwners);
+
+			return ownerAdapter;
+		}
+
+		@Override
+		protected void onPostExecute(ArrayAdapter<Player> ownerAdapter) {
+			super.onPostExecute(ownerAdapter);
+
 			sAllOwners.setAdapter(ownerAdapter);
 		}
 	}
@@ -85,21 +76,13 @@ public class ChangeActive extends Activity implements View.OnClickListener,
 			AsyncTask<String, Integer, List<Deck>> {
 		@Override
 		protected List<Deck> doInBackground(String... args) {
-			String sCurrentOwner = sAllOwners.getSelectedItem().toString();
-
-			// The name of the owner could be populated with " (inactive)" at
-			// the end
-			if (sAllOwners.getSelectedItem().toString().endsWith(")")) {
-				currentOwnerName = sCurrentOwner.substring(0,
-						sCurrentOwner.indexOf("(") - 1);
-			} else {
-				currentOwnerName = sCurrentOwner;
-			}
-			Player p = new Player(currentOwnerName);
+			Player p = (Player) sAllOwners.getSelectedItem();
 
 			mhDb.openReadableDB();
 			deckList = mhDb.getDeckList(p);
 			mhDb.closeDB();
+
+			deckList.add(0, new Deck(DEFAULT_DECK, p));
 
 			return deckList;
 		}
@@ -107,6 +90,7 @@ public class ChangeActive extends Activity implements View.OnClickListener,
 		@Override
 		protected void onPostExecute(List<Deck> deckList) {
 			super.onPostExecute(deckList);
+			Player p = (Player) sAllOwners.getSelectedItem();
 
 			if (deckList.isEmpty()) {
 				System.out.println("Deck List is empty!");
@@ -118,81 +102,41 @@ public class ChangeActive extends Activity implements View.OnClickListener,
 
 				sOwnersDecks.setAdapter(ownerAdapter);
 			} else {
-				tvActiveStatusChanged.setText("\n\n\n" + currentOwnerName
+				tvActiveStatusChanged.setText("\n\n\n" + p.getName()
 						+ " has " + deckList.size() + " decks.\n\n\n");
 
-				String[] sDeckList = new String[deckList.size() + 1];
-
-				sDeckList[0] = defaultDeck;
-
-				String deckName = "";
-				for (int i = 1; i < deckList.size() + 1; i++) {
-					deckName = deckList.get(i - 1).toString();
-					// This removes the name of the Owner from the deckName
-					sDeckList[i] = deckName
-							.substring(deckName.indexOf("'s ") + 3);
-				}
-
-				ArrayAdapter<String> ownerAdapter = new ArrayAdapter<String>(
+				ArrayAdapter<Deck> deckAdapter = new ArrayAdapter<Deck>(
 						ChangeActive.this,
-						android.R.layout.simple_spinner_item, sDeckList);
+						android.R.layout.simple_spinner_item, deckList);
 
-				sOwnersDecks.setAdapter(ownerAdapter);
+				sOwnersDecks.setAdapter(deckAdapter);
 			}
 		}
 	}
 
 	@Override
 	public void onClick(View arg0) {
-		String sCurrentOwner = sAllOwners.getSelectedItem().toString();
-		String sCurrentDeck = sOwnersDecks.getSelectedItem().toString();
+		Player currentOwner = (Player) sAllOwners.getSelectedItem();
+		Deck currentDeck = (Deck) sOwnersDecks.getSelectedItem();
 
+		if (currentDeck.getName().equals(DEFAULT_DECK)) {
 
-		if (sCurrentDeck.equals(defaultDeck)) {
-			sCurrentOwner = sAllOwners.getSelectedItem().toString();
-			String ownerName = "";
-
-			// The name of the owner could be populated with " (inactive)" at
-			// the end
-			if (sAllOwners.getSelectedItem().toString().endsWith(")")) {
-				ownerName = sCurrentOwner.substring(0,
-						sCurrentOwner.indexOf("(") - 1);
-			} else {
-				ownerName = sCurrentOwner;
-			}
-
-			new flipActiveStatusForPlayer().execute(ownerName);
+			new flipActiveStatusForPlayer().execute(currentOwner);
 
 		} else {
-			sCurrentDeck = sOwnersDecks.getSelectedItem().toString();
 
-			String deckName = sCurrentDeck.substring(0,
-					sCurrentDeck.indexOf(" Deck"));
-			String ownerName = "";
-
-			if (sCurrentOwner.endsWith(")")) {
-				ownerName = sCurrentOwner.substring(0,
-						sCurrentOwner.indexOf(" ("));
-			} else {
-				ownerName = sCurrentOwner;
-			}
-
-			String[] arguments = { deckName, ownerName };
-
-			new flipActiveStatusForDeck().execute(arguments);
-
+			new flipActiveStatusForDeck().execute(currentDeck);
 		}
 	}
 
 	private class flipActiveStatusForPlayer extends
-			AsyncTask<String, Integer, Player> {
+			AsyncTask<Player, Integer, Player> {
 
 		@Override
-		protected Player doInBackground(String... ownerName) {
-			Player p = new Player();
+		protected Player doInBackground(Player... owners) {
 
 			mhDb.openWritableDB();
-			p = mhDb.flipActiveStatus(new Player(ownerName[0]));
+			Player p = mhDb.flipActiveStatus(owners[0]);
 			mhDb.closeDB();
 
 			return p;
@@ -204,9 +148,9 @@ public class ChangeActive extends Activity implements View.OnClickListener,
 
 			String output = "";
 			if (p.isActive()) {
-				output = p.toString() + " is now active.";
+				output = p.getName() + " is now active.";
 			} else {
-				output = p.toString() + " is now inactive.";
+				output = p.getName() + " is now inactive.";
 			}
 
 			AlertDialog.Builder adb = new AlertDialog.Builder(ChangeActive.this);
@@ -228,14 +172,13 @@ public class ChangeActive extends Activity implements View.OnClickListener,
 	}
 
 	private class flipActiveStatusForDeck extends
-			AsyncTask<String, Integer, Deck> {
+			AsyncTask<Deck, Integer, Deck> {
 
 		@Override
-		protected Deck doInBackground(String... args) {
-			Deck d = new Deck();
+		protected Deck doInBackground(Deck... decks) {
 
 			mhDb.openWritableDB();
-			d = mhDb.flipActiveStatus(args[0], args[1]);
+			Deck d = mhDb.flipActiveStatus(decks[0]);
 			mhDb.closeDB();
 
 			return d;
@@ -274,9 +217,8 @@ public class ChangeActive extends Activity implements View.OnClickListener,
 			new populateDecksSpinner().execute();
 			break;
 		case R.id.sOwnersDecks:
-			if (!sOwnersDecks.getSelectedItem().toString().equals(defaultDeck)) {
+			if (!sOwnersDecks.getSelectedItem().toString().equals(DEFAULT_DECK)) {
 				tvActiveStatusChanged.setText("\n\n"
-						+ sAllOwners.getSelectedItem().toString() + "'s "
 						+ sOwnersDecks.getSelectedItem().toString() + "\n\n");
 			}
 			break;

@@ -25,11 +25,11 @@ public class GameStatsForPlayer extends Activity implements
 	List<Deck> playersDecks = new ArrayList<Deck>();
 
 	LinearLayout llByPlayers, llWonLostStats, llNonePlayed;
-	Spinner sCurrentSelection;
+	Spinner sPlayerSelection;
 	TextView tvTotalGames, tvGamesWon, tvGamesLost, tvEmptyList;
 	ProgressBar pbTotalWonLost;
 
-	String currentDeck, currentPlayer;
+	Player currentPlayer;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -57,64 +57,40 @@ public class GameStatsForPlayer extends Activity implements
 		protected void onPostExecute(String result) {
 			if (allPlayers.isEmpty()) {
 				llByPlayers.setVisibility(LinearLayout.GONE);
-				sCurrentSelection.setVisibility(LinearLayout.GONE);
+				sPlayerSelection.setVisibility(LinearLayout.GONE);
 				llNonePlayed.setVisibility(LinearLayout.VISIBLE);
 				tvEmptyList.setText("There are No Players in the Database!");
 			} else {
-				new convertDecklistToString().execute();
-			}
-		}
-
-		private class convertDecklistToString extends
-				AsyncTask<String, Integer, String[]> {
-
-			@Override
-			protected String[] doInBackground(String... params) {
-				String[] stAllOwners = new String[allPlayers.size()];
-
-				for (int i = 0; i < allPlayers.size(); i++) {
-					stAllOwners[i] = allPlayers.get(i).toString();
-				}
-
-				return stAllOwners;
-			}
-
-			@Override
-			protected void onPostExecute(String[] stAllOwners) {
-				super.onPostExecute(stAllOwners);
-				ArrayAdapter<String> ownerAdapter = new ArrayAdapter<String>(
+				ArrayAdapter<Player> ownerAdapter = new ArrayAdapter<Player>(
 						GameStatsForPlayer.this,
-						android.R.layout.simple_spinner_item, stAllOwners);
-				sCurrentSelection.setAdapter(ownerAdapter);
+						android.R.layout.simple_spinner_item, allPlayers);
+				sPlayerSelection.setAdapter(ownerAdapter);
 
-				currentPlayer = sCurrentSelection.getSelectedItem().toString();
+				currentPlayer = (Player) sPlayerSelection.getSelectedItem();
 				new populateScreen().execute();
 			}
 		}
 	}
 
-	private class populateScreen extends AsyncTask<String, Integer, Player> {
-		Player p = new Player();
+	private class populateScreen extends AsyncTask<String, Integer, String> {
 		List<Game> games = new ArrayList<Game>();
 
 		@Override
-		protected Player doInBackground(String... params) {
+		protected String doInBackground(String... params) {
 			MagicHatDB mhDB = new MagicHatDB(GameStatsForPlayer.this);
 
 			mhDB.openReadableDB();
-			int pId = mhDB.getPlayerId(currentPlayer);
-			p = mhDB.getPlayer(pId);
-			games = mhDB.getGames(p);
+			games = mhDB.getGames(currentPlayer);
 			mhDB.closeDB();
 
-			getStats(p, games);
+			getStats(games);
 
-			return p;
+			return null;
 		}
 
 		@Override
-		protected void onPostExecute(Player p) {
-			super.onPostExecute(p);
+		protected void onPostExecute(String results) {
+			super.onPostExecute(results);
 			if (games.isEmpty()) {
 				llByPlayers.setVisibility(LinearLayout.GONE);
 				llNonePlayed.setVisibility(LinearLayout.VISIBLE);
@@ -138,7 +114,7 @@ public class GameStatsForPlayer extends Activity implements
 						}
 					}
 
-					populateGamesForPlayers(gameList, p);
+					populateGamesForPlayers(gameList);
 				}
 
 				llByPlayers.setVisibility(LinearLayout.VISIBLE);
@@ -146,7 +122,7 @@ public class GameStatsForPlayer extends Activity implements
 		}
 	}
 
-	private void populateGamesForPlayers(List<Game> gameList, Player p) {
+	private void populateGamesForPlayers(List<Game> gameList) {
 		List<Game> lGamesWon = new ArrayList<Game>();
 		TextView tvTotalGamesAgainstOpp = new TextView(GameStatsForPlayer.this);
 		ProgressBar pbGames = new ProgressBar(GameStatsForPlayer.this, null,
@@ -155,7 +131,7 @@ public class GameStatsForPlayer extends Activity implements
 		Deck dOpp = new Deck();
 		String sTotalGamesAgainstOpp, sPercentWonAgainstOpp;
 
-		if (gameList.get(0).getPlayer(1).equals(p)) {
+		if (gameList.get(0).getPlayer(1).equals(currentPlayer)) {
 			dOpp = gameList.get(0).getDeck(2);
 		} else {
 			dOpp = gameList.get(0).getDeck(1);
@@ -164,7 +140,7 @@ public class GameStatsForPlayer extends Activity implements
 		sTotalGamesAgainstOpp = dOpp.toString();
 
 		for (Game g : gameList) {
-			if (g.isWinner(p)) {
+			if (g.isWinner(currentPlayer)) {
 				lGamesWon.add(g);
 			}
 		}
@@ -186,13 +162,13 @@ public class GameStatsForPlayer extends Activity implements
 
 	}
 
-	private void getStats(Player p, List<Game> games) {
+	private void getStats(List<Game> games) {
 		List<Game> gamesWon = new ArrayList<Game>(), gamesLost = new ArrayList<Game>();
 
 		for (Game g : games) {
 			// Only add the Player if opponents doesn't consist of the Player
 			// yet
-			if (g.getPlayer(1).equals(p)) {
+			if (g.getPlayer(1).equals(currentPlayer)) {
 				if (!dOpponents.contains(g.getDeck(2))) {
 					dOpponents.add(g.getDeck(2));
 				}
@@ -208,7 +184,7 @@ public class GameStatsForPlayer extends Activity implements
 				}
 			}
 
-			if (g.isWinner(p)) {
+			if (g.isWinner(currentPlayer)) {
 				gamesWon.add(g);
 			} else {
 				gamesLost.add(g);
@@ -229,7 +205,7 @@ public class GameStatsForPlayer extends Activity implements
 		playersDecks = new ArrayList<Deck>();
 		llNonePlayed.setVisibility(LinearLayout.GONE);
 
-		currentPlayer = sCurrentSelection.getSelectedItem().toString();
+		currentPlayer = (Player) sPlayerSelection.getSelectedItem();
 		new populateScreen().execute();
 	}
 
@@ -240,7 +216,7 @@ public class GameStatsForPlayer extends Activity implements
 	private void initialize() {
 		llNonePlayed = (LinearLayout) findViewById(R.id.llNonePlayed);
 		llByPlayers = (LinearLayout) findViewById(R.id.llByPlayers);
-		sCurrentSelection = (Spinner) findViewById(R.id.sCurrentSelection);
+		sPlayerSelection = (Spinner) findViewById(R.id.sCurrentSelection);
 		tvEmptyList = (TextView) findViewById(R.id.tvEmptyList);
 
 		llWonLostStats = (LinearLayout) findViewById(R.id.llWonLostStatsP);
@@ -249,6 +225,6 @@ public class GameStatsForPlayer extends Activity implements
 		tvGamesLost = (TextView) findViewById(R.id.tvGamesLostP);
 		pbTotalWonLost = (ProgressBar) findViewById(R.id.pbTotalWonLostP);
 
-		sCurrentSelection.setOnItemSelectedListener(this);
+		sPlayerSelection.setOnItemSelectedListener(this);
 	}
 }

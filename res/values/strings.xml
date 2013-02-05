@@ -12,6 +12,7 @@
     <string name="view_game_stats">View Game Stats</string>
 
     <!-- Play Game -->
+    <string name="randomize">Randomize Game Decks</string>
     <string name="winner">Who won?</string>
     <string name="decklist_start">"Your current set of decks are&#8230;\n"</string>
 

@@ -13,6 +13,7 @@ public class Deck implements Comparable<Deck> {
 	private boolean manual;
 
 	public Deck() {
+		this.name = new String();
 	}
 
 	public Deck(String name, Player owner) {
@@ -98,11 +99,19 @@ public class Deck implements Comparable<Deck> {
 
 	@Override
 	public String toString() {
+		if (getName().isEmpty()) {
+			// This is here for the UpdateDeck
+			return new String();
+		} else if (this.name == ChangeActive.DEFAULT_DECK) {
+			// This is here for the ChangeActive
+			return ChangeActive.DEFAULT_DECK;
+		}
+
 		StringBuilder sb = new StringBuilder();
 
-		sb.append(getOwner());
+		sb.append(this.owner.getName());
 		sb.append("'s ");
-		sb.append(getName());
+		sb.append(this.name);
 		sb.append(" Deck");
 
 		// TODO Remove " (inactive)" from here?
@@ -115,7 +124,7 @@ public class Deck implements Comparable<Deck> {
 
 	@Override
 	public int compareTo(Deck d) {
-		int ownerCmp = owner.compareTo(d.getOwner());
+		int ownerCmp = this.owner.compareTo(d.getOwner());
 		return (ownerCmp != 0 ? ownerCmp : name.compareTo(d.getName()));
 	}
 }

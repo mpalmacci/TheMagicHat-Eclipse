@@ -8,7 +8,6 @@ import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -184,29 +183,28 @@ public class CardDbUtil {
 
 	// ////////////////////////////// CARDS ////////////////////////////////////
 
-	public static String[] getAllCardNames() {
+	public static List<Card> getAllCardNames() {
 		// return mhHelper.getAllCardIds(cDb);
 		// SparseArray<String> allCards = new SparseArray<String>();
-		String[] cardColumns = new String[] { KEY_CARD_NAME };
-		String[] cardNames;
+		String[] cardColumns = new String[] { KEY_CARD_ROWID, KEY_CARD_NAME };
+		List<Card> allCardNames = new ArrayList<Card>();
 
 		Cursor cc = cDb.query(DB_TABLE_ALLCARDS, cardColumns, null, null, null,
 				null, null);
 
-		// int iCardId = cc.getColumnIndex(KEY_CARD_ROWID);
+		int iCardId = cc.getColumnIndex(KEY_CARD_ROWID);
 		int iCardName = cc.getColumnIndex(KEY_CARD_NAME);
-		cardNames = new String[cc.getCount()];
-		int i = 0;
 
+		Card c;
 		for (cc.moveToFirst(); !cc.isAfterLast(); cc.moveToNext()) {
-			cardNames[i] = cc.getString(iCardName);
-			i++;
+			c = new Card(cc.getInt(iCardId), cc.getString(iCardName));
+			allCardNames.add(c);
 		}
 		cc.close();
 
-		Arrays.sort(cardNames);
+		Collections.sort(allCardNames);
 
-		return cardNames;
+		return allCardNames;
 	}
 
 	protected static Map<Expansion, URL> getCardImages(String name) {

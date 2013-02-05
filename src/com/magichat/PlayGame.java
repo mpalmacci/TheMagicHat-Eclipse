@@ -2,35 +2,38 @@ package com.magichat;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
-public class PlayGame extends Activity implements View.OnClickListener {
+public class PlayGame extends Activity implements View.OnClickListener,
+		OnItemSelectedListener {
 	List<Deck> allActiveDecks = new ArrayList<Deck>();
-	List<Deck> gameDecks = new ArrayList<Deck>();
-	List<Player> Players = new ArrayList<Player>();
+	// List<Deck> gameDecks = new ArrayList<Deck>();
+	List<Player> players = new ArrayList<Player>();
+	Map<Player, Deck> gamePlayersDecks = new HashMap<Player, Deck>();
 
 	int p1GameCount = 0, p2GameCount = 0;
 
-	TextView tvPlayer1Deck, tvWinner;
-	UpsideDownTextView tvPlayer2Deck;
 	Button bPlayGame, bPlayer1, bPlayer2;
+	LinearLayout llWinnerSection, llMatchupView;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -39,52 +42,159 @@ public class PlayGame extends Activity implements View.OnClickListener {
 
 		initialize();
 
-		new getAllInfo().execute();
+		SharedPreferences getPrefs = PreferenceManager
+				.getDefaultSharedPreferences(getBaseContext());
+		boolean ownDecks = getPrefs.getBoolean("ownersDecksOnly", false);
+
+		// TODO Break this out into two separate code paths
+		new getAllInfo().execute(ownDecks);
 	}
 
-	private class getAllInfo extends AsyncTask<String, Integer, String> {
+	private class getAllInfo extends AsyncTask<Boolean, Integer, String> {
 
 		@Override
-		protected String doInBackground(String... params) {
-			MagicHatDB getAllInfoDB = new MagicHatDB(PlayGame.this);
-			getAllInfoDB.openReadableDB();
-			allActiveDecks = getAllInfoDB.getAllActiveDecks();
-			Players = getAllInfoDB.getActivePlayers();
-			getAllInfoDB.closeDB();
+		protected String doInBackground(Boolean... prefs) {
+			if (prefs[0]) {
+				// Here every player will play with their own decks
+				MagicHatDB getAllInfoDB = new MagicHatDB(PlayGame.this);
+				getAllInfoDB.openReadableDB();
+				players = getAllInfoDB.getActivePlayers();
+
+				for (Player p : players) {
+					List<Deck> playersDecks = getAllInfoDB.getActiveDeckList(p);
+					if (playersDecks.isEmpty()) {
+						System.out.println("PlayGame.getAllInfo: "
+								+ p.toString() + "'s deckList is empty!");
+					}
+					p.setDeckList(playersDecks);
+				}
+				getAllInfoDB.closeDB();
+			} else {
+				MagicHatDB getAllInfoDB = new MagicHatDB(PlayGame.this);
+				getAllInfoDB.openReadableDB();
+				players = getAllInfoDB.getActivePlayers();
+				allActiveDecks = getAllInfoDB.getAllActiveDecks();
+				getAllInfoDB.closeDB();
+			}
 			return null;
 		}
 
 		@Override
-		protected void onPostExecute(String result) {
-			super.onPostExecute(result);
+		protected void onPostExecute(String results) {
+			super.onPostExecute(results);
+			populateDeckSpinners();
 			displayNewGame();
+		}
+	}
+
+	private void populateDeckSpinners() {
+		for (Player p : players) {
+			List<Deck> deckList;
+
+			TextView tvPlayer = new TextView(PlayGame.this);
+			Spinner sPlayersDecks = new Spinner(PlayGame.this);
+
+			tvPlayer.setText("\n" + p.toString() + " will play:");
+
+			if (allActiveDecks.isEmpty()) {
+				deckList = p.getDeckList();
+			} else {
+				deckList = allActiveDecks;
+			}
+
+			ArrayAdapter<Deck> deckAdapter = new ArrayAdapter<Deck>(
+					PlayGame.this, android.R.layout.simple_spinner_item,
+					deckList);
+			sPlayersDecks.setAdapter(deckAdapter);
+
+			tvPlayer.setTextSize(25);
+			sPlayersDecks.setId(p.getId());
+			sPlayersDecks.setOnItemSelectedListener(this);
+
+			llMatchupView.addView(tvPlayer);
+			llMatchupView.addView(sPlayersDecks);
 		}
 	}
 
 	private void displayNewGame() {
 		// TODO Add in handling in case the player doesn't have any active decks
-		if (Players.size() == 0) {
+		if (players.size() == 0) {
 			bPlayGame.setEnabled(false);
-			tvPlayer1Deck.setText("\n\nYou don't have any active Players.");
-		} else if (Players.size() == 1) {
-			getNewRandomGame();
-			tvPlayer1Deck.setText(printGame(gameDecks.get(0), Players.get(0)));
-		} else if (Players.size() == 2) {
-			bPlayGame.setEnabled(true);
-			tvWinner.setVisibility(LinearLayout.VISIBLE);
-			bPlayer1.setText(Players.get(0).getName());
-			bPlayer1.setVisibility(LinearLayout.VISIBLE);
-			bPlayer2.setText(Players.get(1).getName());
-			bPlayer2.setVisibility(LinearLayout.VISIBLE);
+			TextView tvErrorMessage = new TextView(PlayGame.this);
+			tvErrorMessage.setText("\n\nNo active Players were found!\n\n");
+			llMatchupView.addView(tvErrorMessage);
+			return;
+		}
 
-			getNewRandomGame();
-			tvPlayer1Deck.setText(printGame(gameDecks.get(1), Players.get(1)));
-			tvPlayer2Deck.setText(printGame(gameDecks.get(0), Players.get(0)));
+		getNewRandomGame();
+		bPlayGame.setEnabled(true);
+
+		if (gamePlayersDecks.size() != players.size()) {
+			bPlayGame.setEnabled(false);
+			TextView tvErrorMessage = new TextView(PlayGame.this);
+			tvErrorMessage
+					.setText("Players and Decks are not of equal size\n\nPlayers size is "
+							+ players.size()
+							+ " and the Decks size is "
+							+ gamePlayersDecks.size());
+			llMatchupView.addView(tvErrorMessage);
+			return;
+		}
+
+		if (players.size() == 2) {
+			llWinnerSection.setVisibility(LinearLayout.VISIBLE);
+			bPlayer1.setText(players.get(0).getName());
+			bPlayer2.setText(players.get(1).getName());
+		}
+
+		if (allActiveDecks.isEmpty()) {
+			for (Player p : players) {
+				int pId = p.getId();
+				Spinner sPlayersDeck = (Spinner) findViewById(pId);
+
+				sPlayersDeck.setSelection(p.getDeckList().indexOf(
+						gamePlayersDecks.get(p)));
+			}
 		} else {
-			bPlayGame.setEnabled(true);
+			for (Player p : players) {
+				int pId = p.getId();
+				Spinner sPlayersDeck = (Spinner) findViewById(pId);
 
-			getNewRandomGame();
-			tvPlayer1Deck.setText(printGame(gameDecks, Players));
+				sPlayersDeck.setSelection(allActiveDecks
+						.indexOf(gamePlayersDecks.get(p)));
+			}
+		}
+	}
+
+	private void getNewRandomGame() {
+		// Clear the cache of gameDecks, and start anew
+		gamePlayersDecks = new HashMap<Player, Deck>();
+		p1GameCount = 0;
+		p2GameCount = 0;
+
+		Random ran = new Random();
+
+		int maxVal = 0;
+		int r = 0;
+
+		// TODO Allow user to choose who they are - always set them as Player 1
+		if (allActiveDecks.isEmpty()) {
+			for (Player p : players) {
+				maxVal = p.getDeckList().size();
+				r = ran.nextInt(maxVal);
+				gamePlayersDecks.put(p, p.getDeckList().get(r));
+			}
+		} else {
+			List<Integer> randomInts = new ArrayList<Integer>();
+			maxVal = allActiveDecks.size();
+			for (Player p : players) {
+				r = ran.nextInt(maxVal);
+				while (randomInts.contains(r)) {
+					r = ran.nextInt(maxVal);
+				}
+				randomInts.add(r);
+				gamePlayersDecks.put(p, allActiveDecks.get(r));
+			}
 		}
 	}
 
@@ -92,11 +202,6 @@ public class PlayGame extends Activity implements View.OnClickListener {
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.bPlayGame:
-			// Clear the cache of gameDecks, and start anew
-			gameDecks = new ArrayList<Deck>();
-			p1GameCount = 0;
-			p2GameCount = 0;
-
 			displayNewGame();
 			break;
 		case R.id.bPlayer1:
@@ -115,11 +220,21 @@ public class PlayGame extends Activity implements View.OnClickListener {
 	private class addGameResult extends AsyncTask<Integer, Integer, Integer> {
 
 		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			/*
+			 * for (int i = 0; i < gameDecks.size(); i++) { Spinner sDeck =
+			 * (Spinner) findViewById(Players.get(i).getId()); gameDecks[i] =
+			 * sDeck }
+			 */
+		}
+
+		@Override
 		protected Integer doInBackground(Integer... params) {
 			MagicHatDB mhAddGameResult = new MagicHatDB(PlayGame.this);
 			mhAddGameResult.openWritableDB();
-			mhAddGameResult.addGameResult(Players, gameDecks,
-					Players.get(params[0]), new Date());
+			mhAddGameResult.addGameResult(players, gamePlayersDecks,
+					players.get(params[0]), new Date());
 			mhAddGameResult.closeDB();
 			return params[0];
 		}
@@ -160,11 +275,6 @@ public class PlayGame extends Activity implements View.OnClickListener {
 						})
 				.setNegativeButton("No", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
-						// Clear the cache of gameDecks, and start anew
-						gameDecks = new ArrayList<Deck>();
-						p1GameCount = 0;
-						p2GameCount = 0;
-
 						displayNewGame();
 						dialog.dismiss();
 					}
@@ -180,11 +290,6 @@ public class PlayGame extends Activity implements View.OnClickListener {
 				.setPositiveButton("Yes",
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int id) {
-								// Clear the cache of gameDecks, and start anew
-								gameDecks = new ArrayList<Deck>();
-								p1GameCount = 0;
-								p2GameCount = 0;
-
 								displayNewGame();
 								dialog.dismiss();
 							}
@@ -198,124 +303,31 @@ public class PlayGame extends Activity implements View.OnClickListener {
 		ad.show();
 	}
 
-	private void getNewRandomGame() {
-		Random ran = new Random();
+	@Override
+	public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2,
+			long arg3) {
+		gamePlayersDecks.clear();
 
-		int maxVal = allActiveDecks.size();
-		int r = 0;
+		Spinner sPlayersDeck;
 
-		SharedPreferences getPrefs = PreferenceManager
-				.getDefaultSharedPreferences(getBaseContext());
-		boolean ownDecks = getPrefs.getBoolean("ownersDecksOnly", false);
-
-		// Iterates through the total number of players
-		// to find that many random decks
-		for (Player p : Players) {
-			// TODO Allow user to choose who they are - set them as Player 1
-			r = ran.nextInt(maxVal);
-			Deck d = allActiveDecks.get(r);
-
-			if (ownDecks) {
-				// See if the deck is unique to the decks already selected to be
-				// played and since the Preference to only play with your own
-				// decks is on check to see if the current player is the same as
-				// the deck's owner
-				while (gameDecks.contains(d) || !d.getOwner().equals(p)) {
-					// try the next random integer that is smaller than the
-					// total number of decks
-					r = ran.nextInt(maxVal);
-					d = allActiveDecks.get(r);
-				}
-			} else {
-				// See if the deck is unique to the decks already selected to be
-				// played
-				while (gameDecks.contains(d)) {
-					// try the next random integer that is smaller than the
-					// total number of decks
-					r = ran.nextInt(maxVal);
-					d = allActiveDecks.get(r);
-				}
-			}
-			gameDecks.add(d);
+		for (Player p : players) {
+			sPlayersDeck = (Spinner) findViewById(p.getId());
+			Deck d = (Deck) sPlayersDeck.getSelectedItem();
+			gamePlayersDecks.put(p, d);
 		}
-	}
-
-	private String printGame(Deck d, Player p) {
-		String output = "\n";
-
-		// Decks and Players should have the same number of items in it
-		if (gameDecks.size() != Players.size()) {
-			bPlayGame.setEnabled(false);
-			output = "Players and Decks are not of equal size\n\n";
-			output = output.concat("Players size is " + Players.size()).concat(
-					" and the Decks size is " + gameDecks.size());
-		} else if (Players.size() == 0) {
-			bPlayGame.setEnabled(false);
-			output = "No active players were found!\n\n";
-		} else {
-			output = output.concat(p.toString() + " will play " + d.toString())
-					.concat("\n");
-		}
-
-		return output;
-	}
-
-	private String printGame(List<Deck> gameDecks, List<Player> Players) {
-		String output = "\n\n";
-
-		// Decks and Players should have the same number of items in it
-		if (gameDecks.size() != Players.size()) {
-			bPlayGame.setEnabled(false);
-			output = "Players and Decks are not of equal size\n";
-			output = output.concat("Players size is ")
-					.concat(Integer.toString(Players.size()))
-					.concat(" and the Decks size is ")
-					.concat(Integer.toString(gameDecks.size()));
-		} else if (Players.size() == 0) {
-			bPlayGame.setEnabled(false);
-			output = "No active players were found!\n\n";
-		} else {
-			for (int i = 0; i < Players.size() - 1; i++) {
-				output = output.concat(Players.get(i).toString()
-						.concat(" will play ")
-						.concat(gameDecks.get(i).toString()).concat("\nand\n"));
-			}
-
-			output = output.concat(Players.get(Players.size() - 1).toString()
-					.concat(" will play ")
-					.concat(gameDecks.get(Players.size() - 1).toString())
-					.concat(".\n\n"));
-		}
-
-		return output;
 	}
 
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		super.onCreateOptionsMenu(menu);
-		MenuInflater mi = getMenuInflater();
-		mi.inflate(R.menu.play_game_menu, menu);
-		return true;
-	}
+	public void onNothingSelected(AdapterView<?> arg0) {
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case R.id.playGamePrefs:
-			Intent playGamePrefs = new Intent("com.magichat.PLAYGAMEPREFS");
-			startActivity(playGamePrefs);
-			break;
-		}
-		return false;
 	}
 
 	private void initialize() {
 		bPlayGame = (Button) findViewById(R.id.bPlayGame);
-		tvPlayer1Deck = (TextView) findViewById(R.id.tvPlayer1Deck);
-		tvPlayer2Deck = (UpsideDownTextView) findViewById(R.id.tvPlayer2Deck);
 		bPlayer1 = (Button) findViewById(R.id.bPlayer1);
 		bPlayer2 = (Button) findViewById(R.id.bPlayer2);
-		tvWinner = (TextView) findViewById(R.id.tvWinner);
+		llMatchupView = (LinearLayout) findViewById(R.id.llMatchupView);
+		llWinnerSection = (LinearLayout) findViewById(R.id.llWinnerSection);
 
 		bPlayGame.setOnClickListener(this);
 		bPlayer1.setOnClickListener(this);
