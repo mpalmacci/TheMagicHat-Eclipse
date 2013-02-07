@@ -131,7 +131,7 @@
             owner="2" />
         <Deck
             name="D&amp;D"
-            active="true"
+            active="false"
             number="21"
             owner="2" />
         <Deck
@@ -142,7 +142,17 @@
         <Deck
             name="Discard"
             active="true"
-            number="22"
+            number="23"
+            owner="2" />
+        <Deck
+            name="Red and Blue Dragons"
+            active="true"
+            number="24"
+            owner="2" />
+        <Deck
+            name="Land Destruction"
+            active="true"
+            number="25"
             owner="2" />
         <Deck
             name="Angels &amp; Demons"
