@@ -165,10 +165,9 @@ public class MagicHatDB {
 
 	// /////////////////// GAMES ///////////////////////////////////////////
 
-	public void addGameResult(List<Player> Players,
-			Map<Player, Deck> gamePlayersDecks, Player pWinner, Date gameDate) {
-		mhHelper.addGameResult(Players, gamePlayersDecks, pWinner, gameDate,
-				mhDb);
+	public void addGameResult(Map<Player, Deck> gamePlayersDecks,
+			Player pWinner, Date gameDate) {
+		mhHelper.addGameResult(gamePlayersDecks, pWinner, gameDate, mhDb);
 	}
 
 	public List<Game> getAllGames() {

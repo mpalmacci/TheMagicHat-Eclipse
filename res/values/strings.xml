@@ -50,7 +50,7 @@
 
     <!-- Card Search -->
     <string name="card_search">Card Search</string>
-    <string name="search">Search</string>
+    <string name="search">Perform Card Search</string>
     <string name="card_name_contains">"Card Name Contains&#8230;"</string>
     <string name="rules_text_contains">"Rules Text Contains&#8230;"</string>
     <string name="expansion">"Expansion: "</string>
@@ -58,7 +58,7 @@
     <string name="rarity">Rarity:</string>
     <string name="color">Color:</string>
     <string name="types">"Types: "</string>
-    <string name="subtypes">"Card Subtypes..."</string>
+    <string name="subtypes">"Card Subtypes&#8230;"</string>
     <string name="conv_mana_cost">"Convt. Mana Cost: "</string>
     <string name="cmc">CMC</string>
 

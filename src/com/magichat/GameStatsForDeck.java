@@ -109,8 +109,8 @@ public class GameStatsForDeck extends Activity implements
 				for (Deck dOpp : dOpponents) {
 					List<Game> gameList = new ArrayList<Game>();
 					for (Game g : games) {
-						if (g.getDeck(1).equals(dOpp)
-								|| g.getDeck(2).equals(dOpp)) {
+						if (g.getDeck(0).equals(dOpp)
+								|| g.getDeck(1).equals(dOpp)) {
 							gameList.add(g);
 						}
 					}
@@ -133,12 +133,12 @@ public class GameStatsForDeck extends Activity implements
 		Player p = new Player();
 		String sTotalGamesAgainstOpp, sPercentWonAgainstOpp;
 
-		if (gameList.get(0).getDeck(1).equals(currentDeck)) {
-			dOpp = gameList.get(0).getDeck(2);
-			p = gameList.get(0).getPlayer(1);
-		} else {
+		if (gameList.get(0).getDeck(0).equals(currentDeck)) {
 			dOpp = gameList.get(0).getDeck(1);
-			p = gameList.get(0).getPlayer(2);
+			p = gameList.get(0).getPlayer(0);
+		} else {
+			dOpp = gameList.get(0).getDeck(0);
+			p = gameList.get(0).getPlayer(1);
 		}
 
 		sTotalGamesAgainstOpp = dOpp.toString();
@@ -171,18 +171,18 @@ public class GameStatsForDeck extends Activity implements
 
 		for (Game g : games) {
 			// Only add the Deck if opponents doesn't consist of the Deck yet
-			if (g.getDeck(1).equals(currentDeck)) {
+			if (g.getDeck(0).equals(currentDeck)) {
+				// Deck owner != Player of that deck in all situations
+				p = g.getPlayer(0);
+
+				if (!dOpponents.contains(g.getDeck(1))) {
+					dOpponents.add(g.getDeck(1));
+				}
+			} else if (!dOpponents.contains(g.getDeck(0))) {
 				// Deck owner != Player of that deck in all situations
 				p = g.getPlayer(1);
 
-				if (!dOpponents.contains(g.getDeck(2))) {
-					dOpponents.add(g.getDeck(2));
-				}
-			} else if (!dOpponents.contains(g.getDeck(1))) {
-				// Deck owner != Player of that deck in all situations
-				p = g.getPlayer(2);
-
-				dOpponents.add(g.getDeck(1));
+				dOpponents.add(g.getDeck(0));
 			}
 
 			if (g.isWinner(p)) {
@@ -207,6 +207,8 @@ public class GameStatsForDeck extends Activity implements
 
 		currentDeck = (Deck) sDeckSelection.getSelectedItem();
 		new populateScreen().execute();
+		
+		System.out.println();
 	}
 
 	@Override

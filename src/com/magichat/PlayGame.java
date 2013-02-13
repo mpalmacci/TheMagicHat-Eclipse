@@ -28,7 +28,7 @@ public class PlayGame extends Activity implements View.OnClickListener,
 	List<Deck> allActiveDecks = new ArrayList<Deck>();
 	// List<Deck> gameDecks = new ArrayList<Deck>();
 	List<Player> players = new ArrayList<Player>();
-	Map<Player, Deck> gamePlayersDecks = new HashMap<Player, Deck>();
+	Map<Player, Deck> playersAndDecks = new HashMap<Player, Deck>();
 
 	int p1GameCount = 0, p2GameCount = 0;
 
@@ -54,12 +54,12 @@ public class PlayGame extends Activity implements View.OnClickListener,
 
 		@Override
 		protected String doInBackground(Boolean... prefs) {
+			MagicHatDB getAllInfoDB = new MagicHatDB(PlayGame.this);
+			getAllInfoDB.openReadableDB();
+			players = getAllInfoDB.getActivePlayers();
+
 			if (prefs[0]) {
 				// Here every player will play with their own decks
-				MagicHatDB getAllInfoDB = new MagicHatDB(PlayGame.this);
-				getAllInfoDB.openReadableDB();
-				players = getAllInfoDB.getActivePlayers();
-
 				for (Player p : players) {
 					List<Deck> playersDecks = getAllInfoDB.getActiveDeckList(p);
 					if (playersDecks.isEmpty()) {
@@ -68,14 +68,12 @@ public class PlayGame extends Activity implements View.OnClickListener,
 					}
 					p.setDeckList(playersDecks);
 				}
-				getAllInfoDB.closeDB();
 			} else {
-				MagicHatDB getAllInfoDB = new MagicHatDB(PlayGame.this);
-				getAllInfoDB.openReadableDB();
-				players = getAllInfoDB.getActivePlayers();
 				allActiveDecks = getAllInfoDB.getAllActiveDecks();
-				getAllInfoDB.closeDB();
 			}
+
+			getAllInfoDB.closeDB();
+
 			return null;
 		}
 
@@ -129,14 +127,14 @@ public class PlayGame extends Activity implements View.OnClickListener,
 		getNewRandomGame();
 		bPlayGame.setEnabled(true);
 
-		if (gamePlayersDecks.size() != players.size()) {
+		if (playersAndDecks.size() != players.size()) {
 			bPlayGame.setEnabled(false);
 			TextView tvErrorMessage = new TextView(PlayGame.this);
 			tvErrorMessage
 					.setText("Players and Decks are not of equal size\n\nPlayers size is "
 							+ players.size()
 							+ " and the Decks size is "
-							+ gamePlayersDecks.size());
+							+ playersAndDecks.size());
 			llMatchupView.addView(tvErrorMessage);
 			return;
 		}
@@ -153,7 +151,7 @@ public class PlayGame extends Activity implements View.OnClickListener,
 				Spinner sPlayersDeck = (Spinner) findViewById(pId);
 
 				sPlayersDeck.setSelection(p.getDeckList().indexOf(
-						gamePlayersDecks.get(p)));
+						playersAndDecks.get(p)));
 			}
 		} else {
 			for (Player p : players) {
@@ -161,14 +159,14 @@ public class PlayGame extends Activity implements View.OnClickListener,
 				Spinner sPlayersDeck = (Spinner) findViewById(pId);
 
 				sPlayersDeck.setSelection(allActiveDecks
-						.indexOf(gamePlayersDecks.get(p)));
+						.indexOf(playersAndDecks.get(p)));
 			}
 		}
 	}
 
 	private void getNewRandomGame() {
 		// Clear the cache of gameDecks, and start anew
-		gamePlayersDecks = new HashMap<Player, Deck>();
+		playersAndDecks = new HashMap<Player, Deck>();
 		p1GameCount = 0;
 		p2GameCount = 0;
 
@@ -182,7 +180,7 @@ public class PlayGame extends Activity implements View.OnClickListener,
 			for (Player p : players) {
 				maxVal = p.getDeckList().size();
 				r = ran.nextInt(maxVal);
-				gamePlayersDecks.put(p, p.getDeckList().get(r));
+				playersAndDecks.put(p, p.getDeckList().get(r));
 			}
 		} else {
 			List<Integer> randomInts = new ArrayList<Integer>();
@@ -193,7 +191,7 @@ public class PlayGame extends Activity implements View.OnClickListener,
 					r = ran.nextInt(maxVal);
 				}
 				randomInts.add(r);
-				gamePlayersDecks.put(p, allActiveDecks.get(r));
+				playersAndDecks.put(p, allActiveDecks.get(r));
 			}
 		}
 	}
@@ -230,13 +228,14 @@ public class PlayGame extends Activity implements View.OnClickListener,
 		}
 
 		@Override
-		protected Integer doInBackground(Integer... params) {
+		protected Integer doInBackground(Integer... pNums) {
 			MagicHatDB mhAddGameResult = new MagicHatDB(PlayGame.this);
 			mhAddGameResult.openWritableDB();
-			mhAddGameResult.addGameResult(players, gamePlayersDecks,
-					players.get(params[0]), new Date());
+			mhAddGameResult.addGameResult(playersAndDecks,
+					players.get(pNums[0]), new Date());
 			mhAddGameResult.closeDB();
-			return params[0];
+
+			return pNums[0];
 		}
 
 		@Override
@@ -306,14 +305,14 @@ public class PlayGame extends Activity implements View.OnClickListener,
 	@Override
 	public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2,
 			long arg3) {
-		gamePlayersDecks.clear();
+		playersAndDecks.clear();
 
 		Spinner sPlayersDeck;
 
 		for (Player p : players) {
 			sPlayersDeck = (Spinner) findViewById(p.getId());
 			Deck d = (Deck) sPlayersDeck.getSelectedItem();
-			gamePlayersDecks.put(p, d);
+			playersAndDecks.put(p, d);
 		}
 	}
 

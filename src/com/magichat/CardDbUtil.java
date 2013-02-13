@@ -1,7 +1,11 @@
 package com.magichat;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -53,7 +57,8 @@ public class CardDbUtil {
 
 	private static final String DB_PATH = "/data/data/com.magichat/databases/";
 	private static final String DB_NAME = "cards.db";
-	// private static final int DB_VERSION = 1;
+	private static final String FILE_DB_VERSION = "cardsDbVersion.txt";
+	private static final int DB_VERSION = 2;
 
 	// private static MagicHatDbHelper mhHelper;
 	private static SQLiteDatabase cDb;
@@ -63,19 +68,51 @@ public class CardDbUtil {
 
 		File dbDir = new File(DB_PATH);
 		File dbFile = new File(DB_PATH + DB_NAME);
+		File fDbVersion = new File(DB_PATH + FILE_DB_VERSION);
+
 		if (!dbDir.exists()) {
 			dbDir.mkdir();
 			createDb = true;
 		} else if (!dbFile.exists()) {
 			createDb = true;
 		} else {
-			// Check that we have the latest version of the db
+			// TODO Check that we have the latest version of the db
 			boolean doUpgrade = false;
 
 			// Insert your own logic here on whether to upgrade the db; I
 			// personally just store the db version # in a text file, but you
 			// can do whatever you want. I've tried MD5 hashing the db before,
 			// but that takes a while.
+			if (fDbVersion.exists()) {
+				int dbVersion = 0;
+				if (fDbVersion.canRead()) {
+					try {
+						// FileInputStream fin = new FileInputStream(fDbVersion);
+						// BufferedReader brVersion = new BufferedReader(new InputStreamReader(fin));
+						FileReader frVersion = new FileReader(fDbVersion);
+						BufferedReader brVersion = new BufferedReader(frVersion);
+						String sDbVersion = brVersion.readLine();
+						dbVersion = Integer.parseInt(sDbVersion);
+						brVersion.close();
+					} catch (IOException exc) {
+						exc.printStackTrace();
+					}
+				}
+
+				doUpgrade = dbVersion < DB_VERSION ? true : false;
+			} else {
+				try {
+					fDbVersion.createNewFile();
+					if (fDbVersion.canWrite()) {
+						FileWriter fwVersion = new FileWriter(fDbVersion);
+						BufferedWriter bwVersion = new BufferedWriter(fwVersion);
+						bwVersion.write(String.valueOf(DB_VERSION));
+						bwVersion.close();
+					}
+				} catch (IOException exc) {
+					exc.printStackTrace();
+				}
+			}
 
 			// If we are doing an upgrade, basically we just delete the db then
 			// flip the switch to create a new one
@@ -104,6 +141,20 @@ public class CardDbUtil {
 			myOutput.flush();
 			myOutput.close();
 			myInput.close();
+
+			try {
+				fDbVersion.createNewFile();
+				if (fDbVersion.canWrite()) {
+					// This will always overwrite the data that was already
+					// stored in the dbVersion file
+					FileWriter fwVersion = new FileWriter(fDbVersion, false);
+					BufferedWriter bwVersion = new BufferedWriter(fwVersion);
+					bwVersion.write(String.valueOf(DB_VERSION));
+					bwVersion.close();
+				}
+			} catch (IOException exc) {
+				exc.printStackTrace();
+			}
 
 			System.out.println("CardDb was copied into place.");
 		}
@@ -252,8 +303,9 @@ public class CardDbUtil {
 		String[] cardColumns = new String[] { KEY_CARD_ROWID };
 		int cardId = 0;
 
-		Cursor cc = cDb.query(DB_TABLE_ALLCARDS, cardColumns, "lower(" + KEY_CARD_NAME
-				+ ") = lower('" + name + "')", null, null, null, null);
+		Cursor cc = cDb.query(DB_TABLE_ALLCARDS, cardColumns, "lower("
+				+ KEY_CARD_NAME + ") = lower('" + name + "')", null, null,
+				null, null);
 
 		if (cc.getCount() == 1) {
 			cc.moveToFirst();

@@ -404,6 +404,11 @@
             active="true"
             number="150"
             owner="1" />
+		<Deck
+            name="Gruul/Rakdos/Golgari"
+            active="true"
+            number="151"
+            owner="1" />
         <Deck
             name="Black"
             active="false"

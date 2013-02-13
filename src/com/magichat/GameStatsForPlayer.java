@@ -54,7 +54,8 @@ public class GameStatsForPlayer extends Activity implements
 		}
 
 		@Override
-		protected void onPostExecute(String result) {
+		protected void onPostExecute(String results) {
+			super.onPostExecute(results);
 			if (allPlayers.isEmpty()) {
 				llByPlayers.setVisibility(LinearLayout.GONE);
 				sPlayerSelection.setVisibility(LinearLayout.GONE);
@@ -67,7 +68,6 @@ public class GameStatsForPlayer extends Activity implements
 				sPlayerSelection.setAdapter(ownerAdapter);
 
 				currentPlayer = (Player) sPlayerSelection.getSelectedItem();
-				new populateScreen().execute();
 			}
 		}
 	}
@@ -108,8 +108,8 @@ public class GameStatsForPlayer extends Activity implements
 				for (Deck dOpp : dOpponents) {
 					List<Game> gameList = new ArrayList<Game>();
 					for (Game g : games) {
-						if (g.getDeck(1).equals(dOpp)
-								|| g.getDeck(2).equals(dOpp)) {
+						if (g.getDeck(0).equals(dOpp)
+								|| g.getDeck(1).equals(dOpp)) {
 							gameList.add(g);
 						}
 					}
@@ -131,10 +131,10 @@ public class GameStatsForPlayer extends Activity implements
 		Deck dOpp = new Deck();
 		String sTotalGamesAgainstOpp, sPercentWonAgainstOpp;
 
-		if (gameList.get(0).getPlayer(1).equals(currentPlayer)) {
-			dOpp = gameList.get(0).getDeck(2);
-		} else {
+		if (gameList.get(0).getPlayer(0).equals(currentPlayer)) {
 			dOpp = gameList.get(0).getDeck(1);
+		} else {
+			dOpp = gameList.get(0).getDeck(0);
 		}
 
 		sTotalGamesAgainstOpp = dOpp.toString();
@@ -168,19 +168,19 @@ public class GameStatsForPlayer extends Activity implements
 		for (Game g : games) {
 			// Only add the Player if opponents doesn't consist of the Player
 			// yet
-			if (g.getPlayer(1).equals(currentPlayer)) {
-				if (!dOpponents.contains(g.getDeck(2))) {
-					dOpponents.add(g.getDeck(2));
-				}
-				if (!playersDecks.contains(g.getDeck(1))) {
-					playersDecks.add(g.getDeck(1));
-				}
-			} else {
+			if (g.getPlayer(0).equals(currentPlayer)) {
 				if (!dOpponents.contains(g.getDeck(1))) {
 					dOpponents.add(g.getDeck(1));
 				}
-				if (!playersDecks.contains(g.getDeck(2))) {
-					playersDecks.add(g.getDeck(2));
+				if (!playersDecks.contains(g.getDeck(0))) {
+					playersDecks.add(g.getDeck(0));
+				}
+			} else {
+				if (!dOpponents.contains(g.getDeck(0))) {
+					dOpponents.add(g.getDeck(0));
+				}
+				if (!playersDecks.contains(g.getDeck(1))) {
+					playersDecks.add(g.getDeck(1));
 				}
 			}
 

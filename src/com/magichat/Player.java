@@ -16,9 +16,9 @@ public class Player implements Comparable<Player> {
 	}
 
 	public Player(int id, String name, boolean active) {
-		this(name);
-		this.active = active;
 		this.id = id;
+		this.name = name;
+		this.active = active;
 	}
 
 	public String getName() {

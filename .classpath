@@ -4,5 +4,9 @@
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
+	<classpathentry kind="lib" path="/Users/mpalmacci/android-sdks/extras/google/gcm/gcm-client/dist/gcm.jar"/>
+	<classpathentry kind="lib" path="/Users/mpalmacci/appengine-java-sdk-1.7.4/lib/appengine-remote-api.jar"/>
+	<classpathentry kind="lib" path="/Users/mpalmacci/appengine-java-sdk-1.7.4/lib/appengine-tools-api.jar"/>
+	<classpathentry kind="lib" path="/Users/mpalmacci/android-sdks/extras/google/gcm/gcm-client/lib/android.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

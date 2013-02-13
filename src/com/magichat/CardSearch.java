@@ -7,23 +7,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.SlidingDrawer;
 import android.widget.Spinner;
 import android.widget.ToggleButton;
-import android.widget.SlidingDrawer.OnDrawerCloseListener;
-import android.widget.SlidingDrawer.OnDrawerOpenListener;
 
-public class CardSearch extends Activity implements OnDrawerOpenListener,
-		OnDrawerCloseListener {
+public class CardSearch extends Activity implements OnClickListener {
 
-	LinearLayout llSearchResults;
-	SlidingDrawer sdCardSearch;
 	Button bSearch;
 	EditText etRulesText, etCMC;
 	AutoCompleteTextView etName, etSubtype;
@@ -37,8 +32,6 @@ public class CardSearch extends Activity implements OnDrawerOpenListener,
 		setContentView(R.layout.card_search);
 
 		initialize();
-
-		sdCardSearch.open();
 
 		new populateAutoFillCardNames().execute();
 		new populateExpansions().execute();
@@ -122,18 +115,9 @@ public class CardSearch extends Activity implements OnDrawerOpenListener,
 			etSubtype.setAdapter(cardSubTypesAdapter);
 		}
 	}
-
+	
 	@Override
-	public void onDrawerOpened() {
-		llSearchResults.setVisibility(LinearLayout.GONE);
-		bSearch.setText("Perform Search");
-	}
-
-	@Override
-	public void onDrawerClosed() {
-		llSearchResults.setVisibility(LinearLayout.VISIBLE);
-		bSearch.setText("Perform Another Search");
-
+	public void onClick(View arg0) {
 		new performSearch().execute();
 
 		// The next two lines of code hide the keyboard
@@ -168,12 +152,10 @@ public class CardSearch extends Activity implements OnDrawerOpenListener,
 	protected void onPause() {
 		super.onPause();
 		// TODO - Store search entry items, and clear device memory usage
-		finish();
+		
 	}
 
 	private void initialize() {
-		llSearchResults = (LinearLayout) findViewById(R.id.llSearchResults);
-		sdCardSearch = (SlidingDrawer) findViewById(R.id.sdCardSearch);
 		bSearch = (Button) findViewById(R.id.bSearch);
 		etName = (AutoCompleteTextView) findViewById(R.id.etName);
 		etRulesText = (EditText) findViewById(R.id.etRulesText);
@@ -192,8 +174,7 @@ public class CardSearch extends Activity implements OnDrawerOpenListener,
 		tbBlack = (ToggleButton) findViewById(R.id.tbBlack);
 		tbRed = (ToggleButton) findViewById(R.id.tbRed);
 		tbGreen = (ToggleButton) findViewById(R.id.tbGreen);
-
-		sdCardSearch.setOnDrawerOpenListener(this);
-		sdCardSearch.setOnDrawerCloseListener(this);
+		
+		bSearch.setOnClickListener(this);
 	}
 }
