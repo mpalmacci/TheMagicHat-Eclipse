@@ -143,7 +143,7 @@ public class CardSearch extends Activity implements OnClickListener {
 			Bundle cardName = new Bundle();
 			cardName.putString("cardName", etName.getText().toString());
 
-			Intent openCardViewActivity = new Intent("com.magichat.CARDVIEW");
+			Intent openCardViewActivity = new Intent("com.magichat.cards.CARDVIEW");
 			openCardViewActivity.putExtras(cardName);
 			startActivity(openCardViewActivity);
 		}
