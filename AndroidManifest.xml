@@ -62,74 +62,74 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".PlayGame"
+            android:name=".decks.games.PlayGame"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/app_name"
             android:screenOrientation="portrait" >
             <intent-filter>
-                <action android:name="com.magichat.PLAYGAME" />
+                <action android:name="com.magichat.decks.games.PLAYGAME" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".PlayGamePrefs"
+            android:name=".decks.games.PlayGamePrefs"
             android:label="@string/app_name" >
             <intent-filter>
-                <action android:name="com.magichat.PLAYGAMEPREFS" />
+                <action android:name="com.magichat.decks.games.PLAYGAMEPREFS" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".GameStatsForDeck"
+            android:name=".decks.games.GameStatsForDeck"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/app_name"
             android:screenOrientation="portrait" >
             <intent-filter>
-                <action android:name="com.magichat.GAMESTATSFORDECK" />
+                <action android:name="com.magichat.decks.games.GAMESTATSFORDECK" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".GameStatsForPlayer"
+            android:name=".decks.games.GameStatsForPlayer"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/app_name"
             android:screenOrientation="portrait" >
             <intent-filter>
-                <action android:name="com.magichat.GAMESTATSFORPLAYER" />
+                <action android:name="com.magichat.decks.games.GAMESTATSFORPLAYER" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".GameStatsPrefs"
+            android:name=".decks.games.GameStatsPrefs"
             android:label="@string/app_name" >
             <intent-filter>
-                <action android:name="com.magichat.GAMESTATSPREFS" />
+                <action android:name="com.magichat.decks.games.GAMESTATSPREFS" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".AddDeck"
+            android:name=".decks.AddDeck"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/app_name"
             android:screenOrientation="portrait" >
             <intent-filter>
-                <action android:name="com.magichat.ADDDECK" />
+                <action android:name="com.magichat.decks.ADDDECK" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".UpdateDeck"
+            android:name=".decks.UpdateDeck"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/app_name"
             android:screenOrientation="portrait" >
             <intent-filter>
-                <action android:name="com.magichat.UPDATEDECK" />
+                <action android:name="com.magichat.decks.UPDATEDECK" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
@@ -146,56 +146,56 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".DeleteDeck"
+            android:name=".decks.DeleteDeck"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/app_name"
             android:screenOrientation="portrait" >
             <intent-filter>
-                <action android:name="com.magichat.DELETEDECK" />
+                <action android:name="com.magichat.decks.DELETEDECK" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".DisplayAllDecks"
+            android:name=".decks.DisplayAllDecks"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/app_name"
             android:screenOrientation="portrait" >
             <intent-filter>
-                <action android:name="com.magichat.DISPLAYALLDECKS" />
+                <action android:name="com.magichat.decks.DISPLAYALLDECKS" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".CardSearch"
+            android:name=".cards.CardSearch"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/app_name"
             android:screenOrientation="portrait" >
             <intent-filter>
-                <action android:name="com.magichat.CARDSEARCH" />
+                <action android:name="com.magichat.cards.CARDSEARCH" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".CardSearchResults"
+            android:name=".cards.CardSearchResults"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/app_name"
             android:screenOrientation="portrait" >
             <intent-filter>
-                <action android:name="com.magichat.CARDSEARCHRESULTS" />
+                <action android:name="com.magichat.cards.CARDSEARCHRESULTS" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".CardView"
+            android:name=".cards.CardView"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/app_name"
             android:screenOrientation="portrait" >
             <intent-filter>
-                <action android:name="com.magichat.CARDVIEW" />
+                <action android:name="com.magichat.cards.CARDVIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>

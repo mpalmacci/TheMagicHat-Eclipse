@@ -39,27 +39,27 @@ public class MagicHatMain extends Activity implements View.OnClickListener {
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.bEnterGame:
-			Intent openGameActivity = new Intent("com.magichat.PLAYGAME");
+			Intent openGameActivity = new Intent("com.magichat.decks.games.PLAYGAME");
 			startActivity(openGameActivity);
 			break;
 		case R.id.bViewGameStats:
 			if (decksOrPlayersPref.contentEquals("Decks")) {
 				Intent openGameStatsActivity = new Intent(
-						"com.magichat.GAMESTATSFORDECK");
+						"com.magichat.decks.games.GAMESTATSFORDECK");
 				startActivity(openGameStatsActivity);
 			} else {
 				Intent openGameStatsActivity = new Intent(
-						"com.magichat.GAMESTATSFORPLAYER");
+						"com.magichat.decks.games.GAMESTATSFORPLAYER");
 				startActivity(openGameStatsActivity);
 			}
 			break;
 		case R.id.bAddDeck:
-			Intent openAddDeckActivity = new Intent("com.magichat.ADDDECK");
+			Intent openAddDeckActivity = new Intent("com.magichat.decks.ADDDECK");
 			startActivity(openAddDeckActivity);
 			break;
 		case R.id.bUpdateDeck:
 			Intent openUpdateDeckActivity = new Intent(
-					"com.magichat.UPDATEDECK");
+					"com.magichat.decks.UPDATEDECK");
 			startActivity(openUpdateDeckActivity);
 			break;
 		case R.id.bChangeActive:
@@ -69,17 +69,17 @@ public class MagicHatMain extends Activity implements View.OnClickListener {
 			break;
 		case R.id.bDeleteDeck:
 			Intent openDeleteDeckActivity = new Intent(
-					"com.magichat.DELETEDECK");
+					"com.magichat.decks.DELETEDECK");
 			startActivity(openDeleteDeckActivity);
 			break;
 		case R.id.bDisplayAllDecks:
 			Intent openDisplayAllDecksActivity = new Intent(
-					"com.magichat.DISPLAYALLDECKS");
+					"com.magichat.decks.DISPLAYALLDECKS");
 			startActivity(openDisplayAllDecksActivity);
 			break;
 		case R.id.bCardSearch:
 			Intent openCardSearchActivity = new Intent(
-					"com.magichat.CARDSEARCH");
+					"com.magichat.cards.CARDSEARCH");
 			startActivity(openCardSearchActivity);
 			break;
 		default:
@@ -99,11 +99,11 @@ public class MagicHatMain extends Activity implements View.OnClickListener {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.playGamePrefs:
-			Intent playGamePrefs = new Intent("com.magichat.PLAYGAMEPREFS");
+			Intent playGamePrefs = new Intent("com.magichat.decks.games.PLAYGAMEPREFS");
 			startActivity(playGamePrefs);
 			break;
 		case R.id.gameStatsPrefs:
-			Intent gameStatsPrefs = new Intent("com.magichat.GAMESTATSPREFS");
+			Intent gameStatsPrefs = new Intent("com.magichat.decks.games.GAMESTATSPREFS");
 			startActivity(gameStatsPrefs);
 			break;
 		default:

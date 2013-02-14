@@ -2,6 +2,9 @@ package com.magichat;
 
 import java.io.IOException;
 
+import com.magichat.cards.CardDbUtil;
+import com.magichat.decks.db.MagicHatDB;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -15,7 +18,10 @@ public class Splash extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.splash);
 
-		new setupDb().execute();
+		Toast.makeText(Splash.this, "Checking for updates...", Toast.LENGTH_SHORT)
+				.show();
+		new setupCardDb().execute();
+		new setupDeckDb().execute();
 
 		Thread timer = new Thread() {
 			public void run() {
@@ -33,21 +39,53 @@ public class Splash extends Activity {
 		timer.start();
 	}
 
-	private class setupDb extends AsyncTask<String, Integer, String> {
-		boolean isCreated = false, isUpgrade = false;
+	private class setupCardDb extends AsyncTask<String, Integer, String> {
+		boolean wasCreated = false, wasUpgraded = false;
+
+		@Override
+		protected String doInBackground(String... params) {
+
+			try {
+				CardDbUtil.initCardDb(Splash.this);
+				wasCreated = CardDbUtil.createDb;
+				wasUpgraded = CardDbUtil.isUpgrade;
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			super.onPostExecute(result);
+
+			if (wasUpgraded) {
+				Toast.makeText(Splash.this,
+						"Cards have been updated to latest version",
+						Toast.LENGTH_SHORT).show();
+			} else if (wasCreated) {
+				Toast.makeText(Splash.this,
+						"Cards have been initialized",
+						Toast.LENGTH_SHORT).show();
+			} else {
+				Toast.makeText(Splash.this, "No changes to Cards were needed",
+						Toast.LENGTH_SHORT).show();
+			}
+		}
+	}
+
+	private class setupDeckDb extends AsyncTask<String, Integer, String> {
+		boolean wasCreated = false, isUpgrade = false;
 
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
 
 			if (!MagicHatDB.isCreated()) {
-				Toast.makeText(Splash.this,
-						"Initializing database... Please wait...",
-						Toast.LENGTH_SHORT).show();
-				isCreated = true;
-			} else {
-				Toast.makeText(Splash.this, "Checking database...",
-						Toast.LENGTH_SHORT).show();
+				/*Toast.makeText(Splash.this,
+						"Initializing Decks... Please wait...",
+						Toast.LENGTH_SHORT).show();*/
+				wasCreated = true;
 			}
 		}
 
@@ -59,11 +97,6 @@ public class Splash extends Activity {
 			isUpgrade = mhDb.isUpgrade();
 			mhDb.closeDB();
 
-			try {
-				CardDbUtil.initCardDb(Splash.this);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
 			return null;
 		}
 
@@ -71,15 +104,15 @@ public class Splash extends Activity {
 		protected void onPostExecute(String result) {
 			super.onPostExecute(result);
 
-			if (isCreated) {
-				Toast.makeText(Splash.this,
-						"Database Initialization Complete.", Toast.LENGTH_SHORT)
-						.show();
+			if (wasCreated) {
+				Toast.makeText(Splash.this, "Decks have been initialized",
+						Toast.LENGTH_SHORT).show();
 			} else if (isUpgrade) {
-				Toast.makeText(Splash.this, "Database Upgrade Complete.",
+				Toast.makeText(Splash.this,
+						"Decks have been updated to latest version",
 						Toast.LENGTH_SHORT).show();
 			} else {
-				Toast.makeText(Splash.this, "No Database Changes Needed.",
+				Toast.makeText(Splash.this, "No changes to Decks were needed",
 						Toast.LENGTH_SHORT).show();
 			}
 		}

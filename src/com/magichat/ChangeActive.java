@@ -3,6 +3,10 @@ package com.magichat;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.magichat.decks.Deck;
+import com.magichat.decks.db.MagicHatDB;
+import com.magichat.players.Player;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -90,7 +94,6 @@ public class ChangeActive extends Activity implements View.OnClickListener,
 		@Override
 		protected void onPostExecute(List<Deck> deckList) {
 			super.onPostExecute(deckList);
-			Player p = (Player) sAllOwners.getSelectedItem();
 
 			if (deckList.isEmpty()) {
 				System.out.println("Deck List is empty!");
@@ -102,9 +105,6 @@ public class ChangeActive extends Activity implements View.OnClickListener,
 
 				sOwnersDecks.setAdapter(ownerAdapter);
 			} else {
-				tvActiveStatusChanged.setText("\n\n\n" + p.getName()
-						+ " has " + deckList.size() + " decks.\n\n\n");
-
 				ArrayAdapter<Deck> deckAdapter = new ArrayAdapter<Deck>(
 						ChangeActive.this,
 						android.R.layout.simple_spinner_item, deckList);
@@ -217,9 +217,14 @@ public class ChangeActive extends Activity implements View.OnClickListener,
 			new populateDecksSpinner().execute();
 			break;
 		case R.id.sOwnersDecks:
-			if (!sOwnersDecks.getSelectedItem().toString().equals(DEFAULT_DECK)) {
-				tvActiveStatusChanged.setText("\n\n"
-						+ sOwnersDecks.getSelectedItem().toString() + "\n\n");
+			Deck currentDeck = (Deck) sOwnersDecks.getSelectedItem();
+			if (!currentDeck.getName().equals(DEFAULT_DECK)) {
+				tvActiveStatusChanged.setText("\n\n\n"
+						+ sOwnersDecks.getSelectedItem().toString() + "\n\n\n");
+			} else {
+				tvActiveStatusChanged.setText("\n\n\n"
+						+ sAllOwners.getSelectedItem().toString() + " has "
+						+ deckList.size() + " decks.\n\n\n");
 			}
 			break;
 		default:

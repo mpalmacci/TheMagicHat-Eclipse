@@ -1,5 +1,7 @@
 package com.magichat;
 
+import com.magichat.decks.Deck;
+
 import android.content.Context;
 import android.content.Intent;
 
