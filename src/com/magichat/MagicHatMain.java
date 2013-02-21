@@ -98,13 +98,9 @@ public class MagicHatMain extends Activity implements View.OnClickListener {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case R.id.playGamePrefs:
-			Intent playGamePrefs = new Intent("com.magichat.decks.games.PLAYGAMEPREFS");
+		case R.id.MagicHatPrefs:
+			Intent playGamePrefs = new Intent("com.magichat.decks.games.MAGICHATPREFS");
 			startActivity(playGamePrefs);
-			break;
-		case R.id.gameStatsPrefs:
-			Intent gameStatsPrefs = new Intent("com.magichat.decks.games.GAMESTATSPREFS");
-			startActivity(gameStatsPrefs);
 			break;
 		default:
 			break;

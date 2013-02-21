@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
 public class Card implements Comparable<Card> {
 	int id;
 	String name;
@@ -17,7 +16,7 @@ public class Card implements Comparable<Card> {
 	String manaCost;
 	int CMC;
 	String type;
-	String[] subType;
+	String[] subTypes;
 	String sPower;
 	String sToughness;
 	// TODO Handle Card Rarities
@@ -35,6 +34,29 @@ public class Card implements Comparable<Card> {
 		this.expansions = expansions;
 	}
 
+	public Card(int id, String name, Map<Expansion, URL> expansionImages,
+			boolean isBlue, boolean isBlack, boolean isRed, boolean isGreen,
+			boolean isWhite, String manaCost, String type, String subTypes,
+			String sPower, String sToughness, String text) {
+		this.id = id;
+		this.name = name;
+		this.expansionImages = expansionImages;
+		
+		if(isBlue) this.colors.add("U");
+		if(isBlack) this.colors.add("B");
+		if(isWhite) this.colors.add("W");
+		if(isRed) this.colors.add("R");
+		if(isGreen) this.colors.add("G");
+		
+		this.manaCost = manaCost;
+		this.CMC = convertManaCost(manaCost);
+		this.type = type;
+		this.subTypes = subTypes.split(" ");
+		this.sPower = sPower;
+		this.sToughness = sToughness;
+		this.text = text;
+	}
+
 	public Card(String name, List<Expansion> expansions, List<URL> picURL,
 			List<String> colors, String manaCost, String type, String pt,
 			String text) {
@@ -48,15 +70,15 @@ public class Card implements Comparable<Card> {
 
 		if (type.contains(" - ")) {
 			this.type = type.substring(0, type.indexOf(" - "));
-			this.subType = type.substring(type.indexOf(" - ") + 3,
+			this.subTypes = type.substring(type.indexOf(" - ") + 3,
 					type.length()).split(" ");
 		} else {
 			this.type = type;
 		}
 
 		if (type.contains("Creature")) {
-			String sPower = pt.substring(0, pt.indexOf("/"));
-			String sToughness = pt.substring(pt.indexOf("/") + 1, pt.length());
+			String sPower = pt.substring(0, pt.indexOf("/")).replace("\\", "");
+			String sToughness = pt.substring(pt.indexOf("/") + 1, pt.length()).replace("\\", "");
 
 			this.sPower = sPower;
 			this.sToughness = sToughness;
@@ -161,12 +183,12 @@ public class Card implements Comparable<Card> {
 	}
 
 	public String getCardSubType() {
-		if (this.subType == null) {
+		if (this.subTypes == null) {
 			return "";
 		}
 
 		StringBuilder subTypes = new StringBuilder();
-		for (String s : this.subType) {
+		for (String s : this.subTypes) {
 			subTypes.append(s);
 			subTypes.append(" ");
 		}
@@ -176,7 +198,7 @@ public class Card implements Comparable<Card> {
 	}
 
 	public String[] getCardSubTypes() {
-		return this.subType;
+		return this.subTypes;
 	}
 
 	public String getPower() {

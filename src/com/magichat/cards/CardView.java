@@ -48,8 +48,9 @@ public class CardView extends Activity {
 
 			CardDbUtil.getStaticDb();
 			// Temporary code for testing
+			int cardId = CardDbUtil.getCardId(cardName[0]);
 			Map<Expansion, URL> cardImages = CardDbUtil
-					.getCardImages(cardName[0]);
+					.getExpansionImages(cardId);
 			CardDbUtil.close();
 			return cardImages;
 		}
@@ -59,10 +60,12 @@ public class CardView extends Activity {
 				Map<Expansion, URL> cardImages) {
 			// TODO Auto-generated method stub
 			super.onPostExecute(cardImages);
-			Expansion keyExp = cardImages.keySet().iterator().next();
-			tvCard.setText(keyExp.toString());
+			while (cardImages.keySet().iterator().hasNext()) {
+				Expansion keyExp = cardImages.keySet().iterator().next();
+				tvCard.setText(keyExp.toString());
 
-			new showCard().execute(cardImages.get(keyExp));
+				new showCard().execute(cardImages.get(keyExp));
+			}
 		}
 
 	}

@@ -17,11 +17,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
-
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 public class CardDbUtil {
 	public static final String KEY_EXPANSION_ROWID = "_id";
@@ -61,7 +60,7 @@ public class CardDbUtil {
 	private static final String DB_NAME = "cards.db";
 	private static final String FILE_DB_VERSION = "cardsDbVersion.txt";
 	private static final int DB_VERSION = 1;
-	
+
 	public static boolean createDb;
 	public static boolean isUpgrade;
 
@@ -89,8 +88,10 @@ public class CardDbUtil {
 				int dbVersion = 0;
 				if (fDbVersion.canRead()) {
 					try {
-						// FileInputStream fin = new FileInputStream(fDbVersion);
-						// BufferedReader brVersion = new BufferedReader(new InputStreamReader(fin));
+						// FileInputStream fin = new
+						// FileInputStream(fDbVersion);
+						// BufferedReader brVersion = new BufferedReader(new
+						// InputStreamReader(fin));
 						FileReader frVersion = new FileReader(fDbVersion);
 						BufferedReader brVersion = new BufferedReader(frVersion);
 						String sDbVersion = brVersion.readLine();
@@ -125,7 +126,8 @@ public class CardDbUtil {
 		}
 
 		if (createDb) {
-			System.out.println("CardDb is going to be copied.");
+			Log.i("CardDbUtil.initCardDb",
+					"CardDb is going to be copied into place");
 			// Open your local db as the input stream
 			InputStream myInput = context.getAssets().open(DB_NAME);
 
@@ -158,7 +160,7 @@ public class CardDbUtil {
 				exc.printStackTrace();
 			}
 
-			System.out.println("CardDb was copied into place.");
+			Log.i("CardDbUtil.initCardDb", "CardDb was copied into place");
 		}
 	}
 
@@ -190,8 +192,8 @@ public class CardDbUtil {
 			expC.moveToFirst();
 			cardSetId = expC.getInt(iExpansionId);
 		} else {
-			System.out
-					.println("No unique expansion was found in MagicHatDB.getExpansionId.");
+			Log.d("MagicHatDB.getExpansionId(shortName)",
+					"No unique expansion was for short Name: " + shortName);
 		}
 		expC.close();
 
@@ -226,7 +228,82 @@ public class CardDbUtil {
 		return allExpansions;
 	}
 
+	protected static Expansion getExpansion(int expId) {
+		Expansion exp = null;
+		String[] expColumns = new String[] { KEY_EXPANSION_ROWID,
+				KEY_EXPANSION_NAME, KEY_EXPANSION_SHORTNAME };
+
+		Cursor ec = cDb.query(DB_TABLE_ALLEXPANSIONS, expColumns,
+				KEY_EXPANSION_ROWID + " = " + expId, null, null, null, null);
+
+		if (ec.getCount() == 1) {
+			ec.moveToFirst();
+			int iExpName = ec.getColumnIndex(KEY_EXPANSION_NAME);
+			int iExpShortName = ec.getColumnIndex(KEY_EXPANSION_SHORTNAME);
+
+			String expName = ec.getString(iExpName);
+			String expShortName = ec.getString(iExpShortName);
+
+			exp = new Expansion(expId, expName, expShortName);
+		} else {
+			Log.d("CardDbUtil.getCardImages",
+					"No unique expansion was found with Expansion Id: " + expId);
+		}
+		ec.close();
+		return exp;
+	}
+
 	// ////////////////////////////// CARDS ////////////////////////////////////
+
+	protected static Card getCard(String name) {
+		Card c = new Card(0, null);
+		String[] cardColumns = new String[] { KEY_CARD_ROWID, KEY_CARD_ISBLUE,
+				KEY_CARD_ISBLACK, KEY_CARD_ISWHITE, KEY_CARD_ISGREEN,
+				KEY_CARD_ISRED, KEY_CARD_MANACOST, KEY_CARD_CMC, KEY_CARD_TYPE,
+				KEY_CARD_SUBTYPES, KEY_CARD_POWER, KEY_CARD_TOUGHNESS,
+				KEY_CARD_RARITY, KEY_CARD_TEXT };
+
+		Cursor cc = cDb.query(DB_TABLE_ALLCARDS, cardColumns, KEY_CARD_NAME
+				+ " = '" + name + "'", null, null, null, null);
+
+		int iCardId = cc.getColumnIndex(KEY_CARD_ROWID);
+		int iCardIsBlue = cc.getColumnIndex(KEY_CARD_ISBLUE);
+		int iCardIsBlack = cc.getColumnIndex(KEY_CARD_ISBLACK);
+		int iCardIsWhite = cc.getColumnIndex(KEY_CARD_ISWHITE);
+		int iCardIsGreen = cc.getColumnIndex(KEY_CARD_ISGREEN);
+		int iCardIsRed = cc.getColumnIndex(KEY_CARD_ISRED);
+		int iCardManaCost = cc.getColumnIndex(KEY_CARD_MANACOST);
+		int iCardType = cc.getColumnIndex(KEY_CARD_TYPE);
+		int iCardSubTypes = cc.getColumnIndex(KEY_CARD_SUBTYPES);
+		int iCardPower = cc.getColumnIndex(KEY_CARD_POWER);
+		int iCardToughness = cc.getColumnIndex(KEY_CARD_TOUGHNESS);
+		// int iCardRarity = cc.getColumnIndex(KEY_CARD_RARITY);
+		int iCardText = cc.getColumnIndex(KEY_CARD_TEXT);
+
+		if (cc.getCount() == 1) {
+			int cardId = cc.getInt(iCardId);
+			Map<Expansion, URL> expansionImages = getExpansionImages(cardId);
+			boolean isBlue = cc.getInt(iCardIsBlue) == 1 ? true : false;
+			boolean isBlack = cc.getInt(iCardIsBlack) == 1 ? true : false;
+			boolean isWhite = cc.getInt(iCardIsWhite) == 1 ? true : false;
+			boolean isGreen = cc.getInt(iCardIsGreen) == 1 ? true : false;
+			boolean isRed = cc.getInt(iCardIsRed) == 1 ? true : false;
+			String manaCost = cc.getString(iCardManaCost);
+			String type = cc.getString(iCardType);
+			String subTypes = cc.getString(iCardSubTypes);
+			String sPower = cc.getString(iCardPower);
+			String sToughness = cc.getString(iCardToughness);
+			String text = cc.getString(iCardText);
+
+			c = new Card(cardId, name, expansionImages, isBlue, isBlack, isRed,
+					isGreen, isWhite, manaCost, type, subTypes, sPower, sToughness, text);
+		} else {
+			Log.d("CardDbUtil.getCard(name)",
+					"No unique Card found with name: " + name);
+		}
+
+		return c;
+	}
 
 	protected static List<Card> getAllCardNames() {
 		// return mhHelper.getAllCardIds(cDb);
@@ -252,16 +329,10 @@ public class CardDbUtil {
 		return allCardNames;
 	}
 
-	protected static Map<Expansion, URL> getCardImages(String name) {
+	protected static Map<Expansion, URL> getExpansionImages(int cardId) {
 		Map<Expansion, URL> allExpansionImages = new HashMap<Expansion, URL>();
 
 		String[] relColumns = new String[] { KEY_REL_EXP_ID, KEY_REL_PIC_URL };
-
-		int cardId = getCardId(name);
-
-		if (cardId == 0) {
-			return null;
-		}
 
 		Cursor rc = cDb.query(DB_TABLE_REL_CARD_EXP, relColumns,
 				KEY_REL_CARD_ID + " = " + cardId, null, null, null, null);
@@ -306,44 +377,12 @@ public class CardDbUtil {
 			int iCardId = cc.getColumnIndex(KEY_CARD_ROWID);
 			cardId = cc.getInt(iCardId);
 		} else {
-			System.out
-					.println("CardDbUtil.getCardImages - No unique card was found.");
+			Log.d("CardDbUtil.getCardImages",
+					"No unique card was found with card name: " + name);
 		}
 
 		cc.close();
 		return cardId;
-	}
-
-	protected static Expansion getExpansion(int expId) {
-		Expansion exp = null;
-		String[] expColumns = new String[] { KEY_EXPANSION_ROWID,
-				KEY_EXPANSION_NAME, KEY_EXPANSION_SHORTNAME };
-
-		Cursor ec = cDb.query(DB_TABLE_ALLEXPANSIONS, expColumns,
-				KEY_EXPANSION_ROWID + " = " + expId, null, null, null, null);
-
-		if (ec.getCount() == 1) {
-			ec.moveToFirst();
-			int iExpName = ec.getColumnIndex(KEY_EXPANSION_NAME);
-			int iExpShortName = ec.getColumnIndex(KEY_EXPANSION_SHORTNAME);
-
-			String expName = ec.getString(iExpName);
-			String expShortName = ec.getString(iExpShortName);
-
-			exp = new Expansion(expId, expName, expShortName);
-		} else {
-			System.out
-					.println("CardDbUtil.getCardImages - No unique expansion was found.");
-		}
-		ec.close();
-		return exp;
-
-	}
-
-	protected static List<Expansion> getExpansions(String name) {
-		List<Expansion> expansions = new ArrayList<Expansion>();
-
-		return expansions;
 	}
 
 	protected static List<Card> getAllCardIds() {

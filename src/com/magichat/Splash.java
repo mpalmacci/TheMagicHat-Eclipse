@@ -18,8 +18,10 @@ public class Splash extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.splash);
 
-		Toast.makeText(Splash.this, "Checking for updates...", Toast.LENGTH_SHORT)
-				.show();
+		/*
+		 * Toast.makeText(Splash.this, "Checking for updates...",
+		 * Toast.LENGTH_SHORT) .show();
+		 */
 		new setupCardDb().execute();
 		new setupDeckDb().execute();
 
@@ -68,8 +70,8 @@ public class Splash extends Activity {
 						"Cards have been initialized",
 						Toast.LENGTH_SHORT).show();
 			} else {
-				Toast.makeText(Splash.this, "No changes to Cards were needed",
-						Toast.LENGTH_SHORT).show();
+/*				Toast.makeText(Splash.this, "No changes to Cards were needed",
+						Toast.LENGTH_SHORT).show();*/
 			}
 		}
 	}
@@ -112,8 +114,11 @@ public class Splash extends Activity {
 						"Decks have been updated to latest version",
 						Toast.LENGTH_SHORT).show();
 			} else {
-				Toast.makeText(Splash.this, "No changes to Decks were needed",
-						Toast.LENGTH_SHORT).show();
+				/*
+				 * Toast.makeText(Splash.this,
+				 * "No changes to Decks were needed",
+				 * Toast.LENGTH_SHORT).show();
+				 */
 			}
 		}
 	}

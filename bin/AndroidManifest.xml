@@ -7,8 +7,8 @@
     <uses-permission android:name="com.magichat.permission.C2D_MESSAGE" />
 
     <uses-sdk
-        android:minSdkVersion="9"
-        android:targetSdkVersion="15" />
+        android:minSdkVersion="10"
+        android:targetSdkVersion="16" />
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <!-- App receives GCM messages. -->
@@ -41,7 +41,7 @@
             </intent-filter>
         </receiver>
 
-        <service android:name=".GCMIntentService" />
+        <service android:name="com.magichat.gcm.GCMIntentService" />
 
         <activity
             android:name=".Splash"
@@ -62,21 +62,21 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".MagicHatPrefs"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="com.magichat.decks.games.MAGICHATPREFS" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".decks.games.PlayGame"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/app_name"
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="com.magichat.decks.games.PLAYGAME" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".decks.games.PlayGamePrefs"
-            android:label="@string/app_name" >
-            <intent-filter>
-                <action android:name="com.magichat.decks.games.PLAYGAMEPREFS" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
@@ -99,15 +99,6 @@
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="com.magichat.decks.games.GAMESTATSFORPLAYER" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".decks.games.GameStatsPrefs"
-            android:label="@string/app_name" >
-            <intent-filter>
-                <action android:name="com.magichat.decks.games.GAMESTATSPREFS" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
@@ -200,6 +191,9 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.magichat.gcm.RegisterActivity"
+            android:launchMode="singleTop" />
     </application>
 
 </manifest>

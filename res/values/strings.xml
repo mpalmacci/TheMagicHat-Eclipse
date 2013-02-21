@@ -1,6 +1,7 @@
 <resources>
 
     <string name="app_name">The Magic Hat</string>
+    <string name="app_prefs">The Magic Hat Prefs</string>
 
     <!-- Main Menu -->
     <string name="play_button">Play a New Game</string>
@@ -61,11 +62,16 @@
     <string name="subtypes">"Card Subtypes&#8230;"</string>
     <string name="conv_mana_cost">"Convt. Mana Cost: "</string>
     <string name="cmc">CMC</string>
+    
+    <!-- Card View -->
+    <string name="card_image">Image of the Card</string>
 
     <!-- Colors -->
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
     <color name="grey">#888888</color>
     <color name="light_blue">#00CCFF</color>
+    
+    <string name="menu_settings">Menu Settings</string>
 
 </resources>
