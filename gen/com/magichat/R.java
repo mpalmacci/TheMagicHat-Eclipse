@@ -155,14 +155,15 @@ public final class R {
         public static final int card_search=0x7f030002;
         public static final int card_view=0x7f030003;
         public static final int change_active=0x7f030004;
-        public static final int delete_deck=0x7f030005;
-        public static final int display_all_decks=0x7f030006;
-        public static final int game_stats_for_deck=0x7f030007;
-        public static final int game_stats_for_player=0x7f030008;
-        public static final int magic_hat_main=0x7f030009;
-        public static final int play_game=0x7f03000a;
-        public static final int splash=0x7f03000b;
-        public static final int update_deck=0x7f03000c;
+        public static final int decks_main=0x7f030005;
+        public static final int delete_deck=0x7f030006;
+        public static final int display_all_decks=0x7f030007;
+        public static final int game_stats_for_deck=0x7f030008;
+        public static final int game_stats_for_player=0x7f030009;
+        public static final int magic_hat_main=0x7f03000a;
+        public static final int play_game=0x7f03000b;
+        public static final int splash=0x7f03000c;
+        public static final int update_deck=0x7f03000d;
     }
     public static final class menu {
         public static final int activity_register=0x7f0b0000;

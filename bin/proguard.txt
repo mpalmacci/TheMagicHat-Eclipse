@@ -25,6 +25,9 @@
 # view AndroidManifest.xml #generated:106
 -keep class com.magichat.decks.AddDeck { <init>(...); }
 
+# view AndroidManifest.xml #generated:194
+-keep class com.magichat.decks.DecksMain { <init>(...); }
+
 # view AndroidManifest.xml #generated:139
 -keep class com.magichat.decks.DeleteDeck { <init>(...); }
 
@@ -46,7 +49,7 @@
 # view AndroidManifest.xml #generated:44
 -keep class com.magichat.gcm.GCMIntentService { <init>(...); }
 
-# view AndroidManifest.xml #generated:194
+# view AndroidManifest.xml #generated:205
 -keep class com.magichat.gcm.RegisterActivity { <init>(...); }
 
 # onClick res/layout/activity_register.xml #generated:22
