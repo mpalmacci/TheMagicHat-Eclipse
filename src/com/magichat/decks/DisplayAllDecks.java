@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.magichat.R;
-import com.magichat.decks.db.MagicHatDB;
+import com.magichat.decks.db.MagicHatDb;
 
 import android.app.Activity;
 import android.os.AsyncTask;
@@ -32,7 +32,7 @@ public class DisplayAllDecks extends Activity {
 
 		@Override
 		protected String doInBackground(String... params) {
-			MagicHatDB getAllDecksDB = new MagicHatDB(DisplayAllDecks.this);
+			MagicHatDb getAllDecksDB = new MagicHatDb(DisplayAllDecks.this);
 			getAllDecksDB.openReadableDB();
 			allDecks = getAllDecksDB.getAllDecks();
 			getAllDecksDB.closeDB();

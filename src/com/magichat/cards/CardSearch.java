@@ -2,9 +2,9 @@ package com.magichat.cards;
 
 import java.util.List;
 
+import com.magichat.MagicHatActivity;
 import com.magichat.R;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -19,7 +19,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.ToggleButton;
 
-public class CardSearch extends Activity implements OnClickListener {
+public class CardSearch extends MagicHatActivity implements OnClickListener {
 
 	Button bSearch;
 	EditText etRulesText, etCMC;
@@ -176,6 +176,8 @@ public class CardSearch extends Activity implements OnClickListener {
 		tbBlack = (ToggleButton) findViewById(R.id.tbBlack);
 		tbRed = (ToggleButton) findViewById(R.id.tbRed);
 		tbGreen = (ToggleButton) findViewById(R.id.tbGreen);
+		
+		this.tvTitle.setText("Card Search");
 		
 		bSearch.setOnClickListener(this);
 	}

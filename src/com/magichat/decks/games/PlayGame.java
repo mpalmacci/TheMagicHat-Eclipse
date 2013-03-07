@@ -7,12 +7,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import com.magichat.MagicHatActivity;
 import com.magichat.R;
 import com.magichat.decks.Deck;
-import com.magichat.decks.db.MagicHatDB;
+import com.magichat.decks.db.MagicHatDb;
 import com.magichat.players.Player;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -28,17 +28,19 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-public class PlayGame extends Activity implements View.OnClickListener,
+public class PlayGame extends MagicHatActivity implements
 		OnItemSelectedListener {
 	List<Deck> allActiveDecks = new ArrayList<Deck>();
 	// List<Deck> gameDecks = new ArrayList<Deck>();
-	List<Player> players = new ArrayList<Player>();
+	List<Player> player = new ArrayList<Player>();
 	Map<Player, Deck> playersAndDecks = new HashMap<Player, Deck>();
 
 	int p1GameCount = 0, p2GameCount = 0;
 
 	Button bPlayGame, bPlayer1, bPlayer2;
 	LinearLayout llWinnerSection, llMatchupView;
+
+	boolean ownDecks;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -49,23 +51,39 @@ public class PlayGame extends Activity implements View.OnClickListener,
 
 		SharedPreferences getPrefs = PreferenceManager
 				.getDefaultSharedPreferences(getBaseContext());
-		boolean ownDecks = getPrefs.getBoolean("ownersDecksOnly", false);
+		ownDecks = getPrefs.getBoolean("ownersDecksOnly", false);
 
 		// TODO Break this out into two separate code paths
-		new getAllInfo().execute(ownDecks);
+		new getAllInfo().execute();
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+
+		SharedPreferences getPrefs = PreferenceManager
+				.getDefaultSharedPreferences(getBaseContext());
+		boolean ownDecksNew = getPrefs.getBoolean("ownersDecksOnly", false);
+
+		if (ownDecksNew != ownDecks) {
+			ownDecks = ownDecksNew;
+
+			// TODO Break this out into two separate code paths
+			new getAllInfo().execute();
+		}
 	}
 
 	private class getAllInfo extends AsyncTask<Boolean, Integer, String> {
 
 		@Override
 		protected String doInBackground(Boolean... prefs) {
-			MagicHatDB getAllInfoDB = new MagicHatDB(PlayGame.this);
+			MagicHatDb getAllInfoDB = new MagicHatDb(PlayGame.this);
 			getAllInfoDB.openReadableDB();
-			players = getAllInfoDB.getActivePlayers();
+			player = getAllInfoDB.getActivePlayers();
 
-			if (prefs[0]) {
+			if (ownDecks) {
 				// Here every player will play with their own decks
-				for (Player p : players) {
+				for (Player p : player) {
 					List<Deck> playersDecks = getAllInfoDB.getActiveDeckList(p);
 					if (playersDecks.isEmpty()) {
 						System.out.println("PlayGame.getAllInfo: "
@@ -91,7 +109,7 @@ public class PlayGame extends Activity implements View.OnClickListener,
 	}
 
 	private void populateDeckSpinners() {
-		for (Player p : players) {
+		for (Player p : player) {
 			List<Deck> deckList;
 
 			TextView tvPlayer = new TextView(PlayGame.this);
@@ -121,7 +139,7 @@ public class PlayGame extends Activity implements View.OnClickListener,
 
 	private void displayNewGame() {
 		// TODO Add in handling in case the player doesn't have any active decks
-		if (players.size() == 0) {
+		if (player.size() == 0) {
 			bPlayGame.setEnabled(false);
 			TextView tvErrorMessage = new TextView(PlayGame.this);
 			tvErrorMessage.setText("\n\nNo active Players were found!\n\n");
@@ -132,26 +150,26 @@ public class PlayGame extends Activity implements View.OnClickListener,
 		getNewRandomGame();
 		bPlayGame.setEnabled(true);
 
-		if (playersAndDecks.size() != players.size()) {
+		if (playersAndDecks.size() != player.size()) {
 			bPlayGame.setEnabled(false);
 			TextView tvErrorMessage = new TextView(PlayGame.this);
 			tvErrorMessage
 					.setText("Players and Decks are not of equal size\n\nPlayers size is "
-							+ players.size()
+							+ player.size()
 							+ " and the Decks size is "
 							+ playersAndDecks.size());
 			llMatchupView.addView(tvErrorMessage);
 			return;
 		}
 
-		if (players.size() == 2) {
+		if (player.size() == 2) {
 			llWinnerSection.setVisibility(LinearLayout.VISIBLE);
-			bPlayer1.setText(players.get(0).getName());
-			bPlayer2.setText(players.get(1).getName());
+			bPlayer1.setText(player.get(0).getName());
+			bPlayer2.setText(player.get(1).getName());
 		}
 
 		if (allActiveDecks.isEmpty()) {
-			for (Player p : players) {
+			for (Player p : player) {
 				int pId = p.getId();
 				Spinner sPlayersDeck = (Spinner) findViewById(pId);
 
@@ -159,7 +177,7 @@ public class PlayGame extends Activity implements View.OnClickListener,
 						playersAndDecks.get(p)));
 			}
 		} else {
-			for (Player p : players) {
+			for (Player p : player) {
 				int pId = p.getId();
 				Spinner sPlayersDeck = (Spinner) findViewById(pId);
 
@@ -182,7 +200,7 @@ public class PlayGame extends Activity implements View.OnClickListener,
 
 		// TODO Allow user to choose who they are - always set them as Player 1
 		if (allActiveDecks.isEmpty()) {
-			for (Player p : players) {
+			for (Player p : player) {
 				maxVal = p.getDeckList().size();
 				r = ran.nextInt(maxVal);
 				playersAndDecks.put(p, p.getDeckList().get(r));
@@ -190,7 +208,7 @@ public class PlayGame extends Activity implements View.OnClickListener,
 		} else {
 			List<Integer> randomInts = new ArrayList<Integer>();
 			maxVal = allActiveDecks.size();
-			for (Player p : players) {
+			for (Player p : player) {
 				r = ran.nextInt(maxVal);
 				while (randomInts.contains(r)) {
 					r = ran.nextInt(maxVal);
@@ -203,6 +221,7 @@ public class PlayGame extends Activity implements View.OnClickListener,
 
 	@Override
 	public void onClick(View v) {
+		super.onClick(v);
 		switch (v.getId()) {
 		case R.id.bPlayGame:
 			displayNewGame();
@@ -234,10 +253,10 @@ public class PlayGame extends Activity implements View.OnClickListener,
 
 		@Override
 		protected Integer doInBackground(Integer... pNums) {
-			MagicHatDB mhAddGameResult = new MagicHatDB(PlayGame.this);
+			MagicHatDb mhAddGameResult = new MagicHatDb(PlayGame.this);
 			mhAddGameResult.openWritableDB();
 			mhAddGameResult.addGameResult(playersAndDecks,
-					players.get(pNums[0]), new Date());
+					player.get(pNums[0]), new Date());
 			mhAddGameResult.closeDB();
 
 			return pNums[0];
@@ -314,7 +333,7 @@ public class PlayGame extends Activity implements View.OnClickListener,
 
 		Spinner sPlayersDeck;
 
-		for (Player p : players) {
+		for (Player p : player) {
 			sPlayersDeck = (Spinner) findViewById(p.getId());
 			Deck d = (Deck) sPlayersDeck.getSelectedItem();
 			playersAndDecks.put(p, d);
@@ -332,6 +351,10 @@ public class PlayGame extends Activity implements View.OnClickListener,
 		bPlayer2 = (Button) findViewById(R.id.bPlayer2);
 		llMatchupView = (LinearLayout) findViewById(R.id.llMatchupView);
 		llWinnerSection = (LinearLayout) findViewById(R.id.llWinnerSection);
+
+		this.bCardSearch.setVisibility(LinearLayout.VISIBLE);
+		
+		this.tvTitle.setText("Play Games");
 
 		bPlayGame.setOnClickListener(this);
 		bPlayer1.setOnClickListener(this);

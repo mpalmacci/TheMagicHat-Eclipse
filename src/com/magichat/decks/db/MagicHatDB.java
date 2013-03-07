@@ -13,11 +13,11 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 
-public class MagicHatDB {
+public class MagicHatDb {
 
-	private static final String DB_PATH = "/data/data/com.magichat/databases/";
+	private static String DB_PATH;
 	protected static final String MH_DB_NAME = "MagicHatDB";
-	private static final int MH_DB_VERSION = 1;
+	private static final int MH_DB_VERSION = 2;
 
 	private MagicHatDbHelper mhHelper;
 	private SQLiteDatabase mhDb;
@@ -25,11 +25,13 @@ public class MagicHatDB {
 
 	// ///////////////////////////////MAIN SETUP//////////////////////////////
 
-	public MagicHatDB(Context c) {
+	public MagicHatDb(Context c) {
 		context = c;
+		// This has been untested
+		DB_PATH = c.getFilesDir().getPath();
 	}
 
-	public MagicHatDB openWritableDB() {
+	public MagicHatDb openWritableDB() {
 		mhHelper = new MagicHatDbHelper(context, MH_DB_NAME, MH_DB_VERSION);
 		try {
 			mhDb = mhHelper.getWritableDatabase();
@@ -40,7 +42,7 @@ public class MagicHatDB {
 		return this;
 	}
 
-	public MagicHatDB openReadableDB() {
+	public MagicHatDb openReadableDB() {
 		mhHelper = new MagicHatDbHelper(context, MH_DB_NAME, MH_DB_VERSION);
 		try {
 			mhDb = mhHelper.getReadableDatabase();
@@ -70,13 +72,17 @@ public class MagicHatDB {
 
 	// //////////////////////////////// DECKS //////////////////////////////////
 
-	public void addDeck(String name, int OwnerId, Integer active) {
+/*	public void addDeck(String name, int OwnerId, Integer active) {
 		mhHelper.addDeck(name, OwnerId, active, mhDb);
+	}*/
+	
+	public void writeDeck(Deck d) {
+		mhHelper.writeDeck(d, mhDb);
 	}
 
-	public void updateDeck(Deck oldDeck, Deck newDeck) {
+/*	public void updateDeck(Deck oldDeck, Deck newDeck) {
 		mhHelper.updateDeck(oldDeck, newDeck, mhDb);
-	}
+	}*/
 
 	public void deleteDecks(int[] id) {
 		mhHelper.deleteDecks(id, mhDb);
@@ -119,18 +125,22 @@ public class MagicHatDB {
 	}
 
 	// ////////////////////PLAYERS/////////////OWNERS///////////////////////////////
-
-	public Player getOwner(int ownerId) {
-		return mhHelper.getOwner(ownerId, mhDb);
+	
+	public void writePlayer(Player p) {
+		mhHelper.writePlayer(p, mhDb);
 	}
+
+/*	public Player getOwner(int ownerId) {
+		return mhHelper.getOwner(ownerId, mhDb);
+	}*/
 
 	public Player getPlayer(int playerId) {
 		return mhHelper.getPlayer(playerId, mhDb);
 	}
 
-	public Player getOwner(String name) {
+/*	public Player getOwner(String name) {
 		return mhHelper.getOwner(name, mhDb);
-	}
+	}*/
 
 	public Player getPlayer(String name) {
 		return mhHelper.getPlayer(name, mhDb);

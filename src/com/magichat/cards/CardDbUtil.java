@@ -56,8 +56,8 @@ public class CardDbUtil {
 	public static final String DB_TABLE_REL_CARD_EXP = "Rel_CardExp";
 	public static final String DB_TABLE_SUB_TYPES = "SubTypes";
 
-	private static final String DB_PATH = "/data/data/com.magichat/databases/";
-	private static final String DB_NAME = "cards.db";
+	protected static final String DB_PATH = "/data/data/com.magichat/databases/";
+	protected static final String DB_NAME = "cards.db";
 	private static final String FILE_DB_VERSION = "cardsDbVersion.txt";
 	private static final int DB_VERSION = 1;
 
@@ -296,7 +296,8 @@ public class CardDbUtil {
 			String text = cc.getString(iCardText);
 
 			c = new Card(cardId, name, expansionImages, isBlue, isBlack, isRed,
-					isGreen, isWhite, manaCost, type, subTypes, sPower, sToughness, text);
+					isGreen, isWhite, manaCost, type, subTypes, sPower,
+					sToughness, text);
 		} else {
 			Log.d("CardDbUtil.getCard(name)",
 					"No unique Card found with name: " + name);
@@ -367,6 +368,8 @@ public class CardDbUtil {
 	protected static int getCardId(String name) {
 		String[] cardColumns = new String[] { KEY_CARD_ROWID };
 		int cardId = 0;
+		
+		name = name.replace("'", "''");
 
 		Cursor cc = cDb.query(DB_TABLE_ALLCARDS, cardColumns, "lower("
 				+ KEY_CARD_NAME + ") = lower('" + name + "')", null, null,

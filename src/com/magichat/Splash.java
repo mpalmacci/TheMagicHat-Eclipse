@@ -3,15 +3,14 @@ package com.magichat;
 import java.io.IOException;
 
 import com.magichat.cards.CardDbUtil;
-import com.magichat.decks.db.MagicHatDB;
+import com.magichat.decks.db.MagicHatDb;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.Toast;
 
-public class Splash extends Activity {
+public class Splash extends MagicHatActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -28,12 +27,12 @@ public class Splash extends Activity {
 		Thread timer = new Thread() {
 			public void run() {
 				try {
-					sleep(3000);
+					sleep(2000);
 				} catch (InterruptedException iE) {
 					iE.printStackTrace();
 				} finally {
 					Intent openMagicHatMain = new Intent(
-							"com.magichat.MAGICHATMAIN");
+							"com.magichat.MAGICHATHOME");
 					startActivity(openMagicHatMain);
 				}
 			}
@@ -83,7 +82,7 @@ public class Splash extends Activity {
 		protected void onPreExecute() {
 			super.onPreExecute();
 
-			if (!MagicHatDB.isCreated()) {
+			if (!MagicHatDb.isCreated()) {
 				/*Toast.makeText(Splash.this,
 						"Initializing Decks... Please wait...",
 						Toast.LENGTH_SHORT).show();*/
@@ -93,7 +92,7 @@ public class Splash extends Activity {
 
 		@Override
 		protected String doInBackground(String... params) {
-			MagicHatDB mhDb = new MagicHatDB(Splash.this);
+			MagicHatDb mhDb = new MagicHatDb(Splash.this);
 
 			mhDb.openReadableDB();
 			isUpgrade = mhDb.isUpgrade();

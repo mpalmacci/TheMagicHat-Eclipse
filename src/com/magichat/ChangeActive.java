@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.magichat.decks.Deck;
-import com.magichat.decks.db.MagicHatDB;
+import com.magichat.decks.db.MagicHatDb;
 import com.magichat.players.Player;
 
 import android.app.Activity;
@@ -24,7 +24,7 @@ import android.widget.TextView;
 public class ChangeActive extends Activity implements View.OnClickListener,
 		OnItemSelectedListener {
 	// TODO Allow changing multiple Decks at the same time
-	MagicHatDB mhDb = new MagicHatDB(this);
+	MagicHatDb mhDb = new MagicHatDb(this);
 	List<Deck> deckList = new ArrayList<Deck>();
 
 	Spinner sAllOwners, sOwnersDecks;
@@ -86,7 +86,7 @@ public class ChangeActive extends Activity implements View.OnClickListener,
 			deckList = mhDb.getDeckList(p);
 			mhDb.closeDB();
 
-			deckList.add(0, new Deck(DEFAULT_DECK, p));
+			deckList.add(0, new Deck(DEFAULT_DECK, p, true));
 
 			return deckList;
 		}

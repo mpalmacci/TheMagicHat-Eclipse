@@ -8,9 +8,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
 
+import com.magichat.MagicHatActivity;
 import com.magichat.R;
 
-import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -19,22 +19,22 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class CardView extends Activity {
+public class CardView extends MagicHatActivity {
 
 	LinearLayout llCardList;
-	TextView tvCard;
+	TextView tvExpansion;
 	ImageView ivCard;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.card_view);
-		tvCard = (TextView) findViewById(R.id.tvCard);
-		ivCard = (ImageView) findViewById(R.id.ivCard);
-		llCardList = (LinearLayout) findViewById(R.id.llCardList);
+		initialize();
 
 		Bundle bName = getIntent().getExtras();
 		String cardName = bName.getString("cardName");
+		
+		this.tvTitle.setText(cardName);
 
 		new getCardImages().execute(cardName);
 	}
@@ -58,16 +58,14 @@ public class CardView extends Activity {
 		@Override
 		protected void onPostExecute(
 				Map<Expansion, URL> cardImages) {
-			// TODO Auto-generated method stub
 			super.onPostExecute(cardImages);
-			while (cardImages.keySet().iterator().hasNext()) {
+			if (cardImages.keySet().iterator().hasNext()) {
 				Expansion keyExp = cardImages.keySet().iterator().next();
-				tvCard.setText(keyExp.toString());
+				tvExpansion.setText(keyExp.toString());
 
 				new showCard().execute(cardImages.get(keyExp));
 			}
 		}
-
 	}
 
 	private class showCard extends AsyncTask<URL, Integer, Bitmap> {
@@ -104,5 +102,11 @@ public class CardView extends Activity {
 			super.onPostExecute(cardImage);
 			ivCard.setImageBitmap(cardImage);
 		}
+	}
+	
+	private void initialize() {
+		tvExpansion = (TextView) findViewById(R.id.tvExpansion);
+		ivCard = (ImageView) findViewById(R.id.ivCard);
+		llCardList = (LinearLayout) findViewById(R.id.llCardList);
 	}
 }

@@ -1,11 +1,11 @@
 {
   "files": [
     {
-      "path": "the-magichat-deviceinfoendpoint-v1-20130220225443-java-1.13.2-beta-sources.jar", 
+      "path": "the-magichat-deviceinfoendpoint-v1-20130222023647-java-1.13.2-beta-sources.jar", 
       "type": "source"
     }, 
     {
-      "path": "the-magichat-deviceinfoendpoint-v1-20130220225443-java-1.13.2-beta.jar.properties", 
+      "path": "the-magichat-deviceinfoendpoint-v1-20130222023647-java-1.13.2-beta.jar.properties", 
       "type": "android.properties"
     }
   ], 
@@ -690,7 +690,7 @@
     }
   ], 
   "language_version": "1.13.2-beta", 
-  "revision": 20130220225443, 
+  "revision": 20130222023647, 
   "id": "deviceinfoendpoint:v1", 
   "name": "deviceinfoendpoint"
 }

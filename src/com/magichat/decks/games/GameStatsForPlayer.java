@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.magichat.MagicHatActivity;
 import com.magichat.R;
 import com.magichat.decks.Deck;
-import com.magichat.decks.db.MagicHatDB;
+import com.magichat.decks.db.MagicHatDb;
 import com.magichat.players.Player;
 
-import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -21,7 +21,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemSelectedListener;
 
-public class GameStatsForPlayer extends Activity implements
+public class GameStatsForPlayer extends MagicHatActivity implements
 		OnItemSelectedListener {
 	float totalGamesWon, totalGamesLost = 0;
 	List<Deck> allDecks = new ArrayList<Deck>();
@@ -51,7 +51,7 @@ public class GameStatsForPlayer extends Activity implements
 
 		@Override
 		protected String doInBackground(String... params) {
-			MagicHatDB mhDB = new MagicHatDB(GameStatsForPlayer.this);
+			MagicHatDb mhDB = new MagicHatDb(GameStatsForPlayer.this);
 			mhDB.openReadableDB();
 			allPlayers = mhDB.getAllPlayers();
 			mhDB.closeDB();
@@ -82,7 +82,7 @@ public class GameStatsForPlayer extends Activity implements
 
 		@Override
 		protected String doInBackground(String... params) {
-			MagicHatDB mhDB = new MagicHatDB(GameStatsForPlayer.this);
+			MagicHatDb mhDB = new MagicHatDb(GameStatsForPlayer.this);
 
 			mhDB.openReadableDB();
 			games = mhDB.getGames(currentPlayer);
@@ -229,6 +229,10 @@ public class GameStatsForPlayer extends Activity implements
 		tvGamesWon = (TextView) findViewById(R.id.tvGamesWonP);
 		tvGamesLost = (TextView) findViewById(R.id.tvGamesLostP);
 		pbTotalWonLost = (ProgressBar) findViewById(R.id.pbTotalWonLostP);
+		
+		this.bCardSearch.setVisibility(LinearLayout.VISIBLE);
+		
+		this.tvTitle.setText("Game Stats for Players");
 
 		sPlayerSelection.setOnItemSelectedListener(this);
 	}

@@ -1,22 +1,19 @@
 package com.magichat;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 
-public class MagicHatMain extends Activity implements View.OnClickListener {
+public class MagicHatHome extends MagicHatActivity {
 
-	Button bPlayGame, bViewGameStats, bAddDeck, bUpdateDeck, bChangeActive,
-			bDeleteDeck, bDisplayAllDecks, bCardSearch;
+	protected Button bPlayGame, bViewGameStats, bDecks, bAddDeck, bUpdateDeck,
+			bChangeActive, bDeleteDeck, bDisplayAllDecks;
 
-	String decksOrPlayersPref = "";
+	protected String decksOrPlayersPref = "";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -37,9 +34,11 @@ public class MagicHatMain extends Activity implements View.OnClickListener {
 	}
 
 	public void onClick(View v) {
+		super.onClick(v);
 		switch (v.getId()) {
 		case R.id.bEnterGame:
-			Intent openGameActivity = new Intent("com.magichat.decks.games.PLAYGAME");
+			Intent openGameActivity = new Intent(
+					"com.magichat.decks.games.PLAYGAME");
 			startActivity(openGameActivity);
 			break;
 		case R.id.bViewGameStats:
@@ -53,8 +52,14 @@ public class MagicHatMain extends Activity implements View.OnClickListener {
 				startActivity(openGameStatsActivity);
 			}
 			break;
+		case R.id.bDecks:
+			Intent openDeckActivity = new Intent(
+					"com.magichat.decks.DECKSMAIN");
+			startActivity(openDeckActivity);
+			break;
 		case R.id.bAddDeck:
-			Intent openAddDeckActivity = new Intent("com.magichat.decks.ADDDECK");
+			Intent openAddDeckActivity = new Intent(
+					"com.magichat.decks.ADDDECK");
 			startActivity(openAddDeckActivity);
 			break;
 		case R.id.bUpdateDeck:
@@ -77,54 +82,37 @@ public class MagicHatMain extends Activity implements View.OnClickListener {
 					"com.magichat.decks.DISPLAYALLDECKS");
 			startActivity(openDisplayAllDecksActivity);
 			break;
-		case R.id.bCardSearch:
-			Intent openCardSearchActivity = new Intent(
-					"com.magichat.cards.CARDSEARCH");
-			startActivity(openCardSearchActivity);
+		case R.id.bPlayers:
+			Intent openPlayersActivity = new Intent(
+					"com.magichat.players.PLAYERSMAIN");
+			startActivity(openPlayersActivity);
 			break;
 		default:
 			break;
 		}
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		super.onCreateOptionsMenu(menu);
-		MenuInflater mi = getMenuInflater();
-		mi.inflate(R.menu.menu, menu);
-		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case R.id.MagicHatPrefs:
-			Intent playGamePrefs = new Intent("com.magichat.decks.games.MAGICHATPREFS");
-			startActivity(playGamePrefs);
-			break;
-		default:
-			break;
-		}
-		return false;
 	}
 
 	private void initialize() {
 		bPlayGame = (Button) findViewById(R.id.bEnterGame);
 		bViewGameStats = (Button) findViewById(R.id.bViewGameStats);
+		bDecks = (Button) findViewById(R.id.bDecks);
 		bAddDeck = (Button) findViewById(R.id.bAddDeck);
 		bUpdateDeck = (Button) findViewById(R.id.bUpdateDeck);
 		bDeleteDeck = (Button) findViewById(R.id.bDeleteDeck);
 		bChangeActive = (Button) findViewById(R.id.bChangeActive);
 		bDisplayAllDecks = (Button) findViewById(R.id.bDisplayAllDecks);
-		bCardSearch = (Button) findViewById(R.id.bCardSearch);
-
+		
+		this.bPrefs.setVisibility(LinearLayout.VISIBLE);
+		this.bPlayers.setVisibility(LinearLayout.VISIBLE);
+		this.bCardSearch.setVisibility(LinearLayout.VISIBLE);
+		
 		bPlayGame.setOnClickListener(this);
 		bViewGameStats.setOnClickListener(this);
+		bDecks.setOnClickListener(this);
 		bAddDeck.setOnClickListener(this);
 		bUpdateDeck.setOnClickListener(this);
 		bChangeActive.setOnClickListener(this);
 		bDeleteDeck.setOnClickListener(this);
 		bDisplayAllDecks.setOnClickListener(this);
-		bCardSearch.setOnClickListener(this);
 	}
 }

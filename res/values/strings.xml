@@ -26,6 +26,10 @@
     <string name="stats_breakdown">Stats Breakdown - By Opposing Deck</string>
     <string name="no_games_played">No stats to display, play some games!</string>
 
+    <!-- Decks -->
+    <string name="decks">Decks</string>
+    <string name="deck_search">Search for Deck Name</string>
+
     <!-- Add Deck -->
     <string name="add_the_deck">Add the New Deck</string>
 
@@ -62,16 +66,24 @@
     <string name="subtypes">"Card Subtypes&#8230;"</string>
     <string name="conv_mana_cost">"Convt. Mana Cost: "</string>
     <string name="cmc">CMC</string>
-    
+
     <!-- Card View -->
     <string name="card_image">Image of the Card</string>
+
+    <!-- Players -->
+    <string name="players">Players</string>
+    <string name="player_name">Player Name</string>
+    <string name="dci">"DCI #: "</string>
+    <string name="dci_num">DCI Number</string>
+    <string name="self">Self</string>
+    <string name="active">Active</string>
 
     <!-- Colors -->
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
     <color name="grey">#888888</color>
     <color name="light_blue">#00CCFF</color>
-    
+
     <string name="menu_settings">Menu Settings</string>
 
 </resources>

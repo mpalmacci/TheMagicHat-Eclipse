@@ -1,9 +1,10 @@
 package com.magichat.cards;
 
-import android.app.Activity;
+import com.magichat.MagicHatActivity;
+
 import android.os.Bundle;
 
-public class CardSearchResults extends Activity {
+public class CardSearchResults extends MagicHatActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

@@ -29,6 +29,8 @@ public class MagicHatDbHelper extends SQLiteOpenHelper {
 	private static final String KEY_PLAYER_ROWID = "_id";
 	private static final String KEY_PLAYER_NAME = "player_name";
 	private static final String KEY_PLAYER_ACTIVE = "active_sts";
+	private static final String KEY_PLAYER_DCI = "dci";
+	private static final String KEY_PLAYER_SELF = "self";
 
 	private static final String KEY_GAME_ROWID = "_id";
 	private static final String KEY_GAME_PLAYER1 = "player_1";
@@ -60,8 +62,9 @@ public class MagicHatDbHelper extends SQLiteOpenHelper {
 
 		db.execSQL("CREATE TABLE " + DB_TABLE_ALLPLAYERS + " ("
 				+ KEY_PLAYER_ROWID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-				+ KEY_PLAYER_NAME + " TEXT NOT NULL, " + KEY_PLAYER_ACTIVE
-				+ " INTEGER NOT NULL);");
+				+ KEY_PLAYER_NAME + " TEXT NOT NULL, " + KEY_PLAYER_DCI
+				+ " INTEGER, " + KEY_PLAYER_ACTIVE + " INTEGER NOT NULL, "
+				+ KEY_PLAYER_SELF + " INTEGER NOT NULL);");
 		db.execSQL("CREATE TABLE " + DB_TABLE_ALLDECKS + " (" + KEY_DECK_ROWID
 				+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + KEY_DECK_NAME
 				+ " TEXT NOT NULL, " + KEY_DECK_OWNERID + " INTEGER NOT NULL, "
@@ -154,9 +157,15 @@ public class MagicHatDbHelper extends SQLiteOpenHelper {
 			ContentValues cvp = new ContentValues();
 			cvp.put(KEY_PLAYER_NAME, p.getName().toString());
 			cvp.put(KEY_PLAYER_ACTIVE, iActive);
-			db.insert(DB_TABLE_ALLPLAYERS, null, cvp);
-			Log.i("MagicHatDbHelper.setupPlayersAndDecks", p.getName()
-					.toString() + " Owner was added\n");
+			cvp.put(KEY_PLAYER_SELF, 0);
+			try {
+				db.insert(DB_TABLE_ALLPLAYERS, null, cvp);
+			} catch (SQLiteException exc) {
+				exc.printStackTrace();
+			} finally {
+				Log.i("MagicHatDbHelper.setupPlayersAndDecks", p.getName()
+						.toString() + " Owner was added\n");
+			}
 		}
 		Log.i("MagicHatDbHelper.setupPlayersAndDecks",
 				"Done setting up Players.");
@@ -232,37 +241,65 @@ public class MagicHatDbHelper extends SQLiteOpenHelper {
 	// DECKS
 	// //////////////////////////////////
 
-	protected void addDeck(String name, int OwnerId, Integer active,
-			SQLiteDatabase db) {
-		ContentValues cv = new ContentValues();
-		cv.put(KEY_DECK_NAME, name);
-		cv.put(KEY_DECK_OWNERID, OwnerId);
-		cv.put(KEY_DECK_ACTIVE, active);
-		cv.put(KEY_DECK_MANUAL, 1);
-		try {
-			db.insert(DB_TABLE_ALLDECKS, null, cv);
-		} catch (SQLiteException e) {
-			e.printStackTrace();
-		}
-	}
+	/*
+	 * protected void addDeck(String name, int OwnerId, Integer active,
+	 * SQLiteDatabase db) { ContentValues cv = new ContentValues();
+	 * cv.put(KEY_DECK_NAME, name); cv.put(KEY_DECK_OWNERID, OwnerId);
+	 * cv.put(KEY_DECK_ACTIVE, active); cv.put(KEY_DECK_MANUAL, 1); try {
+	 * db.insert(DB_TABLE_ALLDECKS, null, cv); } catch (SQLiteException e) {
+	 * e.printStackTrace(); } }
+	 */
 
-	protected void updateDeck(Deck oldDeck, Deck newDeck, SQLiteDatabase db) {
-
+	protected void writeDeck(Deck d, SQLiteDatabase db) {
 		ContentValues cv = new ContentValues();
-		cv.put(KEY_DECK_NAME, newDeck.getName());
-		if (newDeck.isActive()) {
+		cv.put(KEY_DECK_NAME, d.getName());
+		cv.put(KEY_DECK_OWNERID, d.getOwner().getId());
+		if (d.isActive()) {
 			cv.put(KEY_DECK_ACTIVE, 1);
 		} else {
 			cv.put(KEY_DECK_ACTIVE, 0);
 		}
+		if (d.isManual()) {
+			cv.put(KEY_DECK_MANUAL, 1);
+		} else {
+			cv.put(KEY_DECK_MANUAL, 0);
+		}
 
-		try {
-			db.update(DB_TABLE_ALLDECKS, cv,
-					KEY_DECK_ROWID + " = " + oldDeck.getId(), null);
-		} catch (SQLiteException e) {
-			e.printStackTrace();
+		if (d.getId() == 0) {
+			// This code is triggered when the deck is new
+			try {
+				db.insert(DB_TABLE_ALLDECKS, null, cv);
+			} catch (SQLiteException exc) {
+				exc.printStackTrace();
+			} finally {
+				Log.d("MagicHatDbHelper.writeDeck", "Deck " + d
+						+ " was inserted.");
+			}
+		} else {
+			try {
+				db.update(DB_TABLE_ALLDECKS, cv,
+						KEY_DECK_ROWID + " = " + d.getId(), null);
+			} catch (SQLiteException exc) {
+				exc.printStackTrace();
+			} finally {
+				Log.d("MagicHatDbHelper.writeDeck", "Deck " + d
+						+ " was updated.");
+			}
 		}
 	}
+
+	/*
+	 * protected void updateDeck(Deck oldDeck, Deck newDeck, SQLiteDatabase db)
+	 * {
+	 * 
+	 * ContentValues cv = new ContentValues(); cv.put(KEY_DECK_NAME,
+	 * newDeck.getName()); if (newDeck.isActive()) { cv.put(KEY_DECK_ACTIVE, 1);
+	 * } else { cv.put(KEY_DECK_ACTIVE, 0); }
+	 * 
+	 * try { db.update(DB_TABLE_ALLDECKS, cv, KEY_DECK_ROWID + " = " +
+	 * oldDeck.getId(), null); } catch (SQLiteException e) {
+	 * e.printStackTrace(); } }
+	 */
 
 	protected void deleteDecks(int[] id, SQLiteDatabase db) {
 		for (int dId : id) {
@@ -275,6 +312,7 @@ public class MagicHatDbHelper extends SQLiteOpenHelper {
 	}
 
 	protected Deck getDeck(int deckId, SQLiteDatabase db) {
+		Deck d = new Deck();
 		String[] deckColumns = new String[] { KEY_DECK_ROWID, KEY_DECK_NAME,
 				KEY_DECK_OWNERID, KEY_DECK_ACTIVE, KEY_DECK_MANUAL };
 
@@ -295,15 +333,17 @@ public class MagicHatDbHelper extends SQLiteOpenHelper {
 			ownerId = dc.getInt(iDeckOwnerId);
 			active = (dc.getInt(iDeckActive) == 1);
 			manual = (dc.getInt(iDeckManual) == 1);
+
+			Player owner = getPlayer(ownerId, db);
+
+			d = new Deck(deckId, deckName, owner, active, manual);
 		} else {
 			Log.d("MagicHatDbHelper.getDeck(id)",
 					"No unique Deck was found for the deckId of " + deckId);
 		}
 		dc.close();
 
-		Player owner = getOwner(ownerId, db);
-
-		return new Deck(deckId, deckName, owner, active, manual);
+		return d;
 	}
 
 	protected Deck getDeck(String sDeckName, String sOwnerName,
@@ -330,8 +370,8 @@ public class MagicHatDbHelper extends SQLiteOpenHelper {
 			dc.moveToFirst();
 			active = (dc.getInt(iDeckActive) == 1);
 			manual = (dc.getInt(iDeckManual) == 1);
-			d = new Deck(dc.getInt(iDeckId), dc.getString(iDeckName), getOwner(
-					dc.getInt(iDeckOwnerId), db), active, manual);
+			d = new Deck(dc.getInt(iDeckId), dc.getString(iDeckName),
+					getPlayer(dc.getInt(iDeckOwnerId), db), active, manual);
 		} else {
 			Log.d("MagicHatDbHelper.getDeck(String)",
 					"No unique deck was found for deck name: " + sDeckName
@@ -342,13 +382,60 @@ public class MagicHatDbHelper extends SQLiteOpenHelper {
 		return d;
 	}
 
+	protected List<Deck> getAllDecks(boolean isActive, boolean isManual,
+			SQLiteDatabase db) {
+		List<Deck> allDecks = new ArrayList<Deck>();
+
+		String[] deckColumns = new String[] { KEY_DECK_ROWID, KEY_DECK_NAME,
+				KEY_DECK_OWNERID, KEY_DECK_ACTIVE, KEY_DECK_MANUAL };
+
+		
+		String query = "";
+		if (isActive) {
+			query = query.concat(KEY_DECK_ACTIVE
+					+ " = 1");
+		}
+		if (isActive && isManual) {
+			query = query.concat(" AND ");
+		}
+		if (isManual) {
+			query = query.concat(KEY_DECK_MANUAL
+					+ " = 1");
+		}
+		Cursor dc = db.query(DB_TABLE_ALLDECKS, deckColumns, query, null, null,
+				null, null);
+
+		int iDeckId = dc.getColumnIndex(KEY_DECK_ROWID);
+		int iDeckName = dc.getColumnIndex(KEY_DECK_NAME);
+		int iDeckOwnerId = dc.getColumnIndex(KEY_DECK_OWNERID);
+		int iDeckActive = dc.getColumnIndex(KEY_DECK_ACTIVE);
+		int iDeckManual = dc.getColumnIndex(KEY_DECK_MANUAL);
+
+		Deck d;
+		for (dc.moveToFirst(); !dc.isAfterLast(); dc.moveToNext()) {
+			Player owner = getPlayer(dc.getInt(iDeckOwnerId), db);
+
+			boolean active = (dc.getInt(iDeckActive) == 1);
+			boolean manual = (dc.getInt(iDeckManual) == 1);
+			d = new Deck(dc.getInt(iDeckId), dc.getString(iDeckName), owner,
+					active, manual);
+			allDecks.add(d);
+		}
+
+		dc.close();
+
+		Collections.sort(allDecks);
+
+		return allDecks;
+	}
+
 	protected List<Deck> getAllDecks(SQLiteDatabase db) {
 		List<Deck> allDecks = new ArrayList<Deck>();
 
 		String[] deckColumns = new String[] { KEY_DECK_ROWID, KEY_DECK_NAME,
 				KEY_DECK_OWNERID, KEY_DECK_ACTIVE, KEY_DECK_MANUAL };
-		String[] playerColumns = new String[] { KEY_PLAYER_ROWID,
-				KEY_PLAYER_NAME, KEY_PLAYER_ACTIVE };
+		// String[] playerColumns = new String[] { KEY_PLAYER_ROWID,
+		// KEY_PLAYER_NAME, KEY_PLAYER_ACTIVE };
 
 		Cursor dc = db.query(DB_TABLE_ALLDECKS, deckColumns, null, null, null,
 				null, null);
@@ -361,31 +448,33 @@ public class MagicHatDbHelper extends SQLiteOpenHelper {
 
 		Deck d;
 		for (dc.moveToFirst(); !dc.isAfterLast(); dc.moveToNext()) {
-			Cursor pc = db.query(DB_TABLE_ALLPLAYERS, playerColumns,
-					KEY_PLAYER_ROWID + " = " + dc.getInt(iDeckOwnerId), null,
-					null, null, null);
+			Player owner = getPlayer(dc.getInt(iDeckOwnerId), db);
 
-			int iOwnerId = pc.getColumnIndex(KEY_PLAYER_ROWID);
-			int iOwnerName = pc.getColumnIndex(KEY_PLAYER_NAME);
-			int iOwnerActive = pc.getColumnIndex(KEY_PLAYER_ACTIVE);
-
-			if (pc.getCount() == 1) {
-				pc.moveToFirst();
-				boolean active = (dc.getInt(iDeckActive) == 1);
-				boolean manual = (dc.getInt(iDeckManual) == 1);
-				boolean ownerActive = (pc.getInt(iOwnerActive) == 1);
-				Player owner = new Player(pc.getInt(iOwnerId),
-						pc.getString(iOwnerName), ownerActive);
-				d = new Deck(dc.getInt(iDeckId), dc.getString(iDeckName),
-						owner, active, manual);
-				allDecks.add(d);
-			} else {
-				Log.d("MagicHatDbHelper.getAllDecks",
-						"No unique Owner was found for Owner Id: "
-								+ dc.getInt(iDeckOwnerId) + " and deck name: "
-								+ dc.getString(iDeckName));
-			}
-			pc.close();
+			/*
+			 * Cursor pc = db.query(DB_TABLE_ALLPLAYERS, playerColumns,
+			 * KEY_PLAYER_ROWID + " = " + dc.getInt(iDeckOwnerId), null, null,
+			 * null, null);
+			 * 
+			 * int iOwnerId = pc.getColumnIndex(KEY_PLAYER_ROWID); int
+			 * iOwnerName = pc.getColumnIndex(KEY_PLAYER_NAME); int iOwnerActive
+			 * = pc.getColumnIndex(KEY_PLAYER_ACTIVE);
+			 * 
+			 * if (pc.getCount() == 1) { pc.moveToFirst();
+			 */
+			boolean active = (dc.getInt(iDeckActive) == 1);
+			boolean manual = (dc.getInt(iDeckManual) == 1);
+			// boolean ownerActive = (pc.getInt(iOwnerActive) == 1);
+			// Player owner = new Player(pc.getInt(iOwnerId),
+			// pc.getString(iOwnerName), ownerActive);
+			d = new Deck(dc.getInt(iDeckId), dc.getString(iDeckName), owner,
+					active, manual);
+			allDecks.add(d);
+			/*
+			 * } else { Log.d("MagicHatDbHelper.getAllDecks",
+			 * "No unique Owner was found for Owner Id: " +
+			 * dc.getInt(iDeckOwnerId) + " and deck name: " +
+			 * dc.getString(iDeckName)); } pc.close();
+			 */
 		}
 
 		dc.close();
@@ -400,8 +489,8 @@ public class MagicHatDbHelper extends SQLiteOpenHelper {
 
 		String[] deckColumns = new String[] { KEY_DECK_ROWID, KEY_DECK_NAME,
 				KEY_DECK_OWNERID, KEY_DECK_ACTIVE, KEY_DECK_MANUAL };
-		String[] playerColumns = new String[] { KEY_PLAYER_ROWID,
-				KEY_PLAYER_NAME, KEY_PLAYER_ACTIVE };
+		// String[] playerColumns = new String[] { KEY_PLAYER_ROWID,
+		// KEY_PLAYER_NAME, KEY_PLAYER_ACTIVE };
 
 		Cursor dc = db.query(DB_TABLE_ALLDECKS, deckColumns, KEY_DECK_ACTIVE
 				+ " = 1", null, null, null, null);
@@ -413,30 +502,32 @@ public class MagicHatDbHelper extends SQLiteOpenHelper {
 
 		Deck d;
 		for (dc.moveToFirst(); !dc.isAfterLast(); dc.moveToNext()) {
-			Cursor pc = db.query(DB_TABLE_ALLPLAYERS, playerColumns,
-					KEY_PLAYER_ROWID + " = " + dc.getInt(iDeckOwnerId), null,
-					null, null, null);
+			Player owner = getPlayer(dc.getInt(iDeckOwnerId), db);
 
-			int iOwnerId = pc.getColumnIndex(KEY_PLAYER_ROWID);
-			int iOwnerName = pc.getColumnIndex(KEY_PLAYER_NAME);
-			int iOwnerActive = pc.getColumnIndex(KEY_PLAYER_ACTIVE);
-
-			if (pc.getCount() == 1) {
-				pc.moveToFirst();
-				boolean manual = (dc.getInt(iDeckManual) == 1);
-				boolean ownerActive = (pc.getInt(iOwnerActive) == 1);
-				Player owner = new Player(pc.getInt(iOwnerId),
-						pc.getString(iOwnerName), ownerActive);
-				d = new Deck(dc.getInt(iDeckId), dc.getString(iDeckName),
-						owner, true, manual);
-				allActiveDecks.add(d);
-			} else {
-				Log.d("MagicHatDbHelper.getAllActiveDecks",
-						"No unique Owner was found for Owner Id: "
-								+ dc.getInt(iDeckOwnerId) + " and deck name: "
-								+ dc.getString(iDeckName));
-			}
-			pc.close();
+			/*
+			 * Cursor pc = db.query(DB_TABLE_ALLPLAYERS, playerColumns,
+			 * KEY_PLAYER_ROWID + " = " + dc.getInt(iDeckOwnerId), null, null,
+			 * null, null);
+			 * 
+			 * int iOwnerId = pc.getColumnIndex(KEY_PLAYER_ROWID); int
+			 * iOwnerName = pc.getColumnIndex(KEY_PLAYER_NAME); int iOwnerActive
+			 * = pc.getColumnIndex(KEY_PLAYER_ACTIVE);
+			 * 
+			 * if (pc.getCount() == 1) { pc.moveToFirst();
+			 */
+			boolean manual = (dc.getInt(iDeckManual) == 1);
+			// boolean ownerActive = (pc.getInt(iOwnerActive) == 1);
+			// Player owner = new Player(pc.getInt(iOwnerId),
+			// pc.getString(iOwnerName), ownerActive);
+			d = new Deck(dc.getInt(iDeckId), dc.getString(iDeckName), owner,
+					true, manual);
+			allActiveDecks.add(d);
+			/*
+			 * } else { Log.d("MagicHatDbHelper.getAllActiveDecks",
+			 * "No unique Owner was found for Owner Id: " +
+			 * dc.getInt(iDeckOwnerId) + " and deck name: " +
+			 * dc.getString(iDeckName)); } pc.close();
+			 */
 		}
 
 		dc.close();
@@ -450,8 +541,8 @@ public class MagicHatDbHelper extends SQLiteOpenHelper {
 		List<Deck> allManDecks = new ArrayList<Deck>();
 		String[] deckColumns = new String[] { KEY_DECK_ROWID, KEY_DECK_NAME,
 				KEY_DECK_OWNERID, KEY_DECK_ACTIVE, KEY_DECK_MANUAL };
-		String[] playerColumns = new String[] { KEY_PLAYER_ROWID,
-				KEY_PLAYER_NAME, KEY_PLAYER_ACTIVE };
+		// String[] playerColumns = new String[] { KEY_PLAYER_ROWID,
+		// KEY_PLAYER_NAME, KEY_PLAYER_ACTIVE };
 
 		Cursor dc = db.query(DB_TABLE_ALLDECKS, deckColumns, KEY_DECK_MANUAL
 				+ " = 1", null, null, null, null);
@@ -463,31 +554,32 @@ public class MagicHatDbHelper extends SQLiteOpenHelper {
 
 		Deck d;
 		for (dc.moveToFirst(); !dc.isAfterLast(); dc.moveToNext()) {
-			Cursor pc = db.query(DB_TABLE_ALLPLAYERS, playerColumns,
-					KEY_PLAYER_ROWID + " = " + dc.getInt(iDeckOwnerId), null,
-					null, null, null);
+			Player owner = getPlayer(dc.getInt(iDeckOwnerId), db);
 
-			int iOwnerId = pc.getColumnIndex(KEY_PLAYER_ROWID);
-			int iOwnerName = pc.getColumnIndex(KEY_PLAYER_NAME);
-			int iOwnerActive = pc.getColumnIndex(KEY_PLAYER_ACTIVE);
-
-			if (pc.getCount() == 1) {
-				pc.moveToFirst();
-				int deckId = dc.getInt(iDeckId);
-				boolean active = (dc.getInt(iDeckActive) == 1);
-				boolean ownerActive = (pc.getInt(iOwnerActive) == 1);
-				Player owner = new Player(pc.getInt(iOwnerId),
-						pc.getString(iOwnerName), ownerActive);
-				d = new Deck(deckId, dc.getString(iDeckName), owner, active,
-						true);
-				allManDecks.add(d);
-			} else {
-				Log.d("MagicHatDbHelper.getAllManualDecks",
-						"No unique Owner was found for Owner Id: "
-								+ dc.getInt(iDeckOwnerId) + " and deck name: "
-								+ dc.getString(iDeckName));
-			}
-			pc.close();
+			/*
+			 * Cursor pc = db.query(DB_TABLE_ALLPLAYERS, playerColumns,
+			 * KEY_PLAYER_ROWID + " = " + dc.getInt(iDeckOwnerId), null, null,
+			 * null, null);
+			 * 
+			 * int iOwnerId = pc.getColumnIndex(KEY_PLAYER_ROWID); int
+			 * iOwnerName = pc.getColumnIndex(KEY_PLAYER_NAME); int iOwnerActive
+			 * = pc.getColumnIndex(KEY_PLAYER_ACTIVE);
+			 * 
+			 * if (pc.getCount() == 1) { pc.moveToFirst();
+			 */
+			int deckId = dc.getInt(iDeckId);
+			boolean active = (dc.getInt(iDeckActive) == 1);
+			// boolean ownerActive = (pc.getInt(iOwnerActive) == 1);
+			// Player owner = new Player(pc.getInt(iOwnerId),
+			// pc.getString(iOwnerName), ownerActive);
+			d = new Deck(deckId, dc.getString(iDeckName), owner, active, true);
+			allManDecks.add(d);
+			/*
+			 * } else { Log.d("MagicHatDbHelper.getAllManualDecks",
+			 * "No unique Owner was found for Owner Id: " +
+			 * dc.getInt(iDeckOwnerId) + " and deck name: " +
+			 * dc.getString(iDeckName)); } pc.close();
+			 */
 		}
 		dc.close();
 
@@ -496,13 +588,13 @@ public class MagicHatDbHelper extends SQLiteOpenHelper {
 		return allManDecks;
 	}
 
-	protected List<Deck> getDeckList(Player p, SQLiteDatabase db) {
+	protected List<Deck> getDeckList(Player owner, SQLiteDatabase db) {
 		List<Deck> deckList = new ArrayList<Deck>();
 
 		String[] deckColumns = new String[] { KEY_DECK_ROWID, KEY_DECK_NAME,
 				KEY_DECK_OWNERID, KEY_DECK_ACTIVE, KEY_DECK_MANUAL };
 		Cursor dc = db.query(DB_TABLE_ALLDECKS, deckColumns, KEY_DECK_OWNERID
-				+ " = " + p.getId(), null, null, null, null);
+				+ " = " + owner.getId(), null, null, null, null);
 
 		int iDeckId = dc.getColumnIndex(KEY_DECK_ROWID);
 		int iName = dc.getColumnIndex(KEY_DECK_NAME);
@@ -514,7 +606,7 @@ public class MagicHatDbHelper extends SQLiteOpenHelper {
 			int deckId = dc.getInt(iDeckId);
 			boolean active = (dc.getInt(iActive) == 1);
 			boolean manual = (dc.getInt(iManual) == 1);
-			d = new Deck(deckId, dc.getString(iName), p, active, manual);
+			d = new Deck(deckId, dc.getString(iName), owner, active, manual);
 			deckList.add(d);
 		}
 		dc.close();
@@ -557,14 +649,13 @@ public class MagicHatDbHelper extends SQLiteOpenHelper {
 			SQLiteDatabase db) {
 		int deckId = 0;
 
-		Player p = getPlayer(sOwnerName, db);
+		Player owner = getPlayer(sOwnerName, db);
 
 		String[] deckColumns = new String[] { KEY_DECK_ROWID, KEY_DECK_NAME,
 				KEY_DECK_OWNERID, KEY_DECK_ACTIVE, KEY_DECK_MANUAL };
-		Cursor dc = db.query(DB_TABLE_ALLDECKS, deckColumns,
-				KEY_DECK_NAME + " = '" + sDeckName + "' AND "
-						+ KEY_DECK_OWNERID + " = " + p.getId(), null, null,
-				null, null);
+		Cursor dc = db.query(DB_TABLE_ALLDECKS, deckColumns, KEY_DECK_NAME
+				+ " = '" + sDeckName + "' AND " + KEY_DECK_OWNERID + " = "
+				+ owner.getId(), null, null, null, null);
 		int iDeckId = dc.getColumnIndex(KEY_DECK_ROWID);
 
 		if (dc.getCount() == 1) {
@@ -573,7 +664,7 @@ public class MagicHatDbHelper extends SQLiteOpenHelper {
 		} else {
 			Log.d("MagicHatDbHelper.getDeckId",
 					"No unique deck was found with deck name: " + sDeckName
-							+ " and Owner Id: " + p.getId());
+							+ " and Owner Id: " + owner.getId());
 		}
 		dc.close();
 
@@ -603,51 +694,134 @@ public class MagicHatDbHelper extends SQLiteOpenHelper {
 	// OWNERS
 	// /////////////////////////////
 
-	protected Player getOwner(int ownerId, SQLiteDatabase db) {
+	protected void writePlayer(Player p, SQLiteDatabase db) {
+		p.setId(getPlayerId(p.getName().toString(), db));
+
+		int isActive = p.isActive() ? 1 : 0;
+		int isSelf = p.isSelf() ? 1 : 0;
+
+		ContentValues cv = new ContentValues();
+		cv.put(KEY_PLAYER_NAME, p.getName());
+		cv.put(KEY_PLAYER_ACTIVE, isActive);
+		if (p.getDci() != 0) {
+			cv.put(KEY_PLAYER_DCI, p.getDci());
+		}
+		cv.put(KEY_PLAYER_SELF, isSelf);
+
+		if (p.getId() == 0) {
+			// This code is triggered when the player is new
+			try {
+				db.insert(DB_TABLE_ALLPLAYERS, null, cv);
+			} catch (SQLiteException exc) {
+				exc.printStackTrace();
+			} finally {
+				Log.d("MagicHatDbHelper.writePlayer", "Player " + p
+						+ " was inserted.");
+			}
+		} else {
+			try {
+				db.update(DB_TABLE_ALLPLAYERS, cv,
+						KEY_PLAYER_ROWID + " = " + p.getId(), null);
+			} catch (SQLiteException exc) {
+				exc.printStackTrace();
+			} finally {
+				Log.d("MagicHatDbHelper.writePlayer", "Player " + p
+						+ " was updated.");
+			}
+		}
+	}
+
+	/*
+	 * protected Player getOwner(int ownerId, SQLiteDatabase db) { Player p =
+	 * new Player(); String[] playerColumns = new String[] { KEY_PLAYER_ROWID,
+	 * KEY_PLAYER_NAME, KEY_PLAYER_ACTIVE, KEY_PLAYER_SELF }; Cursor pc =
+	 * db.query(DB_TABLE_ALLPLAYERS, playerColumns, KEY_PLAYER_ROWID + " = " +
+	 * ownerId, null, null, null, null);
+	 * 
+	 * int iOwnerName = pc.getColumnIndex(KEY_PLAYER_NAME); int iOwnerActive =
+	 * pc.getColumnIndex(KEY_PLAYER_ACTIVE);
+	 * 
+	 * if (pc.getCount() == 1) { pc.moveToFirst(); boolean ownerActive =
+	 * (pc.getInt(iOwnerActive) == 1); p = new Player(ownerId,
+	 * pc.getString(iOwnerName), ownerActive); } else {
+	 * Log.d("MagicHatDbHelper.getOwner(id)",
+	 * "No unique owner was found for Owner Id: " + ownerId); } pc.close();
+	 * 
+	 * return p; }
+	 */
+
+	protected Player getPlayer(int playerId, SQLiteDatabase db) {
+		// return getOwner(playerId, db);
 		Player p = new Player();
 		String[] playerColumns = new String[] { KEY_PLAYER_ROWID,
-				KEY_PLAYER_NAME, KEY_PLAYER_ACTIVE };
+				KEY_PLAYER_NAME, KEY_PLAYER_DCI, KEY_PLAYER_ACTIVE,
+				KEY_PLAYER_SELF };
 		Cursor pc = db.query(DB_TABLE_ALLPLAYERS, playerColumns,
-				KEY_PLAYER_ROWID + " = " + ownerId, null, null, null, null);
+				KEY_PLAYER_ROWID + " = " + playerId, null, null, null, null);
 
 		int iOwnerName = pc.getColumnIndex(KEY_PLAYER_NAME);
+		int iOwnerDci = pc.getColumnIndex(KEY_PLAYER_DCI);
 		int iOwnerActive = pc.getColumnIndex(KEY_PLAYER_ACTIVE);
+		int iOwnerSelf = pc.getColumnIndex(KEY_PLAYER_SELF);
 
 		if (pc.getCount() == 1) {
 			pc.moveToFirst();
-			boolean ownerActive = (pc.getInt(iOwnerActive) == 1);
-			p = new Player(ownerId, pc.getString(iOwnerName), ownerActive);
+			boolean active = (pc.getInt(iOwnerActive) == 1);
+			boolean self = (pc.getInt(iOwnerSelf) == 1);
+			p = new Player(playerId, pc.getString(iOwnerName),
+					pc.getInt(iOwnerDci), active, self);
 		} else {
 			Log.d("MagicHatDbHelper.getOwner(id)",
-					"No unique owner was found for Owner Id: " + ownerId);
+					"No unique owner was found for Owner Id: " + playerId);
 		}
 		pc.close();
 
 		return p;
 	}
 
-	protected Player getPlayer(int playerId, SQLiteDatabase db) {
-		return getOwner(playerId, db);
-	}
+	/*
+	 * protected Player getOwner(String name, SQLiteDatabase db) { Player p =
+	 * new Player(); String[] columns = new String[] { KEY_PLAYER_ROWID,
+	 * KEY_PLAYER_NAME, KEY_PLAYER_ACTIVE, KEY_PLAYER_SELF };
+	 * 
+	 * Cursor pc = db.query(DB_TABLE_ALLPLAYERS, columns, KEY_PLAYER_NAME +
+	 * " = '" + name + "'", null, null, null, null);
+	 * 
+	 * int iOwnerId = pc.getColumnIndex(KEY_PLAYER_ROWID); int iOwnerName =
+	 * pc.getColumnIndex(KEY_PLAYER_NAME); int iOwnerActive =
+	 * pc.getColumnIndex(KEY_PLAYER_ACTIVE);
+	 * 
+	 * boolean active = false; if (pc.getCount() == 1) { pc.moveToFirst();
+	 * active = (pc.getInt(iOwnerActive) == 1); p = new
+	 * Player(pc.getInt(iOwnerId), pc.getString(iOwnerName), active); } else {
+	 * Log.d("MagicHatDbHelper.getOwner(name)",
+	 * "No unique player was found for Owner Name: " + name); } pc.close();
+	 * 
+	 * return p; }
+	 */
 
-	protected Player getOwner(String name, SQLiteDatabase db) {
+	protected Player getPlayer(String name, SQLiteDatabase db) {
+		// return getOwner(name, db);
 		Player p = new Player();
 		String[] columns = new String[] { KEY_PLAYER_ROWID, KEY_PLAYER_NAME,
-				KEY_PLAYER_ACTIVE };
+				KEY_PLAYER_ACTIVE, KEY_PLAYER_SELF };
 
 		Cursor pc = db.query(DB_TABLE_ALLPLAYERS, columns, KEY_PLAYER_NAME
 				+ " = '" + name + "'", null, null, null, null);
 
 		int iOwnerId = pc.getColumnIndex(KEY_PLAYER_ROWID);
 		int iOwnerName = pc.getColumnIndex(KEY_PLAYER_NAME);
+		int iOwnerDci = pc.getColumnIndex(KEY_PLAYER_DCI);
 		int iOwnerActive = pc.getColumnIndex(KEY_PLAYER_ACTIVE);
+		int iOwnerSelf = pc.getColumnIndex(KEY_PLAYER_SELF);
 
-		boolean active = false;
+		boolean active = false, self = false;
 		if (pc.getCount() == 1) {
 			pc.moveToFirst();
 			active = (pc.getInt(iOwnerActive) == 1);
+			self = (pc.getInt(iOwnerSelf) == 1);
 			p = new Player(pc.getInt(iOwnerId), pc.getString(iOwnerName),
-					active);
+					pc.getInt(iOwnerDci), active, self);
 		} else {
 			Log.d("MagicHatDbHelper.getOwner(name)",
 					"No unique player was found for Owner Name: " + name);
@@ -655,10 +829,6 @@ public class MagicHatDbHelper extends SQLiteOpenHelper {
 		pc.close();
 
 		return p;
-	}
-
-	protected Player getPlayer(String name, SQLiteDatabase db) {
-		return getOwner(name, db);
 	}
 
 	protected int getPlayerId(String name, SQLiteDatabase db) {
@@ -799,7 +969,7 @@ public class MagicHatDbHelper extends SQLiteOpenHelper {
 
 		// Return the updated Player p because we've changed it in the update
 		// query
-		return getOwner(p.getId(), db);
+		return getPlayer(p.getId(), db);
 	}
 
 	protected Deck flipActiveStatus(Deck d, SQLiteDatabase db) {
@@ -829,14 +999,14 @@ public class MagicHatDbHelper extends SQLiteOpenHelper {
 
 	protected void addGameResult(Map<Player, Deck> playersAndDecks,
 			Player pWinner, Date gameDate, SQLiteDatabase db) {
-		List<Player> players = new ArrayList<Player>();
-		players.addAll(playersAndDecks.keySet());
+		List<Player> player = new ArrayList<Player>();
+		player.addAll(playersAndDecks.keySet());
 
 		ContentValues cv = new ContentValues();
-		cv.put(KEY_GAME_PLAYER1, players.get(0).getId());
-		cv.put(KEY_GAME_PLAYER2, players.get(1).getId());
-		cv.put(KEY_GAME_DECK1, playersAndDecks.get(players.get(0)).getId());
-		cv.put(KEY_GAME_DECK2, playersAndDecks.get(players.get(1)).getId());
+		cv.put(KEY_GAME_PLAYER1, player.get(0).getId());
+		cv.put(KEY_GAME_PLAYER2, player.get(1).getId());
+		cv.put(KEY_GAME_DECK1, playersAndDecks.get(player.get(0)).getId());
+		cv.put(KEY_GAME_DECK2, playersAndDecks.get(player.get(1)).getId());
 		cv.put(KEY_GAME_WINNER, pWinner.getId());
 		cv.put(KEY_GAME_DATE, gameDate.getTime());
 		try {
@@ -883,7 +1053,7 @@ public class MagicHatDbHelper extends SQLiteOpenHelper {
 			playersAndDecks.put(p1, d1);
 			playersAndDecks.put(p2, d2);
 
-			Player pW = getOwner(winnerId, db);
+			Player pW = getPlayer(winnerId, db);
 
 			allGames.add(new Game(gameId, playersAndDecks, pW, date));
 		}

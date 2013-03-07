@@ -12,7 +12,7 @@
 /*
  * This file was generated.
  *  with google-apis-code-generator 1.2.0 (build: 2013-02-14 15:45:00 UTC)
- *  on 2013-02-20 at 22:55:53 UTC 
+ *  on 2013-02-22 at 02:36:55 UTC 
  */
 
 package com.magichat.messageEndpoint;

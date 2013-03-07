@@ -1,9 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="15dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="25dp" >
+    android:padding="15dp" >
+
+<!--    <GridView
+        android:id="@+id/gridView1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:numColumns="2" >
+    </GridView> -->
 
     <Button
         android:id="@+id/bEnterGame"
@@ -17,6 +25,13 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/view_game_stats"
+        android:textSize="25sp" />
+    
+    <Button
+        android:id="@+id/bDecks"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/decks"
         android:textSize="25sp" />
 
     <Button
@@ -52,13 +67,6 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/deck_display"
-        android:textSize="25sp" />
-
-    <Button
-        android:id="@+id/bCardSearch"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/card_search"
         android:textSize="25sp" />
 
 </LinearLayout>

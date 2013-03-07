@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.magichat.Email;
-import com.magichat.decks.db.MagicHatDB;
+import com.magichat.decks.db.MagicHatDb;
 import com.magichat.players.Player;
 import com.magichat.R;
 
@@ -25,7 +25,7 @@ import android.widget.ToggleButton;
 
 public class AddDeck extends Activity implements View.OnClickListener {
 	List<Player> allOwners = new ArrayList<Player>();
-	MagicHatDB mhDB = new MagicHatDB(this);
+	MagicHatDb mhDB = new MagicHatDb(this);
 
 	EditText etDeckName;
 	Spinner sAllOwners;
@@ -108,12 +108,11 @@ public class AddDeck extends Activity implements View.OnClickListener {
 
 		@Override
 		protected Boolean doInBackground(String... params) {
-			int iActive = tbActiveDeck.isChecked() ? 1 : 0;
 			Boolean isDup = false;
 			Player p = (Player) sAllOwners.getSelectedItem();
 
 			Deck d = new Deck(etDeckName.getText().toString(), p,
-					tbActiveDeck.isChecked());
+					tbActiveDeck.isChecked(), true);
 
 			mhDB.openWritableDB();
 
@@ -121,7 +120,7 @@ public class AddDeck extends Activity implements View.OnClickListener {
 				mhDB.closeDB();
 				isDup = true;
 			} else {
-				mhDB.addDeck(etDeckName.getText().toString(), p.getId(), iActive);
+				mhDB.writeDeck(d);
 				mhDB.closeDB();
 			}
 
@@ -182,12 +181,12 @@ public class AddDeck extends Activity implements View.OnClickListener {
 
 		@Override
 		protected String doInBackground(String... params) {
-			int iActive = tbActiveDeck.isChecked() ? 1 : 0;
-			
 			Player p = (Player) sAllOwners.getSelectedItem();
+			
+			Deck d = new Deck(etDeckName.getText().toString(), p, tbActiveDeck.isChecked(), true);
 
 			mhDB.openWritableDB();
-			mhDB.addDeck(etDeckName.getText().toString(), p.getId(), iActive);
+			mhDB.writeDeck(d);
 			mhDB.closeDB();
 
 			return null;

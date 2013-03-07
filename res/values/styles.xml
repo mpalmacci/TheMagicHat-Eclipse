@@ -1,5 +1,31 @@
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <style name="AppTheme" parent="android:Theme.Light" />
+    <style name="CustomWindowTitleText" parent="android:TextAppearance.WindowTitle">
+        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">#ffffff</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="CustomWindowTitleBackground">
+        <item name="android:background">#6699ff</item>
+    </style>
+
+    <!-- Set the theme for the window title -->
+    <!-- NOTE: setting android:textAppearence to style defined above -->
+    <style name="CustomWindowTitle">
+        <item name="android:textAppearance">@style/CustomWindowTitleText</item>
+        <item name="android:shadowDx">0</item>
+        <item name="android:shadowDy">0</item>
+        <item name="android:shadowRadius">5</item>
+        <item name="android:shadowColor">#1155CC</item>
+        <item name="android:paddingLeft">10sp</item>
+    </style>
+    <!-- Override properties in the default theme -->
+    <!-- NOTE: you must explicitly the windowTitleSize property, the title bar will not re-size automatically, text will be clipped -->
+    <style name="AppTheme" parent="android:Theme">
+        <item name="android:windowTitleSize">50dip</item>
+        <item name="android:windowTitleStyle">@style/CustomWindowTitle</item>
+        <item name="android:windowTitleBackgroundStyle">@style/CustomWindowTitleBackground</item>
+    </style>
 
 </resources>

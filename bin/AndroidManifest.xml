@@ -29,7 +29,7 @@
         android:allowBackup="true"
         android:icon="@drawable/main_icon"
         android:label="@string/app_name"
-        android:theme="@android:style/Theme.Black" >
+        android:theme="@style/AppTheme" >
         <receiver
             android:name="com.google.android.gcm.GCMBroadcastReceiver"
             android:permission="com.google.android.c2dm.permission.SEND" >
@@ -53,17 +53,21 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MagicHatMain"
-            android:label="@string/app_name" >
+            android:name=".MagicHatHome"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
             <intent-filter>
-                <action android:name="com.magichat.MAGICHATMAIN" />
+                <action android:name="com.magichat.MAGICHATHOME" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
             android:name=".MagicHatPrefs"
-            android:label="@string/app_name" >
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="com.magichat.MAGICHATPREFS" />
 
@@ -99,6 +103,17 @@
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="com.magichat.decks.games.GAMESTATSFORPLAYER" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".decks.DecksMain"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/decks"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="com.magichat.decks.DECKSMAIN" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
@@ -192,12 +207,23 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".decks.DecksMain"
+            android:name=".players.PlayersMain"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/app_name"
             android:screenOrientation="portrait" >
             <intent-filter>
-                <action android:name="com.magichat.decks.DECKSMAIN" />
+                <action android:name="com.magichat.players.PLAYERSMAIN" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".players.PlayerView"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="com.magichat.players.PLAYERVIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>

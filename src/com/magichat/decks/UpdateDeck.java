@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.magichat.R;
-import com.magichat.decks.db.MagicHatDB;
+import com.magichat.decks.db.MagicHatDb;
 import com.magichat.players.Player;
 
 import android.app.Activity;
@@ -63,7 +63,7 @@ public class UpdateDeck extends Activity implements OnClickListener,
 		protected ArrayAdapter<Player> doInBackground(String... params) {
 			List<Player> allOwners = new ArrayList<Player>();
 
-			MagicHatDB mhDb = new MagicHatDB(UpdateDeck.this);
+			MagicHatDb mhDb = new MagicHatDb(UpdateDeck.this);
 			mhDb.openReadableDB();
 			allOwners = mhDb.getAllOwners();
 			mhDb.closeDB();
@@ -96,7 +96,7 @@ public class UpdateDeck extends Activity implements OnClickListener,
 		protected ArrayAdapter<Deck> doInBackground(Player... p) {
 			List<Deck> deckList = new ArrayList<Deck>();
 
-			MagicHatDB mhDb = new MagicHatDB(UpdateDeck.this);
+			MagicHatDb mhDb = new MagicHatDb(UpdateDeck.this);
 			mhDb.openReadableDB();
 			// TODO Defect found here where the deck-list isn't showing correct
 			// information
@@ -107,7 +107,7 @@ public class UpdateDeck extends Activity implements OnClickListener,
 				System.out.println("Deck List is empty!");
 				String sEmpty = "No Decks";
 
-				deckList.add(new Deck(sEmpty, p[0]));
+				deckList.add(new Deck(sEmpty, p[0], true));
 			} else {
 				deckList.add(0, new Deck());
 			}
@@ -165,9 +165,9 @@ public class UpdateDeck extends Activity implements OnClickListener,
 
 		@Override
 		protected String doInBackground(String... params) {
-			MagicHatDB mhDb = new MagicHatDB(UpdateDeck.this);
+			MagicHatDb mhDb = new MagicHatDb(UpdateDeck.this);
 			mhDb.openWritableDB();
-			mhDb.updateDeck(originalDeck, updatedDeck);
+			mhDb.writeDeck(updatedDeck);
 			mhDb.closeDB();
 			return null;
 		}

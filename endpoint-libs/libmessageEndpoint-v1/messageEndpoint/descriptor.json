@@ -1,11 +1,11 @@
 {
   "files": [
     {
-      "path": "the-magichat-messageEndpoint-v1-20130220225552-java-1.13.2-beta-sources.jar", 
+      "path": "the-magichat-messageEndpoint-v1-20130222023655-java-1.13.2-beta-sources.jar", 
       "type": "source"
     }, 
     {
-      "path": "the-magichat-messageEndpoint-v1-20130220225552-java-1.13.2-beta.jar.properties", 
+      "path": "the-magichat-messageEndpoint-v1-20130222023655-java-1.13.2-beta.jar.properties", 
       "type": "android.properties"
     }
   ], 
@@ -690,7 +690,7 @@
     }
   ], 
   "language_version": "1.13.2-beta", 
-  "revision": 20130220225552, 
+  "revision": 20130222023655, 
   "id": "messageEndpoint:v1", 
   "name": "messageEndpoint"
 }

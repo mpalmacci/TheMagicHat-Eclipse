@@ -19,14 +19,21 @@ public class Deck implements Comparable<Deck> {
 		this.name = new String();
 	}
 
-	public Deck(String name, Player owner) {
-		this.name = name;
-		this.owner = owner;
-	}
+	/*
+	 * public Deck(String name, Player owner) { this.name = name; this.owner =
+	 * owner; }
+	 */
 
 	public Deck(String name, Player owner, boolean active) {
-		this(name, owner);
+		// this(name, owner);
+		this.name = name;
+		this.owner = owner;
 		this.active = active;
+	}
+
+	public Deck(String name, Player owner, boolean active, boolean manual) {
+		this(name, owner, active);
+		this.manual = manual;
 	}
 
 	public Deck(int id, String name, Player owner, boolean active) {

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.magichat.R;
-import com.magichat.decks.db.MagicHatDB;
+import com.magichat.decks.db.MagicHatDb;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -47,7 +47,7 @@ public class DeleteDeck extends Activity implements View.OnClickListener {
 
 		@Override
 		protected List<Deck> doInBackground(String... params) {
-			MagicHatDB getAllInfoDB = new MagicHatDB(DeleteDeck.this);
+			MagicHatDb getAllInfoDB = new MagicHatDb(DeleteDeck.this);
 			getAllInfoDB.openReadableDB();
 			allDecks = getAllInfoDB.getAllManualDecks();
 			getAllInfoDB.closeDB();
@@ -126,7 +126,7 @@ public class DeleteDeck extends Activity implements View.OnClickListener {
 		protected String doInBackground(String... params) {
 			int[] dId = new int[decksToDelete.size()];
 
-			MagicHatDB deleteDecksDB = new MagicHatDB(DeleteDeck.this);
+			MagicHatDb deleteDecksDB = new MagicHatDb(DeleteDeck.this);
 			deleteDecksDB.openWritableDB();
 			for (int i = 0; i < decksToDelete.size(); i++) {
 				dId[i] = decksToDelete.get(i).getId();

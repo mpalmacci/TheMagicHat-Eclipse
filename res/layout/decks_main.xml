@@ -3,6 +3,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-    
+
+    <EditText
+        android:id="@+id/etDeckSearch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableRight="@drawable/search"
+        android:hint="@string/deck_search"
+        android:inputType="text" />
+
+    <ListView
+        android:id="@+id/lvDeckList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:divider="@color/light_blue" >
+    </ListView>
 
 </LinearLayout>
