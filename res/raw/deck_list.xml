@@ -151,8 +151,18 @@
             owner="2" />
         <Deck
             name="Land Destruction"
-            active="true"
+            active="false"
             number="25"
+            owner="2" />
+        <Deck
+            name="Red Black Green"
+            active="false"
+            number="26"
+            owner="2" />
+        <Deck
+            name="Vigilance"
+            active="false"
+            number="27"
             owner="2" />
         <Deck
             name="Angels &amp; Demons"
@@ -408,6 +418,11 @@
             name="Gruul/Rakdos/Golgari"
             active="true"
             number="151"
+            owner="1" />
+		<Deck
+            name="Misc Black/Green"
+            active="true"
+            number="152"
             owner="1" />
         <Deck
             name="Black"

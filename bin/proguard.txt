@@ -1,9 +1,6 @@
 # view AndroidManifest.xml #generated:33
 -keep class com.google.android.gcm.GCMBroadcastReceiver { <init>(...); }
 
-# view AndroidManifest.xml #generated:143
--keep class com.magichat.ChangeActive { <init>(...); }
-
 # view AndroidManifest.xml #generated:55
 -keep class com.magichat.MagicHatHome { <init>(...); }
 
@@ -13,29 +10,17 @@
 # view AndroidManifest.xml #generated:46
 -keep class com.magichat.Splash { <init>(...); }
 
-# view AndroidManifest.xml #generated:176
+# view AndroidManifest.xml #generated:179
 -keep class com.magichat.cards.CardSearch { <init>(...); }
 
-# view AndroidManifest.xml #generated:187
+# view AndroidManifest.xml #generated:190
 -keep class com.magichat.cards.CardSearchResults { <init>(...); }
 
-# view AndroidManifest.xml #generated:198
+# view AndroidManifest.xml #generated:201
 -keep class com.magichat.cards.CardView { <init>(...); }
-
-# view AndroidManifest.xml #generated:121
--keep class com.magichat.decks.AddDeck { <init>(...); }
 
 # view AndroidManifest.xml #generated:110
 -keep class com.magichat.decks.DecksMain { <init>(...); }
-
-# view AndroidManifest.xml #generated:154
--keep class com.magichat.decks.DeleteDeck { <init>(...); }
-
-# view AndroidManifest.xml #generated:165
--keep class com.magichat.decks.DisplayAllDecks { <init>(...); }
-
-# view AndroidManifest.xml #generated:132
--keep class com.magichat.decks.UpdateDeck { <init>(...); }
 
 # view AndroidManifest.xml #generated:88
 -keep class com.magichat.decks.games.GameStatsForDeck { <init>(...); }
@@ -49,13 +34,13 @@
 # view AndroidManifest.xml #generated:44
 -keep class com.magichat.gcm.GCMIntentService { <init>(...); }
 
-# view AndroidManifest.xml #generated:231
+# view AndroidManifest.xml #generated:234
 -keep class com.magichat.gcm.RegisterActivity { <init>(...); }
 
-# view AndroidManifest.xml #generated:220
+# view AndroidManifest.xml #generated:223
 -keep class com.magichat.players.PlayerView { <init>(...); }
 
-# view AndroidManifest.xml #generated:209
+# view AndroidManifest.xml #generated:212
 -keep class com.magichat.players.PlayersMain { <init>(...); }
 
 # onClick res/layout/activity_register.xml #generated:22

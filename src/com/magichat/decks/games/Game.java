@@ -13,13 +13,18 @@ public class Game {
 	private Map<Player, Deck> playersAndDecks;
 	private Player pW;
 	private Date gameDate;
+	
+	public Game(Map<Player, Deck> playersAndDecks, Date gameDate) {
+		this.id = 0;
+		this.playersAndDecks = playersAndDecks;
+		this.gameDate = gameDate;
+	}
 
 	public Game(int id, Map<Player, Deck> playersAndDecks, Player pW,
 			Date gameDate) {
+		this(playersAndDecks, gameDate);
 		this.setId(id);
-		this.playersAndDecks = playersAndDecks;
 		this.pW = pW;
-		this.gameDate = gameDate;
 	}
 
 	public Player getWinner() {
@@ -28,6 +33,10 @@ public class Game {
 
 	public boolean isWinner(Player pW) {
 		return this.pW.equals(pW);
+	}
+	
+	public void setWinner(Player pW) {
+		this.pW = pW;
 	}
 
 	public Player getPlayer(int pNum) {
@@ -43,6 +52,14 @@ public class Game {
 
 		return gameDecks.get(dNum);
 	}
+	
+	public Map<Player, Deck> getPlayersAndDecks() {
+		return this.playersAndDecks;
+	}
+	
+/*	public void setPlayersAndDecks(Map<Player, Deck> playersAndDecks) {
+		this.playersAndDecks = playersAndDecks;
+	}*/
 
 	public List<Player> getGamePlayers() {
 		List<Player> gamers = new ArrayList<Player>();

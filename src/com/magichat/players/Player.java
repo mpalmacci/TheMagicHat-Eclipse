@@ -14,9 +14,11 @@ public class Player implements Comparable<Player> {
 	private List<Deck> deckList;
 
 	public Player() {
+		this.id = 0;
 	}
 
 	public Player(String name) {
+		this();
 		this.name = name;
 	}
 

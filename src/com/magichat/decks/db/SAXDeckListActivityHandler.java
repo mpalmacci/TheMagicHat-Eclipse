@@ -61,10 +61,10 @@ public class SAXDeckListActivityHandler extends DefaultHandler {
 				Player owner = getOwner(ownerId);
 				String sActive = attributes.getValue("active");
 				boolean active = Boolean.parseBoolean(sActive);
-				String sId = attributes.getValue("number");
-				int id = Integer.parseInt(sId);
+				//String sId = attributes.getValue("number");
+				//int id = Integer.parseInt(sId);
 
-				d = new Deck(id, name, owner, active);
+				d = new Deck(name, owner, active);
 			} else {
 				System.out.println("No deck owner was found for Owner Id"
 						+ ownerId);

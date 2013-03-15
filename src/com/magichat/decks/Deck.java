@@ -1,6 +1,5 @@
 package com.magichat.decks;
 
-import com.magichat.ChangeActive;
 import com.magichat.players.Player;
 
 public class Deck implements Comparable<Deck> {
@@ -13,8 +12,6 @@ public class Deck implements Comparable<Deck> {
 
 	private int id;
 
-	private boolean manual;
-
 	public Deck() {
 		this.name = new String();
 	}
@@ -25,26 +22,16 @@ public class Deck implements Comparable<Deck> {
 	 */
 
 	public Deck(String name, Player owner, boolean active) {
+		this.id = 0;
 		// this(name, owner);
 		this.name = name;
 		this.owner = owner;
 		this.active = active;
 	}
 
-	public Deck(String name, Player owner, boolean active, boolean manual) {
-		this(name, owner, active);
-		this.manual = manual;
-	}
-
 	public Deck(int id, String name, Player owner, boolean active) {
 		this(name, owner, active);
 		this.id = id;
-	}
-
-	public Deck(int id, String name, Player owner, boolean active,
-			boolean manual) {
-		this(id, name, owner, active);
-		this.manual = manual;
 	}
 
 	public boolean isActive() {
@@ -53,14 +40,6 @@ public class Deck implements Comparable<Deck> {
 
 	public void setActive(boolean active) {
 		this.active = active;
-	}
-
-	public boolean isManual() {
-		return this.manual;
-	}
-
-	public void setManual(boolean manual) {
-		this.manual = manual;
 	}
 
 	public Player getOwner() {
@@ -112,9 +91,6 @@ public class Deck implements Comparable<Deck> {
 		if (getName().isEmpty()) {
 			// This is here for the UpdateDeck
 			return new String();
-		} else if (this.name == ChangeActive.DEFAULT_DECK) {
-			// This is here for the ChangeActive
-			return ChangeActive.DEFAULT_DECK;
 		}
 
 		StringBuilder sb = new StringBuilder();

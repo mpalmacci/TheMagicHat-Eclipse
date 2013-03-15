@@ -18,8 +18,6 @@ import com.magichat.decks.db.MagicHatDb;
 
 public class PlayersMain extends MagicHatActivity implements
 		OnItemClickListener {
-	List<Player> allPlayers;
-
 	ListView lvPlayers;
 
 	@Override
@@ -33,34 +31,61 @@ public class PlayersMain extends MagicHatActivity implements
 	}
 
 	private class populatePlayersList extends
-			AsyncTask<String, Integer, String> {
+			AsyncTask<String, Integer, ArrayAdapter<Player>> {
 
 		@Override
-		protected String doInBackground(String... arg0) {
+		protected ArrayAdapter<Player> doInBackground(String... arg0) {
 			MagicHatDb mhDb = new MagicHatDb(PlayersMain.this);
 			mhDb.openReadableDB();
-			allPlayers = mhDb.getAllPlayers();
+			List<Player> allPlayers = mhDb.getAllPlayers();
 			mhDb.closeDB();
-			return null;
-		}
 
-		@Override
-		protected void onPostExecute(String result) {
-			super.onPostExecute(result);
 			ArrayAdapter<Player> allPlayersAdapter = new ArrayAdapter<Player>(
 					PlayersMain.this, android.R.layout.simple_list_item_1,
 					allPlayers);
+
+			return allPlayersAdapter;
+		}
+
+		@Override
+		protected void onPostExecute(ArrayAdapter<Player> allPlayersAdapter) {
+			super.onPostExecute(allPlayersAdapter);
 			lvPlayers.setAdapter(allPlayersAdapter);
 		}
 	}
 
 	@Override
-	public void onItemClick(AdapterView<?> playerList, View arg1, int pos, long arg3) {
+	public void onClick(View v) {
+		super.onClick(v);
+		switch (v.getId()) {
+		case R.id.bAdd:
+			Bundle emptyPlayerBundle = new Bundle();
+			emptyPlayerBundle.putInt("playerId", 0);
+
+			Intent openPlayerViewActivity = new Intent(
+					"com.magichat.players.PLAYERVIEW");
+			openPlayerViewActivity.putExtras(emptyPlayerBundle);
+			startActivity(openPlayerViewActivity);
+			break;
+		default:
+			break;
+		}
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		this.finish();
+	}
+
+	@Override
+	public void onItemClick(AdapterView<?> playerList, View arg1, int pos,
+			long arg3) {
 		Player p = (Player) playerList.getItemAtPosition(pos);
-		
+
 		Bundle playerBundle = new Bundle();
 		playerBundle.putInt("playerId", p.getId());
-		
+
 		Intent openPlayerViewActivity = new Intent(
 				"com.magichat.players.PLAYERVIEW");
 		openPlayerViewActivity.putExtras(playerBundle);
@@ -71,7 +96,8 @@ public class PlayersMain extends MagicHatActivity implements
 		lvPlayers = (ListView) findViewById(R.id.lvPlayers);
 		lvPlayers.setOnItemClickListener(this);
 
-		this.bAddPlayer.setVisibility(LinearLayout.VISIBLE);
+		this.bAdd.setVisibility(LinearLayout.VISIBLE);
 		this.bCardSearch.setVisibility(LinearLayout.VISIBLE);
+		this.bAdd.setOnClickListener(this);
 	}
 }

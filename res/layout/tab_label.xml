@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="2sp"
+    android:paddingBottom="6sp"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/tvTabLabel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/tab_sel"
+        android:textIsSelectable="true"
+        android:paddingTop="4sp"
+        android:textColor="@drawable/tab_text_sel"
+        android:paddingBottom="4sp"
+        android:gravity="center"
+        android:textSize="20sp" />
+
+</LinearLayout>

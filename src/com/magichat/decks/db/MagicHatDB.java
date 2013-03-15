@@ -1,9 +1,7 @@
 package com.magichat.decks.db;
 
 import java.io.File;
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import com.magichat.decks.Deck;
 import com.magichat.decks.games.Game;
@@ -15,9 +13,9 @@ import android.database.sqlite.SQLiteException;
 
 public class MagicHatDb {
 
-	private static String DB_PATH;
+	private static final String DB_PATH = "/data/data/com.magichat/databases/";
 	protected static final String MH_DB_NAME = "MagicHatDB";
-	private static final int MH_DB_VERSION = 2;
+	private static final int MH_DB_VERSION = 1;
 
 	private MagicHatDbHelper mhHelper;
 	private SQLiteDatabase mhDb;
@@ -28,7 +26,7 @@ public class MagicHatDb {
 	public MagicHatDb(Context c) {
 		context = c;
 		// This has been untested
-		DB_PATH = c.getFilesDir().getPath();
+		// DB_PATH = c.getFilesDir().getPath();
 	}
 
 	public MagicHatDb openWritableDB() {
@@ -71,18 +69,10 @@ public class MagicHatDb {
 	}
 
 	// //////////////////////////////// DECKS //////////////////////////////////
-
-/*	public void addDeck(String name, int OwnerId, Integer active) {
-		mhHelper.addDeck(name, OwnerId, active, mhDb);
-	}*/
 	
 	public void writeDeck(Deck d) {
 		mhHelper.writeDeck(d, mhDb);
 	}
-
-/*	public void updateDeck(Deck oldDeck, Deck newDeck) {
-		mhHelper.updateDeck(oldDeck, newDeck, mhDb);
-	}*/
 
 	public void deleteDecks(int[] id) {
 		mhHelper.deleteDecks(id, mhDb);
@@ -95,17 +85,9 @@ public class MagicHatDb {
 	public Deck getDeck(String sDeckName, String sOwnerName) {
 		return mhHelper.getDeck(sDeckName, sOwnerName, mhDb);
 	}
-
-	public List<Deck> getAllDecks() {
-		return mhHelper.getAllDecks(mhDb);
-	}
-
-	public List<Deck> getAllActiveDecks() {
-		return mhHelper.getAllActiveDecks(mhDb);
-	}
-
-	public List<Deck> getAllManualDecks() {
-		return mhHelper.getAllManualDecks(mhDb);
+	
+	public List<Deck> getAllDecks(boolean isActive) {
+		return mhHelper.getAllDecks(isActive, mhDb);
 	}
 
 	public List<Deck> getDeckList(Player p) {
@@ -130,17 +112,9 @@ public class MagicHatDb {
 		mhHelper.writePlayer(p, mhDb);
 	}
 
-/*	public Player getOwner(int ownerId) {
-		return mhHelper.getOwner(ownerId, mhDb);
-	}*/
-
 	public Player getPlayer(int playerId) {
 		return mhHelper.getPlayer(playerId, mhDb);
 	}
-
-/*	public Player getOwner(String name) {
-		return mhHelper.getOwner(name, mhDb);
-	}*/
 
 	public Player getPlayer(String name) {
 		return mhHelper.getPlayer(name, mhDb);
@@ -162,26 +136,15 @@ public class MagicHatDb {
 		return mhHelper.getAllOwners(mhDb);
 	}
 
-	/*
-	 * public Cursor getCursorForAllOwners() { return
-	 * ourDatabase.query(DATABASE_TABLE_ALLPLAYERS, new String[] {
-	 * KEY_PLAYER_ROWID, KEY_PLAYER_NAME, KEY_PLAYER_ACTIVE }, null, null, null,
-	 * null, null); }
-	 */
-
-	public Player flipActiveStatus(Player p) {
-		return mhHelper.flipActiveStatus(p, mhDb);
-	}
-
-	public Deck flipActiveStatus(Deck d) {
-		return mhHelper.flipActiveStatus(d, mhDb);
-	}
-
 	// /////////////////// GAMES ///////////////////////////////////////////
 
-	public void addGameResult(Map<Player, Deck> gamePlayersDecks,
+/*	public void addGameResult(Map<Player, Deck> gamePlayersDecks,
 			Player pWinner, Date gameDate) {
 		mhHelper.addGameResult(gamePlayersDecks, pWinner, gameDate, mhDb);
+	}*/
+	
+	public void writeGame(Game g) {
+		mhHelper.writeGame(g, mhDb);
 	}
 
 	public List<Game> getAllGames() {

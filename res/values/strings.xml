@@ -29,6 +29,7 @@
     <!-- Decks -->
     <string name="decks">Decks</string>
     <string name="deck_search">Search for Deck Name</string>
+    <string name="deck_options">Deck Options</string>
 
     <!-- Add Deck -->
     <string name="add_the_deck">Add the New Deck</string>

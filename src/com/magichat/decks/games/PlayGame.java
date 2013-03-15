@@ -32,7 +32,7 @@ public class PlayGame extends MagicHatActivity implements
 		OnItemSelectedListener {
 	List<Deck> allActiveDecks = new ArrayList<Deck>();
 	// List<Deck> gameDecks = new ArrayList<Deck>();
-	List<Player> player = new ArrayList<Player>();
+	List<Player> players = new ArrayList<Player>();
 	Map<Player, Deck> playersAndDecks = new HashMap<Player, Deck>();
 
 	int p1GameCount = 0, p2GameCount = 0;
@@ -79,11 +79,11 @@ public class PlayGame extends MagicHatActivity implements
 		protected String doInBackground(Boolean... prefs) {
 			MagicHatDb getAllInfoDB = new MagicHatDb(PlayGame.this);
 			getAllInfoDB.openReadableDB();
-			player = getAllInfoDB.getActivePlayers();
+			players = getAllInfoDB.getActivePlayers();
 
 			if (ownDecks) {
 				// Here every player will play with their own decks
-				for (Player p : player) {
+				for (Player p : players) {
 					List<Deck> playersDecks = getAllInfoDB.getActiveDeckList(p);
 					if (playersDecks.isEmpty()) {
 						System.out.println("PlayGame.getAllInfo: "
@@ -92,7 +92,7 @@ public class PlayGame extends MagicHatActivity implements
 					p.setDeckList(playersDecks);
 				}
 			} else {
-				allActiveDecks = getAllInfoDB.getAllActiveDecks();
+				allActiveDecks = getAllInfoDB.getAllDecks(true);
 			}
 
 			getAllInfoDB.closeDB();
@@ -109,7 +109,7 @@ public class PlayGame extends MagicHatActivity implements
 	}
 
 	private void populateDeckSpinners() {
-		for (Player p : player) {
+		for (Player p : players) {
 			List<Deck> deckList;
 
 			TextView tvPlayer = new TextView(PlayGame.this);
@@ -139,7 +139,7 @@ public class PlayGame extends MagicHatActivity implements
 
 	private void displayNewGame() {
 		// TODO Add in handling in case the player doesn't have any active decks
-		if (player.size() == 0) {
+		if (players.size() == 0) {
 			bPlayGame.setEnabled(false);
 			TextView tvErrorMessage = new TextView(PlayGame.this);
 			tvErrorMessage.setText("\n\nNo active Players were found!\n\n");
@@ -150,26 +150,26 @@ public class PlayGame extends MagicHatActivity implements
 		getNewRandomGame();
 		bPlayGame.setEnabled(true);
 
-		if (playersAndDecks.size() != player.size()) {
+		if (playersAndDecks.size() != players.size()) {
 			bPlayGame.setEnabled(false);
 			TextView tvErrorMessage = new TextView(PlayGame.this);
 			tvErrorMessage
 					.setText("Players and Decks are not of equal size\n\nPlayers size is "
-							+ player.size()
+							+ players.size()
 							+ " and the Decks size is "
 							+ playersAndDecks.size());
 			llMatchupView.addView(tvErrorMessage);
 			return;
 		}
 
-		if (player.size() == 2) {
+		if (players.size() == 2) {
 			llWinnerSection.setVisibility(LinearLayout.VISIBLE);
-			bPlayer1.setText(player.get(0).getName());
-			bPlayer2.setText(player.get(1).getName());
+			bPlayer1.setText(players.get(0).getName());
+			bPlayer2.setText(players.get(1).getName());
 		}
 
 		if (allActiveDecks.isEmpty()) {
-			for (Player p : player) {
+			for (Player p : players) {
 				int pId = p.getId();
 				Spinner sPlayersDeck = (Spinner) findViewById(pId);
 
@@ -177,7 +177,7 @@ public class PlayGame extends MagicHatActivity implements
 						playersAndDecks.get(p)));
 			}
 		} else {
-			for (Player p : player) {
+			for (Player p : players) {
 				int pId = p.getId();
 				Spinner sPlayersDeck = (Spinner) findViewById(pId);
 
@@ -200,7 +200,7 @@ public class PlayGame extends MagicHatActivity implements
 
 		// TODO Allow user to choose who they are - always set them as Player 1
 		if (allActiveDecks.isEmpty()) {
-			for (Player p : player) {
+			for (Player p : players) {
 				maxVal = p.getDeckList().size();
 				r = ran.nextInt(maxVal);
 				playersAndDecks.put(p, p.getDeckList().get(r));
@@ -208,7 +208,7 @@ public class PlayGame extends MagicHatActivity implements
 		} else {
 			List<Integer> randomInts = new ArrayList<Integer>();
 			maxVal = allActiveDecks.size();
-			for (Player p : player) {
+			for (Player p : players) {
 				r = ran.nextInt(maxVal);
 				while (randomInts.contains(r)) {
 					r = ran.nextInt(maxVal);
@@ -253,10 +253,12 @@ public class PlayGame extends MagicHatActivity implements
 
 		@Override
 		protected Integer doInBackground(Integer... pNums) {
+			Game g = new Game(playersAndDecks, new Date());
+			g.setWinner(players.get(pNums[0]));
+			
 			MagicHatDb mhAddGameResult = new MagicHatDb(PlayGame.this);
 			mhAddGameResult.openWritableDB();
-			mhAddGameResult.addGameResult(playersAndDecks,
-					player.get(pNums[0]), new Date());
+			mhAddGameResult.writeGame(g);
 			mhAddGameResult.closeDB();
 
 			return pNums[0];
@@ -333,7 +335,7 @@ public class PlayGame extends MagicHatActivity implements
 
 		Spinner sPlayersDeck;
 
-		for (Player p : player) {
+		for (Player p : players) {
 			sPlayersDeck = (Spinner) findViewById(p.getId());
 			Deck d = (Deck) sPlayersDeck.getSelectedItem();
 			playersAndDecks.put(p, d);

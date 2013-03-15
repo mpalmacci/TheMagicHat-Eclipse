@@ -9,7 +9,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 public class MagicHatActivity extends Activity implements View.OnClickListener {
-	protected Button bDelete, bPrefs, bPlayers, bAddPlayer, bCardSearch;
+	protected Button bBack, bAdd, bDelete, bPrefs, bPlayers, bCardSearch;
 
 	protected TextView tvTitle;
 
@@ -30,6 +30,9 @@ public class MagicHatActivity extends Activity implements View.OnClickListener {
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
+		case R.id.bBack:
+			this.finish();
+			break;
 		case R.id.bPrefs:
 			Intent playGamePrefs = new Intent("com.magichat.MAGICHATPREFS");
 			startActivity(playGamePrefs);
@@ -38,15 +41,6 @@ public class MagicHatActivity extends Activity implements View.OnClickListener {
 			Intent openPlayersActivity = new Intent(
 					"com.magichat.players.PLAYERSMAIN");
 			startActivity(openPlayersActivity);
-			break;
-		case R.id.bAddPlayer:
-			Bundle emptyPlayerBundle = new Bundle();
-			emptyPlayerBundle.putInt("playerId", 0);
-			
-			Intent openPlayerViewActivity = new Intent(
-					"com.magichat.players.PLAYERVIEW");
-			openPlayerViewActivity.putExtras(emptyPlayerBundle);
-			startActivity(openPlayerViewActivity);
 			break;
 		case R.id.bCardSearch:
 			Intent openCardSearchActivity = new Intent(
@@ -59,16 +53,17 @@ public class MagicHatActivity extends Activity implements View.OnClickListener {
 	}
 
 	private void initialize() {
+		bBack = (Button) findViewById(R.id.bBack);
+		bAdd = (Button) findViewById(R.id.bAdd);
 		bDelete = (Button) findViewById(R.id.bDelete);
 		bPrefs = (Button) findViewById(R.id.bPrefs);
 		bPlayers = (Button) findViewById(R.id.bPlayers);
-		bAddPlayer = (Button) findViewById(R.id.bAddPlayer);
 		bCardSearch = (Button) findViewById(R.id.bCardSearch);
 		tvTitle = (TextView) findViewById(R.id.tvTitle);
 
+		bBack.setOnClickListener(this);
 		bPrefs.setOnClickListener(this);
 		bCardSearch.setOnClickListener(this);
 		bPlayers.setOnClickListener(this);
-		bAddPlayer.setOnClickListener(this);
 	}
 }

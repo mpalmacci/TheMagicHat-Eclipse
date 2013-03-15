@@ -54,7 +54,7 @@ public class GameStatsForDeck extends MagicHatActivity implements
 		protected String doInBackground(String... params) {
 			MagicHatDb mhDB = new MagicHatDb(GameStatsForDeck.this);
 			mhDB.openReadableDB();
-			allDecks = mhDB.getAllDecks();
+			allDecks = mhDB.getAllDecks(false);
 			mhDB.closeDB();
 			return null;
 		}

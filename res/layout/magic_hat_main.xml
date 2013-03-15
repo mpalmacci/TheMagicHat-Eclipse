@@ -6,15 +6,17 @@
     android:orientation="vertical"
     android:padding="15dp" >
 
-<!--    <GridView
-        android:id="@+id/gridView1"
+    <!--
+        <GridView
+        android:id="@+id/gvMagicHatMain"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:numColumns="2" >
-    </GridView> -->
+    </GridView>
+    -->
 
     <Button
-        android:id="@+id/bEnterGame"
+        android:id="@+id/bPlayGame"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/play_button"
@@ -26,47 +28,12 @@
         android:layout_height="wrap_content"
         android:text="@string/view_game_stats"
         android:textSize="25sp" />
-    
+
     <Button
         android:id="@+id/bDecks"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/decks"
-        android:textSize="25sp" />
-
-    <Button
-        android:id="@+id/bAddDeck"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/add_deck"
-        android:textSize="25sp" />
-
-    <Button
-        android:id="@+id/bUpdateDeck"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/update_deck"
-        android:textSize="25sp" />
-
-    <Button
-        android:id="@+id/bChangeActive"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/change_active"
-        android:textSize="25sp" />
-
-    <Button
-        android:id="@+id/bDeleteDeck"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/delete_deck"
-        android:textSize="25sp" />
-
-    <Button
-        android:id="@+id/bDisplayAllDecks"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/deck_display"
         android:textSize="25sp" />
 
 </LinearLayout>

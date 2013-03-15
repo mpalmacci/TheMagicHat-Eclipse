@@ -4,6 +4,7 @@ import java.util.List;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
@@ -12,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
+import android.widget.TextView;
 
 import com.magichat.MagicHatActivity;
 import com.magichat.R;
@@ -43,6 +45,8 @@ public class PlayerView extends MagicHatActivity {
 		// It equals zero when we are creating a new player
 		if (playerId != 0) {
 			new populatePlayerInfo().execute(playerId);
+			this.bDelete.setVisibility(LinearLayout.VISIBLE);
+			this.bDelete.setOnClickListener(this);
 		}
 		new populateDeckList().execute();
 	}
@@ -80,12 +84,12 @@ public class PlayerView extends MagicHatActivity {
 		protected ArrayAdapter<Deck> doInBackground(String... arg0) {
 			MagicHatDb mhDb = new MagicHatDb(PlayerView.this);
 			mhDb.openReadableDB();
-			List<Deck> allDecks = mhDb.getAllDecks();
+			List<Deck> allDecks = mhDb.getAllDecks(false);
 			mhDb.closeDB();
 
 			ArrayAdapter<Deck> allDecksAdapter = new ArrayAdapter<Deck>(
-					PlayerView.this, android.R.layout.simple_list_item_multiple_choice,
-					allDecks);
+					PlayerView.this,
+					android.R.layout.simple_list_item_multiple_choice, allDecks);
 			return allDecksAdapter;
 		}
 
@@ -103,7 +107,7 @@ public class PlayerView extends MagicHatActivity {
 		if (isSave && !etPlayerName.getText().toString().isEmpty()) {
 			new savePlayer().execute();
 		}
-		finish();
+		this.finish();
 	}
 
 	private class savePlayer extends AsyncTask<String, Integer, String> {
@@ -136,8 +140,14 @@ public class PlayerView extends MagicHatActivity {
 	@Override
 	public void onClick(View v) {
 		super.onClick(v);
-		isSave = false;
-		finish();
+		switch (v.getId()) {
+		case R.id.bDelete:
+			isSave = false;
+			finish();
+			break;
+		default:
+			break;
+		}
 	}
 
 	private void initialize() {
@@ -145,21 +155,38 @@ public class PlayerView extends MagicHatActivity {
 		etDci = (EditText) findViewById(R.id.etDci);
 		cbActive = (CheckBox) findViewById(R.id.cbActive);
 		cbSelf = (CheckBox) findViewById(R.id.cbSelf);
-
-		this.bDelete.setVisibility(LinearLayout.VISIBLE);
-		bDelete.setOnClickListener(this);
 		lvDeckList = (ListView) findViewById(R.id.lvDeckList);
+
+		
+		this.bBack.setVisibility(LinearLayout.VISIBLE);
 
 		thPlayer = (TabHost) findViewById(R.id.thPlayers);
 		thPlayer.setup();
+
+		setupTabs();
+	}
+
+	private void setupTabs() {
 		TabSpec tsPlayer = thPlayer.newTabSpec("tag1");
 		tsPlayer.setContent(R.id.tabPlayerDetails);
-		tsPlayer.setIndicator("Player Details");
+		View w = createTabView("Player Details", tsPlayer);
+		tsPlayer.setIndicator(w);
 		thPlayer.addTab(tsPlayer);
 
 		TabSpec tsPlayerDecks = thPlayer.newTabSpec("tag2");
 		tsPlayerDecks.setContent(R.id.tabPlayerDecks);
-		tsPlayerDecks.setIndicator("Player's Decks");
+		View v = createTabView("Player's Decks", tsPlayerDecks);
+		tsPlayerDecks.setIndicator(v);
 		thPlayer.addTab(tsPlayerDecks);
+		
+		thPlayer.setCurrentTabByTag("tag1");
+	}
+
+	private View createTabView(String text, TabSpec tsTab) {
+		View view = LayoutInflater.from(PlayerView.this).inflate(
+				R.layout.tab_label, null);
+		TextView tvLabel = (TextView) view.findViewById(R.id.tvTabLabel);
+		tvLabel.setText(text);
+		return view;
 	}
 }
