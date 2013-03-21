@@ -52,7 +52,7 @@ public class DecksMainAdapter extends BaseAdapter {
 
 		// Setting all values in ListView
 		deckName.setText(d.getName());
-		ownerName.setText("  " + d.getOwner().getName());
+		ownerName.setText(d.getOwner().getName());
 		
 		dropdown.setOnClickListener((OnClickListener) activity);
 		

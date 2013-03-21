@@ -24,7 +24,6 @@ public class MagicHatDbHelper extends SQLiteOpenHelper {
 	private static final String KEY_DECK_NAME = "deck_name";
 	private static final String KEY_DECK_OWNERID = "owner_id";
 	private static final String KEY_DECK_ACTIVE = "active_sts";
-	// private static final String KEY_DECK_MANUAL = "man_created";
 
 	private static final String KEY_PLAYER_ROWID = "_id";
 	private static final String KEY_PLAYER_NAME = "player_name";
@@ -150,12 +149,19 @@ public class MagicHatDbHelper extends SQLiteOpenHelper {
 
 		// Players must be added before Decks
 		for (Player p : allPlayers) {
+			p.setId(0);
 			writePlayer(p, db);
 		}
 		Log.i("MagicHatDbHelper.setupPlayersAndDecks",
 				"Done setting up Players.");
 
 		allPlayers = getAllPlayers(db);
+
+		for (Deck d : allNewDecks) {
+			// Need to set all ids of all deck owners to 0 since the id came
+			// from XML originally
+			d.getOwner().setId(0);
+		}
 
 		// This adds the previously existing decks prior to dropping tables
 		for (Deck d : allDecks) {
@@ -177,7 +183,7 @@ public class MagicHatDbHelper extends SQLiteOpenHelper {
 		// The Deck and Player Ids might've changed since the deletion
 		// and recreation of all of the data
 		for (Game g : allGames) {
-			writeGame(g, db);
+			writeNewGame(g, db);
 		}
 		Log.i("MagicHatDbHelper.populateAllGames", "Done Populating all Games.");
 	}
@@ -190,13 +196,12 @@ public class MagicHatDbHelper extends SQLiteOpenHelper {
 		ContentValues cv = new ContentValues();
 		cv.put(KEY_DECK_NAME, d.getName());
 
-		d.getOwner().setId(getPlayerId(d.getOwner().getName(), db));
+		Player p = d.getOwner();
+		if (p.getId() == 0) {
+			p = getPlayer(p.getName(), db);
+		}
 
-		/*
-		 * TODO This will need to be put back in once the SAX Parser is gone if
-		 * (p.getId() == 0) { p = getPlayer(p.getName(), db); }
-		 */
-		cv.put(KEY_DECK_OWNERID, d.getOwner().getId());
+		cv.put(KEY_DECK_OWNERID, p.getId());
 
 		if (d.isActive()) {
 			cv.put(KEY_DECK_ACTIVE, 1);
@@ -227,13 +232,12 @@ public class MagicHatDbHelper extends SQLiteOpenHelper {
 		}
 	}
 
-	protected void deleteDecks(int[] id, SQLiteDatabase db) {
-		for (int dId : id) {
-			try {
-				db.delete(DB_TABLE_ALLDECKS, KEY_DECK_ROWID + " = " + dId, null);
-			} catch (SQLiteException e) {
-				e.printStackTrace();
-			}
+	protected void deleteDeck(Deck d, SQLiteDatabase db) {
+		try {
+			db.delete(DB_TABLE_ALLDECKS, KEY_DECK_ROWID + " = " + d.getId(),
+					null);
+		} catch (SQLiteException e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -243,8 +247,7 @@ public class MagicHatDbHelper extends SQLiteOpenHelper {
 
 		Player owner = getPlayer(sOwnerName, db);
 
-		String[] deckColumns = new String[] { KEY_DECK_ROWID, KEY_DECK_NAME,
-				KEY_DECK_OWNERID, KEY_DECK_ACTIVE };
+		String[] deckColumns = new String[] { KEY_DECK_NAME };
 		Cursor dc = db.query(DB_TABLE_ALLDECKS, deckColumns, KEY_DECK_NAME
 				+ " = '" + sDeckName + "' AND " + KEY_DECK_OWNERID + " = "
 				+ owner.getId(), null, null, null, null);
@@ -444,6 +447,20 @@ public class MagicHatDbHelper extends SQLiteOpenHelper {
 		return deckList;
 	}
 
+	protected void setOwnersDeckList(int playerId, List<Deck> deckList,
+			SQLiteDatabase db) {
+		ContentValues cv = new ContentValues();
+		cv.put(KEY_DECK_OWNERID, playerId);
+		for (Deck d : deckList) {
+			try {
+				db.update(DB_TABLE_ALLDECKS, cv,
+						KEY_DECK_ROWID + " = " + d.getId(), null);
+			} catch (SQLiteException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
 	// /////////////////////////////
 	// PLAYERS
 	// /////////////////////////////
@@ -451,8 +468,6 @@ public class MagicHatDbHelper extends SQLiteOpenHelper {
 	// /////////////////////////////
 
 	protected void writePlayer(Player p, SQLiteDatabase db) {
-		p.setId(getPlayerId(p.getName().toString(), db));
-
 		int isActive = p.isActive() ? 1 : 0;
 		int isSelf = p.isSelf() ? 1 : 0;
 
@@ -487,6 +502,15 @@ public class MagicHatDbHelper extends SQLiteOpenHelper {
 		}
 	}
 
+	protected void deletePlayer(Player p, SQLiteDatabase db) {
+		try {
+			db.delete(DB_TABLE_ALLPLAYERS,
+					KEY_PLAYER_ROWID + " = " + p.getId(), null);
+		} catch (SQLiteException e) {
+			e.printStackTrace();
+		}
+	}
+
 	protected Player getPlayer(int playerId, SQLiteDatabase db) {
 		// return getOwner(playerId, db);
 		Player p = new Player();
@@ -512,7 +536,7 @@ public class MagicHatDbHelper extends SQLiteOpenHelper {
 						pc.getInt(iOwnerDci), active, self);
 			}
 		} else {
-			Log.d("MagicHatDbHelper.getOwner(id)",
+			Log.d("MagicHatDbHelper.getPlayer(id)",
 					"No unique owner was found for Owner Id: " + playerId);
 		}
 		pc.close();
@@ -548,7 +572,7 @@ public class MagicHatDbHelper extends SQLiteOpenHelper {
 						pc.getInt(iOwnerDci), active, self);
 			}
 		} else {
-			Log.d("MagicHatDbHelper.getOwner(name)",
+			Log.d("MagicHatDbHelper.getPlayer(name)",
 					"No unique player was found for Owner Name: " + name);
 		}
 		pc.close();
@@ -682,7 +706,7 @@ public class MagicHatDbHelper extends SQLiteOpenHelper {
 	// GAMES
 	// /////////////////////////////
 
-	protected void writeGame(Game g, SQLiteDatabase db) {
+	protected void writeNewGame(Game g, SQLiteDatabase db) {
 		ContentValues cv = new ContentValues();
 		cv.put(KEY_GAME_PLAYER1, getPlayerId(g.getPlayer(0).getName(), db));
 		cv.put(KEY_GAME_PLAYER2, getPlayerId(g.getPlayer(1).getName(), db));
@@ -695,19 +719,15 @@ public class MagicHatDbHelper extends SQLiteOpenHelper {
 		cv.put(KEY_GAME_WINNER, getPlayerId(g.getWinner().getName(), db));
 		cv.put(KEY_GAME_DATE, g.getDate().getTime());
 
-		//if (g.getId() == 0) {
-			try {
-				db.insert(DB_TABLE_ALLGAMES, null, cv);
-			} catch (SQLiteException e) {
-				e.printStackTrace();
-			}
+		try {
+			db.insert(DB_TABLE_ALLGAMES, null, cv);
+		} catch (SQLiteException e) {
+			e.printStackTrace();
+		}
 
-			Log.d("MagicHatDbHelper.populateAllGames", "Game "
-					+ g.getDeck(0).toString() + " vs "
-					+ g.getDeck(1).toString() + " was inserted.");
-		//} else {
-			// TODO Update Game when needed
-		//}
+		Log.d("MagicHatDbHelper.populateAllGames", "Game "
+				+ g.getDeck(0).toString() + " vs " + g.getDeck(1).toString()
+				+ " was inserted.");
 	}
 
 	/*

@@ -61,8 +61,8 @@ public class SAXDeckListActivityHandler extends DefaultHandler {
 				Player owner = getOwner(ownerId);
 				String sActive = attributes.getValue("active");
 				boolean active = Boolean.parseBoolean(sActive);
-				//String sId = attributes.getValue("number");
-				//int id = Integer.parseInt(sId);
+				// String sId = attributes.getValue("number");
+				// int id = Integer.parseInt(sId);
 
 				d = new Deck(name, owner, active);
 			} else {
@@ -84,7 +84,7 @@ public class SAXDeckListActivityHandler extends DefaultHandler {
 			// p isn't the Wizards Decks
 			// TODO: Separate out owners of decks with players of games
 			if (!activeOwners.contains(p) && p.isActive()
-					&& !p.equals(new Player("Wizards of the Coast"))) {
+					&& !p.getName().equals(new Player("Wizards of the Coast"))) {
 				activeOwners.add(p);
 			}
 			if (!allOwners.contains(p)) {

@@ -74,8 +74,8 @@ public class MagicHatDb {
 		mhHelper.writeDeck(d, mhDb);
 	}
 
-	public void deleteDecks(int[] id) {
-		mhHelper.deleteDecks(id, mhDb);
+	public void deleteDecks(Deck d) {
+		mhHelper.deleteDeck(d, mhDb);
 	}
 
 	public Deck getDeck(int deckId) {
@@ -101,6 +101,10 @@ public class MagicHatDb {
 	public int getDeckId(String sDeckName, String sOwnerName) {
 		return mhHelper.getDeckId(sDeckName, sOwnerName, mhDb);
 	}
+	
+	public void setOwnersDeckList(int playerId, List<Deck> deckList) {
+		mhHelper.setOwnersDeckList(playerId, deckList, mhDb);
+	}
 
 	public boolean deckExists(Deck d) {
 		return mhHelper.deckExists(d, mhDb);
@@ -110,6 +114,10 @@ public class MagicHatDb {
 	
 	public void writePlayer(Player p) {
 		mhHelper.writePlayer(p, mhDb);
+	}
+	
+	public void deletePlayer(Player p) {
+		mhHelper.deletePlayer(p, mhDb);
 	}
 
 	public Player getPlayer(int playerId) {
@@ -143,8 +151,8 @@ public class MagicHatDb {
 		mhHelper.addGameResult(gamePlayersDecks, pWinner, gameDate, mhDb);
 	}*/
 	
-	public void writeGame(Game g) {
-		mhHelper.writeGame(g, mhDb);
+	public void writeNewGame(Game g) {
+		mhHelper.writeNewGame(g, mhDb);
 	}
 
 	public List<Game> getAllGames() {

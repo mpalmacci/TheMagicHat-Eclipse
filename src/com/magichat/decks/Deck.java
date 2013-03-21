@@ -95,8 +95,13 @@ public class Deck implements Comparable<Deck> {
 
 		StringBuilder sb = new StringBuilder();
 
-		sb.append(this.owner.getName());
-		sb.append("'s ");
+		if (this.owner.getName().isEmpty()) {
+			sb.append("Unowned ");
+		} else {
+			sb.append(this.owner.getName());
+			sb.append("'s ");
+		}
+
 		sb.append(this.name);
 		sb.append(" Deck");
 

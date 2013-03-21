@@ -1,12 +1,17 @@
 package com.magichat.players;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ArrayAdapter;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -20,15 +25,16 @@ import com.magichat.R;
 import com.magichat.decks.Deck;
 import com.magichat.decks.db.MagicHatDb;
 
-public class PlayerView extends MagicHatActivity {
+public class PlayerView extends MagicHatActivity implements OnItemClickListener {
 	EditText etPlayerName, etDci;
 	CheckBox cbSelf, cbActive;
+	PlayerViewAdapter allDecksAdapter;
 
 	TabHost thPlayer;
 	ListView lvDeckList;
 
 	boolean isSave;
-	int playerId;
+	Player currentPlayer;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +53,8 @@ public class PlayerView extends MagicHatActivity {
 			new populatePlayerInfo().execute(playerId);
 			this.bDelete.setVisibility(LinearLayout.VISIBLE);
 			this.bDelete.setOnClickListener(this);
+		} else {
+			currentPlayer = new Player();
 		}
 		new populateDeckList().execute();
 	}
@@ -66,7 +74,7 @@ public class PlayerView extends MagicHatActivity {
 		@Override
 		protected void onPostExecute(Player p) {
 			super.onPostExecute(p);
-			playerId = p.getId();
+			currentPlayer = p;
 
 			etPlayerName.setText(p.getName());
 			if (!Integer.toString(p.getDci()).equals("0")) {
@@ -78,25 +86,25 @@ public class PlayerView extends MagicHatActivity {
 	}
 
 	private class populateDeckList extends
-			AsyncTask<String, Integer, ArrayAdapter<Deck>> {
+			AsyncTask<String, Integer, List<Deck>> {
 
 		@Override
-		protected ArrayAdapter<Deck> doInBackground(String... arg0) {
+		protected List<Deck> doInBackground(String... arg0) {
 			MagicHatDb mhDb = new MagicHatDb(PlayerView.this);
 			mhDb.openReadableDB();
 			List<Deck> allDecks = mhDb.getAllDecks(false);
 			mhDb.closeDB();
 
-			ArrayAdapter<Deck> allDecksAdapter = new ArrayAdapter<Deck>(
-					PlayerView.this,
-					android.R.layout.simple_list_item_multiple_choice, allDecks);
-			return allDecksAdapter;
+			return allDecks;
 		}
 
 		@Override
-		protected void onPostExecute(ArrayAdapter<Deck> allDecksAdapter) {
-			super.onPostExecute(allDecksAdapter);
+		protected void onPostExecute(List<Deck> allDecks) {
+			super.onPostExecute(allDecks);
+			allDecksAdapter = new PlayerViewAdapter(PlayerView.this, allDecks,
+					currentPlayer);
 			lvDeckList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+			lvDeckList.isClickable();
 			lvDeckList.setAdapter(allDecksAdapter);
 		}
 	}
@@ -112,19 +120,51 @@ public class PlayerView extends MagicHatActivity {
 
 	private class savePlayer extends AsyncTask<String, Integer, String> {
 		Player p;
+		List<Deck> deckList;
+		List<Deck> removeDeckList;
 
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
-			String playerName = etPlayerName.getText().toString();
-			boolean active = cbActive.isChecked();
-			boolean self = cbSelf.isChecked();
-			int dci = 0;
-			if (!etDci.getText().toString().isEmpty()) {
-				dci = Integer.parseInt(etDci.getText().toString());
+			if (currentPlayer.getId() == 0) {
+				String playerName = etPlayerName.getText().toString();
+				boolean active = cbActive.isChecked();
+				boolean self = cbSelf.isChecked();
+				int dci = 0;
+				if (!etDci.getText().toString().isEmpty()) {
+					dci = Integer.parseInt(etDci.getText().toString());
+				}
+
+				p = new Player(playerName, dci, active, self);
+			} else {
+				currentPlayer.setName(etPlayerName.getText().toString());
+				currentPlayer.setActive(cbActive.isChecked());
+				currentPlayer.setSelf(cbSelf.isChecked());
+				if (!etDci.getText().toString().isEmpty()) {
+					currentPlayer.setDci(Integer.parseInt(etDci.getText()
+							.toString()));
+				}
+
+				p = currentPlayer;
 			}
 
-			p = new Player(playerName, dci, active, self);
+			deckList = new ArrayList<Deck>();
+			removeDeckList = new ArrayList<Deck>();
+			int len = allDecksAdapter.getCount();
+			SparseBooleanArray sba = allDecksAdapter.getItemsChecked();
+			for (int i = 0; i < len; i++) {
+				Deck d = (Deck) allDecksAdapter.getItem(i);
+
+				if (sba.get(i) && !d.getOwner().equals(currentPlayer)) {
+					// If the checkbox is checked, and the owner isn't the
+					// current player
+					deckList.add(d);
+				} else if (!sba.get(i) && d.getOwner().equals(currentPlayer)) {
+					// Else if the checkbox is not checked, and the owner is the
+					// current player
+					removeDeckList.add(d);
+				}
+			}
 		}
 
 		@Override
@@ -132,6 +172,14 @@ public class PlayerView extends MagicHatActivity {
 			MagicHatDb mhDb = new MagicHatDb(PlayerView.this);
 			mhDb.openWritableDB();
 			mhDb.writePlayer(p);
+			if (!deckList.isEmpty()) {
+				mhDb.setOwnersDeckList(p.getId(), deckList);
+			}
+
+			if (!removeDeckList.isEmpty()) {
+				mhDb.setOwnersDeckList(0, removeDeckList);
+			}
+
 			mhDb.closeDB();
 			return null;
 		}
@@ -142,12 +190,68 @@ public class PlayerView extends MagicHatActivity {
 		super.onClick(v);
 		switch (v.getId()) {
 		case R.id.bDelete:
+			AlertDialog.Builder adb = new AlertDialog.Builder(this);
+			adb.setMessage(
+					"Are you sure you want to delete "
+							+ currentPlayer.getName() + "?")
+					.setPositiveButton("Yes",
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog,
+										int id) {
+									new deletePlayer().execute();
+									dialog.dismiss();
+								}
+							})
+					.setNegativeButton("No",
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog,
+										int id) {
+									dialog.cancel();
+								}
+							});
+			AlertDialog ad = adb.create();
+			adb.setTitle("Deck Addition");
+			ad.show();
+			break;
+		case R.id.bBack:
 			isSave = false;
 			finish();
 			break;
 		default:
 			break;
 		}
+	}
+
+	private class deletePlayer extends AsyncTask<String, Integer, String> {
+		Player p;
+
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			p = currentPlayer;
+		}
+
+		@Override
+		protected String doInBackground(String... args) {
+			MagicHatDb mhDb = new MagicHatDb(PlayerView.this);
+			mhDb.openWritableDB();
+			mhDb.deletePlayer(p);
+			mhDb.closeDB();
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			super.onPostExecute(result);
+			isSave = false;
+			PlayerView.this.finish();
+		}
+	}
+
+	@Override
+	public void onItemClick(AdapterView<?> deckList, View view, int pos, long id) {
+		CheckBox cbOwner = (CheckBox) deckList.findViewWithTag(view.getTag());
+		cbOwner.setChecked(!cbOwner.isChecked());
 	}
 
 	private void initialize() {
@@ -157,7 +261,7 @@ public class PlayerView extends MagicHatActivity {
 		cbSelf = (CheckBox) findViewById(R.id.cbSelf);
 		lvDeckList = (ListView) findViewById(R.id.lvDeckList);
 
-		
+		lvDeckList.setOnItemClickListener(this);
 		this.bBack.setVisibility(LinearLayout.VISIBLE);
 
 		thPlayer = (TabHost) findViewById(R.id.thPlayers);
@@ -178,7 +282,7 @@ public class PlayerView extends MagicHatActivity {
 		View v = createTabView("Player's Decks", tsPlayerDecks);
 		tsPlayerDecks.setIndicator(v);
 		thPlayer.addTab(tsPlayerDecks);
-		
+
 		thPlayer.setCurrentTabByTag("tag1");
 	}
 

@@ -15,6 +15,10 @@ public class Player implements Comparable<Player> {
 
 	public Player() {
 		this.id = 0;
+		this.name = "";
+		this.dci = 0;
+		this.self = false;
+		this.active = false;
 	}
 
 	public Player(String name) {
@@ -39,9 +43,8 @@ public class Player implements Comparable<Player> {
 	}
 
 	public Player(String name, int dci, boolean active, boolean self) {
-		this.name = name;
+		this(name, active);
 		this.dci = dci;
-		this.active = active;
 		this.self = self;
 	}
 
@@ -52,6 +55,10 @@ public class Player implements Comparable<Player> {
 
 	public String getName() {
 		return name;
+	}
+	
+	public void setName(String name) {
+		this.name = name;
 	}
 	
 	public void setId(int id) {
@@ -111,6 +118,13 @@ public class Player implements Comparable<Player> {
 
 	@Override
 	public int compareTo(Player another) {
+		if (this.name.isEmpty() && another.getName().isEmpty()) {
+			return 0;
+		} else if (this.name.isEmpty()) {
+			return -1;
+		} else if (another.getName().isEmpty()) {
+			return 1;
+		}
 		return name.compareTo(another.getName());
 	}
 }

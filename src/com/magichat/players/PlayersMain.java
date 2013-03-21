@@ -79,8 +79,8 @@ public class PlayersMain extends MagicHatActivity implements
 	}
 
 	@Override
-	public void onItemClick(AdapterView<?> playerList, View arg1, int pos,
-			long arg3) {
+	public void onItemClick(AdapterView<?> playerList, View view, int pos,
+			long id) {
 		Player p = (Player) playerList.getItemAtPosition(pos);
 
 		Bundle playerBundle = new Bundle();

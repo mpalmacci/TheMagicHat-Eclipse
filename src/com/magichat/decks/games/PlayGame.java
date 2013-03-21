@@ -258,7 +258,7 @@ public class PlayGame extends MagicHatActivity implements
 			
 			MagicHatDb mhAddGameResult = new MagicHatDb(PlayGame.this);
 			mhAddGameResult.openWritableDB();
-			mhAddGameResult.writeGame(g);
+			mhAddGameResult.writeNewGame(g);
 			mhAddGameResult.closeDB();
 
 			return pNums[0];

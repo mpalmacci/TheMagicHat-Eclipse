@@ -121,9 +121,9 @@ public final class R {
         public static final int white_sel=0x7f020049;
     }
     public static final class id {
-        public static final int MagicHatPrefs=0x7f0d0056;
-        public static final int arrow_down=0x7f0d0053;
-        public static final int arrow_up=0x7f0d004f;
+        public static final int MagicHatPrefs=0x7f0d0057;
+        public static final int arrow_down=0x7f0d0054;
+        public static final int arrow_up=0x7f0d0050;
         public static final int bAdd=0x7f0d0041;
         public static final int bBack=0x7f0d0040;
         public static final int bCardSearch=0x7f0d0045;
@@ -140,6 +140,7 @@ public final class R {
         public static final int bViewGameStats=0x7f0d003c;
         public static final int btn2=0x7f0d003e;
         public static final int cbActive=0x7f0d0007;
+        public static final int cbOwner=0x7f0d004d;
         public static final int cbSelf=0x7f0d0006;
         public static final int content=0x7f0d0009;
         public static final int etCMC=0x7f0d001a;
@@ -149,8 +150,8 @@ public final class R {
         public static final int etPlayerName=0x7f0d0005;
         public static final int etRulesText=0x7f0d000b;
         public static final int etSubtype=0x7f0d0018;
-        public static final int footer=0x7f0d0052;
-        public static final int header2=0x7f0d004e;
+        public static final int footer=0x7f0d0053;
+        public static final int header2=0x7f0d004f;
         public static final int i_more=0x7f0d0039;
         public static final int ivCard=0x7f0d001f;
         public static final int ivDropdown=0x7f0d0026;
@@ -166,8 +167,8 @@ public final class R {
         public static final int llWonLostStatsD=0x7f0d0030;
         public static final int llWonLostStatsP=0x7f0d0038;
         public static final int lvDeckList=0x7f0d0023;
-        public static final int lvPlayers=0x7f0d004d;
-        public static final int menu_settings=0x7f0d0055;
+        public static final int lvPlayers=0x7f0d004e;
+        public static final int menu_settings=0x7f0d0056;
         public static final int pbTotalWonLostD=0x7f0d002d;
         public static final int pbTotalWonLostP=0x7f0d0035;
         public static final int regButton=0x7f0d0004;
@@ -176,7 +177,7 @@ public final class R {
         public static final int sCurrentSelection=0x7f0d002a;
         public static final int sExpansion=0x7f0d000c;
         public static final int sType=0x7f0d0017;
-        public static final int scroll=0x7f0d0050;
+        public static final int scroll=0x7f0d0051;
         public static final int scrollView1=0x7f0d0027;
         public static final int svCards=0x7f0d001d;
         public static final int t_name=0x7f0d003a;
@@ -192,7 +193,7 @@ public final class R {
         public static final int tbUncommon=0x7f0d0010;
         public static final int tbWhite=0x7f0d0012;
         public static final int thPlayers=0x7f0d004a;
-        public static final int tracks=0x7f0d0051;
+        public static final int tracks=0x7f0d0052;
         public static final int tvDeckListEnd=0x7f0d0029;
         public static final int tvDeckName=0x7f0d0024;
         public static final int tvDisplayAllDecks=0x7f0d0028;
@@ -203,7 +204,7 @@ public final class R {
         public static final int tvGamesWonD=0x7f0d002e;
         public static final int tvGamesWonP=0x7f0d0036;
         public static final int tvOwnerName=0x7f0d0025;
-        public static final int tvTabLabel=0x7f0d0054;
+        public static final int tvTabLabel=0x7f0d0055;
         public static final int tvTitle=0x7f0d003f;
         public static final int tvTotalGamesD=0x7f0d002c;
         public static final int tvTotalGamesP=0x7f0d0034;
@@ -227,10 +228,11 @@ public final class R {
         public static final int main_view=0x7f03000e;
         public static final int play_game=0x7f03000f;
         public static final int player_view=0x7f030010;
-        public static final int players_main=0x7f030011;
-        public static final int quickaction=0x7f030012;
-        public static final int splash=0x7f030013;
-        public static final int tab_label=0x7f030014;
+        public static final int player_view_deck_list_row=0x7f030011;
+        public static final int players_main=0x7f030012;
+        public static final int quickaction=0x7f030013;
+        public static final int splash=0x7f030014;
+        public static final int tab_label=0x7f030015;
     }
     public static final class menu {
         public static final int activity_register=0x7f0c0000;
