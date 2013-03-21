@@ -157,20 +157,21 @@ public class MagicHatDbHelper extends SQLiteOpenHelper {
 
 		allPlayers = getAllPlayers(db);
 
-		for (Deck d : allNewDecks) {
-			// Need to set all ids of all deck owners to 0 since the id came
-			// from XML originally
-			d.getOwner().setId(0);
-		}
-
 		// This adds the previously existing decks prior to dropping tables
 		for (Deck d : allDecks) {
+			// Set the Id of the deck to zero since this is either an upgrade or
+			// an install
+			d.setId(0);
 			writeDeck(d, db);
 		}
 		Log.i("MagicHatDbHelper.setupPlayersAndDecks",
 				"Done setting up original Decks.");
 
 		for (Deck d : allNewDecks) {
+			// Need to set all ids of all deck owners to 0 since the id came
+			// from XML originally
+			d.getOwner().setId(0);
+			d.setId(0);
 			if (!deckExists(d, db)) {
 				writeDeck(d, db);
 			}
@@ -247,7 +248,7 @@ public class MagicHatDbHelper extends SQLiteOpenHelper {
 
 		Player owner = getPlayer(sOwnerName, db);
 
-		String[] deckColumns = new String[] { KEY_DECK_NAME };
+		String[] deckColumns = new String[] { KEY_DECK_ROWID };
 		Cursor dc = db.query(DB_TABLE_ALLDECKS, deckColumns, KEY_DECK_NAME
 				+ " = '" + sDeckName + "' AND " + KEY_DECK_OWNERID + " = "
 				+ owner.getId(), null, null, null, null);
@@ -268,7 +269,11 @@ public class MagicHatDbHelper extends SQLiteOpenHelper {
 
 	protected boolean deckExists(Deck d, SQLiteDatabase db) {
 		String[] deckColumns = new String[] { KEY_DECK_NAME, KEY_DECK_OWNERID };
-		Player p = getPlayer(d.getOwner().getName(), db);
+		Player p = d.getOwner();
+		if (p.getId() == 0) {
+			p = getPlayer(d.getOwner().getName(), db);
+		}
+
 		Cursor dc = db.query(DB_TABLE_ALLDECKS, deckColumns, KEY_DECK_NAME
 				+ " = '" + d.getName() + "' AND " + KEY_DECK_OWNERID + " = "
 				+ p.getId(), null, null, null, null);
