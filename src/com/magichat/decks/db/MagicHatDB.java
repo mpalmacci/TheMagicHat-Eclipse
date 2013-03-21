@@ -69,13 +69,17 @@ public class MagicHatDb {
 	}
 
 	// //////////////////////////////// DECKS //////////////////////////////////
-	
+
 	public void writeDeck(Deck d) {
 		mhHelper.writeDeck(d, mhDb);
 	}
 
 	public void deleteDecks(Deck d) {
 		mhHelper.deleteDeck(d, mhDb);
+	}
+
+	public boolean deckExists(Deck d) {
+		return mhHelper.deckExists(d, mhDb);
 	}
 
 	public Deck getDeck(int deckId) {
@@ -85,37 +89,29 @@ public class MagicHatDb {
 	public Deck getDeck(String sDeckName, String sOwnerName) {
 		return mhHelper.getDeck(sDeckName, sOwnerName, mhDb);
 	}
-	
-	public List<Deck> getAllDecks(boolean isActive) {
-		return mhHelper.getAllDecks(isActive, mhDb);
-	}
-
-	public List<Deck> getDeckList(Player p) {
-		return mhHelper.getDeckList(p, mhDb);
-	}
-
-	public List<Deck> getActiveDeckList(Player p) {
-		return mhHelper.getActiveDeckList(p, mhDb);
-	}
 
 	public int getDeckId(String sDeckName, String sOwnerName) {
 		return mhHelper.getDeckId(sDeckName, sOwnerName, mhDb);
 	}
-	
-	public void setOwnersDeckList(int playerId, List<Deck> deckList) {
-		mhHelper.setOwnersDeckList(playerId, deckList, mhDb);
+
+	public List<Deck> getAllDecks(boolean isActive) {
+		return mhHelper.getAllDecks(isActive, mhDb);
 	}
 
-	public boolean deckExists(Deck d) {
-		return mhHelper.deckExists(d, mhDb);
+	public List<Deck> getDeckList(Player p, boolean isActive) {
+		return mhHelper.getDeckList(p, isActive, mhDb);
+	}
+
+	public void setDeckList(int playerId, List<Deck> deckList) {
+		mhHelper.setDeckList(playerId, deckList, mhDb);
 	}
 
 	// ////////////////////PLAYERS/////////////OWNERS///////////////////////////////
-	
+
 	public void writePlayer(Player p) {
 		mhHelper.writePlayer(p, mhDb);
 	}
-	
+
 	public void deletePlayer(Player p) {
 		mhHelper.deletePlayer(p, mhDb);
 	}
@@ -146,11 +142,12 @@ public class MagicHatDb {
 
 	// /////////////////// GAMES ///////////////////////////////////////////
 
-/*	public void addGameResult(Map<Player, Deck> gamePlayersDecks,
-			Player pWinner, Date gameDate) {
-		mhHelper.addGameResult(gamePlayersDecks, pWinner, gameDate, mhDb);
-	}*/
-	
+	/*
+	 * public void addGameResult(Map<Player, Deck> gamePlayersDecks, Player
+	 * pWinner, Date gameDate) { mhHelper.addGameResult(gamePlayersDecks,
+	 * pWinner, gameDate, mhDb); }
+	 */
+
 	public void writeNewGame(Game g) {
 		mhHelper.writeNewGame(g, mhDb);
 	}

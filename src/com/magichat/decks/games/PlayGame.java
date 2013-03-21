@@ -84,7 +84,7 @@ public class PlayGame extends MagicHatActivity implements
 			if (ownDecks) {
 				// Here every player will play with their own decks
 				for (Player p : players) {
-					List<Deck> playersDecks = getAllInfoDB.getActiveDeckList(p);
+					List<Deck> playersDecks = getAllInfoDB.getDeckList(p, true);
 					if (playersDecks.isEmpty()) {
 						System.out.println("PlayGame.getAllInfo: "
 								+ p.toString() + "'s deckList is empty!");

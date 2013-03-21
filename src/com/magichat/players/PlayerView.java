@@ -173,11 +173,11 @@ public class PlayerView extends MagicHatActivity implements OnItemClickListener 
 			mhDb.openWritableDB();
 			mhDb.writePlayer(p);
 			if (!deckList.isEmpty()) {
-				mhDb.setOwnersDeckList(p.getId(), deckList);
+				mhDb.setDeckList(p.getId(), deckList);
 			}
 
 			if (!removeDeckList.isEmpty()) {
-				mhDb.setOwnersDeckList(0, removeDeckList);
+				mhDb.setDeckList(0, removeDeckList);
 			}
 
 			mhDb.closeDB();
