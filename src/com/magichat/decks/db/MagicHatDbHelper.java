@@ -60,7 +60,6 @@ public class MagicHatDbHelper extends SQLiteOpenHelper {
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 
-		// if (dbName.equals(MagicHatDbHelper.MH_DB_NAME)) {
 		Log.i("MagicHatDbHelper.onCreate",
 				"Code Path for MagicHatDb OnCreate was triggered.");
 
@@ -93,8 +92,10 @@ public class MagicHatDbHelper extends SQLiteOpenHelper {
 				+ KEY_GAME_WINNER + ") REFERENCES " + DB_TABLE_ALLPLAYERS + "("
 				+ KEY_PLAYER_ROWID + "));");
 
-		// Only use this when testing on a simulator
-		// setupMockData(db);
+		// Only used when testing on a simulator
+		if (MagicHatDb.DB_MOCKDATA) {
+			setupMockData(db);
+		}
 	}
 
 	@Override
@@ -106,7 +107,6 @@ public class MagicHatDbHelper extends SQLiteOpenHelper {
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
-		// if (dbName.equals(MagicHatDbHelper.MH_DB_NAME)) {
 		Log.i("MagicHatDbHelper.onUpgrade",
 				"Code Path for MagicHatDb onUpgrade was triggered.");
 

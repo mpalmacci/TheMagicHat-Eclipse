@@ -19,6 +19,9 @@ public class MagicHatDb {
 	protected static final String DB_BACKUP_PATH = Environment
 			.getExternalStorageDirectory() + "/magichat/";
 	private static final int DB_VERSION = 2;
+	
+	// TODO Set this to 'true' when testing against a simulator
+	protected static final boolean DB_MOCKDATA = false;
 
 	private MagicHatDbHelper mhHelper;
 	private SQLiteDatabase mhDb;
