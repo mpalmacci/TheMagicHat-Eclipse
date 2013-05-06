@@ -41,7 +41,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="@string/expansion" />
+                    android:text="@string/expansion"
+                    android:textIsSelectable="false" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -65,7 +66,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="@string/block" />
+                    android:text="@string/block"
+                    android:textIsSelectable="false" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -85,7 +87,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="@string/rarity" />
+                android:text="@string/rarity"
+                android:textIsSelectable="false" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -134,7 +137,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="@string/color" />
+                android:text="@string/color"
+                android:textIsSelectable="false" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -198,7 +202,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="@string/types" />
+                    android:text="@string/types"
+                    android:textIsSelectable="false" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -232,7 +237,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="@string/conv_mana_cost" />
+                    android:text="@string/conv_mana_cost"
+                    android:textIsSelectable="false" />
 
                 <LinearLayout
                     android:layout_width="match_parent"

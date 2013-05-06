@@ -7,7 +7,7 @@
     </style>
 
     <style name="CustomWindowTitleBackground">
-        <item name="android:background">#6699ff</item>
+        <item name="android:background">#669933</item>
     </style>
 
     <!-- Set the theme for the window title -->

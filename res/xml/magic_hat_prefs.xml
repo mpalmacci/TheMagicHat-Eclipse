@@ -15,4 +15,24 @@
         android:summary="Would you like to play with your own Decks only?"
         android:title="Owners&apos; Decks Only" />
 
+    <com.magichat.prefs.BackupPreference
+        android:dialogTitle="Are you sure you want to backup the Database?"
+        android:enabled="true"
+        android:key="backup"
+        android:negativeButtonText="No"
+        android:positiveButtonText="Yes"
+        android:selectable="true"
+        android:summary="Would you like to backup your Magic Hat Database?"
+        android:title="Backup Db" />
+
+    <com.magichat.prefs.RestorePreference
+        android:dialogTitle="Are you sure you want to restore the Database?"
+        android:enabled="true"
+        android:key="restore"
+        android:negativeButtonText="No"
+        android:positiveButtonText="Yes"
+        android:selectable="true"
+        android:summary="Would you like to restore your Magic Hat Database?"
+        android:title="Restore Db" />
+
 </PreferenceScreen>

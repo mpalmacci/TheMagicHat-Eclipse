@@ -25,7 +25,6 @@ public class GameStatsForPlayer extends MagicHatActivity implements
 		OnItemSelectedListener {
 	float totalGamesWon, totalGamesLost = 0;
 	List<Deck> allDecks = new ArrayList<Deck>();
-	List<Player> allPlayers = new ArrayList<Player>();
 	List<Deck> dOpponents = new ArrayList<Deck>();
 	List<Deck> playersDecks = new ArrayList<Deck>();
 
@@ -47,20 +46,21 @@ public class GameStatsForPlayer extends MagicHatActivity implements
 	}
 
 	private class populatePlayerSpinner extends
-			AsyncTask<String, Integer, String> {
+			AsyncTask<String, Integer, List<Player>> {
 
 		@Override
-		protected String doInBackground(String... params) {
+		protected List<Player> doInBackground(String... params) {
+			List<Player> allPlayers = new ArrayList<Player>();
 			MagicHatDb mhDB = new MagicHatDb(GameStatsForPlayer.this);
 			mhDB.openReadableDB();
 			allPlayers = mhDB.getAllPlayers();
 			mhDB.closeDB();
-			return null;
+			return allPlayers;
 		}
 
 		@Override
-		protected void onPostExecute(String results) {
-			super.onPostExecute(results);
+		protected void onPostExecute(List<Player> allPlayers) {
+			super.onPostExecute(allPlayers);
 			if (allPlayers.isEmpty()) {
 				llByPlayers.setVisibility(LinearLayout.GONE);
 				sPlayerSelection.setVisibility(LinearLayout.GONE);
@@ -69,7 +69,8 @@ public class GameStatsForPlayer extends MagicHatActivity implements
 			} else {
 				ArrayAdapter<Player> ownerAdapter = new ArrayAdapter<Player>(
 						GameStatsForPlayer.this,
-						android.R.layout.simple_spinner_item, allPlayers);
+						R.layout.mh_spinner, allPlayers);
+				ownerAdapter.setDropDownViewResource(R.layout.mh_spinner_dropdown);
 				sPlayerSelection.setAdapter(ownerAdapter);
 
 				currentPlayer = (Player) sPlayerSelection.getSelectedItem();
@@ -229,9 +230,9 @@ public class GameStatsForPlayer extends MagicHatActivity implements
 		tvGamesWon = (TextView) findViewById(R.id.tvGamesWonP);
 		tvGamesLost = (TextView) findViewById(R.id.tvGamesLostP);
 		pbTotalWonLost = (ProgressBar) findViewById(R.id.pbTotalWonLostP);
-		
+
 		this.bCardSearch.setVisibility(LinearLayout.VISIBLE);
-		
+
 		this.tvTitle.setText("Game Stats for Players");
 
 		sPlayerSelection.setOnItemSelectedListener(this);

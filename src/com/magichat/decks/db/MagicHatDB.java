@@ -10,12 +10,15 @@ import com.magichat.players.Player;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
+import android.os.Environment;
 
 public class MagicHatDb {
 
-	private static final String DB_PATH = "/data/data/com.magichat/databases/";
-	protected static final String MH_DB_NAME = "MagicHatDB";
-	private static final int MH_DB_VERSION = 1;
+	protected static final String DB_PATH = "/data/data/com.magichat/databases/";
+	protected static final String DB_NAME = "MagicHatDb";
+	protected static final String DB_BACKUP_PATH = Environment
+			.getExternalStorageDirectory() + "/magichat/";
+	private static final int DB_VERSION = 2;
 
 	private MagicHatDbHelper mhHelper;
 	private SQLiteDatabase mhDb;
@@ -29,8 +32,16 @@ public class MagicHatDb {
 		// DB_PATH = c.getFilesDir().getPath();
 	}
 
+	public MagicHatDb(Context c, SQLiteDatabase db) {
+		this(c);
+		// This has been untested
+		// DB_PATH = c.getFilesDir().getPath();
+
+		this.mhDb = db;
+	}
+
 	public MagicHatDb openWritableDB() {
-		mhHelper = new MagicHatDbHelper(context, MH_DB_NAME, MH_DB_VERSION);
+		mhHelper = new MagicHatDbHelper(context, DB_NAME, DB_VERSION);
 		try {
 			mhDb = mhHelper.getWritableDatabase();
 		} catch (SQLiteException e) {
@@ -41,7 +52,7 @@ public class MagicHatDb {
 	}
 
 	public MagicHatDb openReadableDB() {
-		mhHelper = new MagicHatDbHelper(context, MH_DB_NAME, MH_DB_VERSION);
+		mhHelper = new MagicHatDbHelper(context, DB_NAME, DB_VERSION);
 		try {
 			mhDb = mhHelper.getReadableDatabase();
 		} catch (SQLiteException e) {
@@ -60,12 +71,22 @@ public class MagicHatDb {
 	}
 
 	public static boolean isCreated() {
-		File dbFile = new File(DB_PATH + MH_DB_NAME);
+		File dbFile = new File(DB_PATH + DB_NAME);
 		return dbFile.exists();
 	}
 
 	public boolean isUpgrade() {
 		return mhHelper.isUpgrade();
+	}
+
+	// ///////////////////////////// BACKUP RESTORE
+	// ////////////////////////////////
+	public void backupDb() {
+		mhHelper.backupDb(mhDb);
+	}
+
+	public void restoreDb() {
+		mhHelper.restoreDb(mhDb);
 	}
 
 	// //////////////////////////////// DECKS //////////////////////////////////
@@ -74,7 +95,7 @@ public class MagicHatDb {
 		mhHelper.writeDeck(d, mhDb);
 	}
 
-	public void deleteDecks(Deck d) {
+	public void deleteDeck(Deck d) {
 		mhHelper.deleteDeck(d, mhDb);
 	}
 

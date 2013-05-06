@@ -70,12 +70,12 @@ public class CardDbUtil {
 	public static void initCardDb(Context context) throws IOException {
 		createDb = false;
 
-		File dbDir = new File(DB_PATH);
+		File dbPath = new File(DB_PATH);
 		File dbFile = new File(DB_PATH + DB_NAME);
 		File fDbVersion = new File(DB_PATH + FILE_DB_VERSION);
 
-		if (!dbDir.exists()) {
-			dbDir.mkdir();
+		if (!dbPath.exists()) {
+			dbPath.mkdir();
 			createDb = true;
 		} else if (!dbFile.exists()) {
 			createDb = true;
@@ -368,7 +368,7 @@ public class CardDbUtil {
 	protected static int getCardId(String name) {
 		String[] cardColumns = new String[] { KEY_CARD_ROWID };
 		int cardId = 0;
-		
+
 		name = name.replace("'", "''");
 
 		Cursor cc = cDb.query(DB_TABLE_ALLCARDS, cardColumns, "lower("

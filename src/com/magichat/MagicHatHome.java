@@ -56,11 +56,6 @@ public class MagicHatHome extends MagicHatActivity {
 					"com.magichat.decks.DECKSMAIN");
 			startActivity(openDeckActivity);
 			break;
-		case R.id.bPlayers:
-			Intent openPlayersActivity = new Intent(
-					"com.magichat.players.PLAYERSMAIN");
-			startActivity(openPlayersActivity);
-			break;
 		default:
 			break;
 		}

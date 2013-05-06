@@ -1,5 +1,8 @@
 package com.magichat.quickaction;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 
@@ -32,6 +35,8 @@ public class QuickAction extends PopupWindows {
 	private LayoutInflater inflater;
 	private ViewGroup mTrack;
 	private OnActionItemClickListener mListener;
+	
+	private List<ActionItem> mActionItemList = new ArrayList<ActionItem>();
 
 	private int animStyle;
 	private int mChildPos;
@@ -54,7 +59,7 @@ public class QuickAction extends PopupWindows {
 				return 1.2f - inner * inner;
 			}
 		});
-		setRootViewId(R.layout.quickaction);
+		setRootViewId(R.layout.quick_action);
 		animStyle = ANIM_AUTO;
 		animateTrack = true;
 		mChildPos = 0;
@@ -77,9 +82,14 @@ public class QuickAction extends PopupWindows {
 	public void setAnimStyle(int animStyle) {
 		this.animStyle = animStyle;
 	}
+	
+	public ActionItem getActionItem(int index) {
+        return mActionItemList.get(index);
+    }
 
 	public void addActionItem(ActionItem action) {
-
+		mActionItemList.add(action);
+		
 		String title = action.getTitle();
 		Drawable icon = action.getIcon();
 
@@ -99,12 +109,13 @@ public class QuickAction extends PopupWindows {
 			text.setVisibility(View.GONE);
 
 		final int pos = mChildPos;
+		final int actionId 	= action.getActionId();
 
 		container.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				if (mListener != null)
-					mListener.onItemClick(pos);
+					mListener.onItemClick(QuickAction.this, pos, actionId);
 
 				dismiss();
 			}
@@ -144,7 +155,7 @@ public class QuickAction extends PopupWindows {
 		} else {
 			screenWidth = mWindowManager.getDefaultDisplay().getWidth();
 		}
-		
+
 		int xPos = (screenWidth - rootWidth) / 2;
 		int yPos = anchorRect.top - rootHeight;
 		boolean onTop = true;
@@ -159,50 +170,63 @@ public class QuickAction extends PopupWindows {
 		if (animateTrack)
 			mTrack.startAnimation(mTrackAnim);
 	}
-	
-	private void setAnimationStyle(int screenWidth, int requestedX, boolean onTop) {
-		int arrowPos = requestedX - mArrowUp.getMeasuredWidth()/2;
+
+	private void setAnimationStyle(int screenWidth, int requestedX,
+			boolean onTop) {
+		int arrowPos = requestedX - mArrowUp.getMeasuredWidth() / 2;
 
 		switch (animStyle) {
 		case ANIM_GROW_FROM_LEFT:
-			mWindow.setAnimationStyle((onTop) ? R.style.Animations_PopUpMenu_Left : R.style.Animations_PopDownMenu_Left);
+			mWindow.setAnimationStyle((onTop) ? R.style.Animations_PopUpMenu_Left
+					: R.style.Animations_PopDownMenu_Left);
 			break;
-					
+
 		case ANIM_GROW_FROM_RIGHT:
-			mWindow.setAnimationStyle((onTop) ? R.style.Animations_PopUpMenu_Right : R.style.Animations_PopDownMenu_Right);
+			mWindow.setAnimationStyle((onTop) ? R.style.Animations_PopUpMenu_Right
+					: R.style.Animations_PopDownMenu_Right);
 			break;
-					
+
 		case ANIM_GROW_FROM_CENTER:
-			mWindow.setAnimationStyle((onTop) ? R.style.Animations_PopUpMenu_Center : R.style.Animations_PopDownMenu_Center);
-		break;
-					
+			mWindow.setAnimationStyle((onTop) ? R.style.Animations_PopUpMenu_Center
+					: R.style.Animations_PopDownMenu_Center);
+			break;
+
 		case ANIM_AUTO:
-			if (arrowPos <= screenWidth/4) {
-				mWindow.setAnimationStyle((onTop) ? R.style.Animations_PopUpMenu_Left : R.style.Animations_PopDownMenu_Left);
-			} else if (arrowPos > screenWidth/4 && arrowPos < 3 * (screenWidth/4)) {
-				mWindow.setAnimationStyle((onTop) ? R.style.Animations_PopUpMenu_Center : R.style.Animations_PopDownMenu_Center);
+			if (arrowPos <= screenWidth / 4) {
+				mWindow.setAnimationStyle((onTop) ? R.style.Animations_PopUpMenu_Left
+						: R.style.Animations_PopDownMenu_Left);
+			} else if (arrowPos > screenWidth / 4
+					&& arrowPos < 3 * (screenWidth / 4)) {
+				mWindow.setAnimationStyle((onTop) ? R.style.Animations_PopUpMenu_Center
+						: R.style.Animations_PopDownMenu_Center);
 			} else {
-				mWindow.setAnimationStyle((onTop) ? R.style.Animations_PopDownMenu_Right : R.style.Animations_PopDownMenu_Right);
+				mWindow.setAnimationStyle((onTop) ? R.style.Animations_PopDownMenu_Right
+						: R.style.Animations_PopDownMenu_Right);
 			}
-					
+
 			break;
 		}
 	}
+
 	private void showArrow(int whichArrow, int requestedX) {
-        final View showArrow = (whichArrow == R.id.arrow_up) ? mArrowUp : mArrowDown;
-        final View hideArrow = (whichArrow == R.id.arrow_up) ? mArrowDown : mArrowUp;
+		final View showArrow = (whichArrow == R.id.arrow_up) ? mArrowUp
+				: mArrowDown;
+		final View hideArrow = (whichArrow == R.id.arrow_up) ? mArrowDown
+				: mArrowUp;
 
-        final int arrowWidth = mArrowUp.getMeasuredWidth();
+		final int arrowWidth = mArrowUp.getMeasuredWidth();
 
-        showArrow.setVisibility(View.VISIBLE);
-        
-        ViewGroup.MarginLayoutParams param = (ViewGroup.MarginLayoutParams)showArrow.getLayoutParams();
-        
-        param.leftMargin = requestedX - arrowWidth / 2;
-      
-        hideArrow.setVisibility(View.INVISIBLE);
-    }
+		showArrow.setVisibility(View.VISIBLE);
+
+		ViewGroup.MarginLayoutParams param = (ViewGroup.MarginLayoutParams) showArrow
+				.getLayoutParams();
+
+		param.leftMargin = requestedX - arrowWidth / 2;
+
+		hideArrow.setVisibility(View.INVISIBLE);
+	}
+
 	public interface OnActionItemClickListener {
-		public abstract void onItemClick(int pos);
+		public abstract void onItemClick(QuickAction source, int pos, int actionId);
 	}
 }

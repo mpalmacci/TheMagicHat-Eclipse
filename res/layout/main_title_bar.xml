@@ -13,6 +13,7 @@
         android:paddingLeft="10sp"
         android:text="@string/app_name"
         android:textColor="#ffffff"
+        android:textIsSelectable="false"
         android:textSize="15sp"
         android:textStyle="bold" />
 
@@ -24,19 +25,35 @@
         android:paddingRight="8sp" >
 
         <Button
-            android:id="@+id/bBack"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="15sp"
-            android:background="@drawable/back"
-            android:visibility="gone" />
-
-        <Button
             android:id="@+id/bAdd"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="15sp"
             android:background="@drawable/add"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/bCheck"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="15sp"
+            android:background="@drawable/check"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/bEdit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="15sp"
+            android:background="@drawable/edit"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/bBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="15sp"
+            android:background="@drawable/back"
             android:visibility="gone" />
 
         <Button

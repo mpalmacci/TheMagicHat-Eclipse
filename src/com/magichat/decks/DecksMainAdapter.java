@@ -31,31 +31,42 @@ public class DecksMainAdapter extends BaseAdapter {
 	}
 
 	public Object getItem(int position) {
-		return position;
+		return deckList.get(position);
 	}
 
 	public long getItemId(int position) {
 		return position;
 	}
+	
+	protected static class DeckMainViewHolder {
+		TextView tvDeckName;
+		TextView tvOwnerName;
+		ImageView ivDropdown;
+	}
 
 	public View getView(int position, View convertView, ViewGroup parent) {
-		View vi = convertView;
-		if (convertView == null)
-			vi = inflater.inflate(R.layout.decks_main_list_row, null);
+		DeckMainViewHolder holder = new DeckMainViewHolder();
+		
+		if (convertView == null) {
+			convertView = inflater.inflate(R.layout.decks_main_list_row, null);
+			
+			holder.tvDeckName = (TextView) convertView.findViewById(R.id.tvDeckName);
+			holder.tvOwnerName = (TextView) convertView.findViewById(R.id.tvOwnerName);
+			holder.ivDropdown = (ImageView) convertView.findViewById(R.id.ivDropdown);
+			
+			convertView.setTag(holder);
+		} else {
+			holder = (DeckMainViewHolder) convertView.getTag();
+		}
 
-		TextView deckName = (TextView) vi.findViewById(R.id.tvDeckName);
-		TextView ownerName = (TextView) vi.findViewById(R.id.tvOwnerName);
-		ImageView dropdown = (ImageView) vi.findViewById(R.id.ivDropdown);
-
-		Deck d = new Deck();
-		d = deckList.get(position);
+		Deck d = deckList.get(position);
 
 		// Setting all values in ListView
-		deckName.setText(d.getName());
-		ownerName.setText(d.getOwner().getName());
+		holder.tvDeckName.setText(d.getName());
+		holder.tvOwnerName.setText(d.getOwner().getName());
 		
-		dropdown.setOnClickListener((OnClickListener) activity);
+		holder.ivDropdown.setOnClickListener((OnClickListener) activity);
 		
-		return vi;
+		return convertView;
 	}
 }

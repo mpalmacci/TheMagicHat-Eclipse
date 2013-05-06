@@ -124,13 +124,17 @@ public class PlayGame extends MagicHatActivity implements
 			}
 
 			ArrayAdapter<Deck> deckAdapter = new ArrayAdapter<Deck>(
-					PlayGame.this, android.R.layout.simple_spinner_item,
+					PlayGame.this, R.layout.mh_spinner,
 					deckList);
+
+			deckAdapter.setDropDownViewResource(R.layout.mh_spinner_dropdown);
+
 			sPlayersDecks.setAdapter(deckAdapter);
 
 			tvPlayer.setTextSize(25);
 			sPlayersDecks.setId(p.getId());
-			sPlayersDecks.setOnItemSelectedListener(this);
+			sPlayersDecks.setPrompt("Select a Deck to Play With");
+			sPlayersDecks.setOnItemSelectedListener(PlayGame.this);
 
 			llMatchupView.addView(tvPlayer);
 			llMatchupView.addView(sPlayersDecks);
@@ -255,7 +259,7 @@ public class PlayGame extends MagicHatActivity implements
 		protected Integer doInBackground(Integer... pNums) {
 			Game g = new Game(playersAndDecks, new Date());
 			g.setWinner(players.get(pNums[0]));
-			
+
 			MagicHatDb mhAddGameResult = new MagicHatDb(PlayGame.this);
 			mhAddGameResult.openWritableDB();
 			mhAddGameResult.writeNewGame(g);
@@ -344,7 +348,6 @@ public class PlayGame extends MagicHatActivity implements
 
 	@Override
 	public void onNothingSelected(AdapterView<?> arg0) {
-
 	}
 
 	private void initialize() {
@@ -355,8 +358,8 @@ public class PlayGame extends MagicHatActivity implements
 		llWinnerSection = (LinearLayout) findViewById(R.id.llWinnerSection);
 
 		this.bCardSearch.setVisibility(LinearLayout.VISIBLE);
-		
-		this.tvTitle.setText("Play Games");
+
+		this.tvTitle.setText("Let's Play Some Magic!");
 
 		bPlayGame.setOnClickListener(this);
 		bPlayer1.setOnClickListener(this);

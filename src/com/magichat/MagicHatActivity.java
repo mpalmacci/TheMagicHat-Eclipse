@@ -9,7 +9,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 public class MagicHatActivity extends Activity implements View.OnClickListener {
-	protected Button bBack, bAdd, bDelete, bPrefs, bPlayers, bCardSearch;
+	protected Button bAdd, bCheck, bEdit, bBack, bDelete, bPrefs, bPlayers, bCardSearch;
 
 	protected TextView tvTitle;
 
@@ -53,8 +53,10 @@ public class MagicHatActivity extends Activity implements View.OnClickListener {
 	}
 
 	private void initialize() {
-		bBack = (Button) findViewById(R.id.bBack);
 		bAdd = (Button) findViewById(R.id.bAdd);
+		bCheck = (Button) findViewById(R.id.bCheck);
+		bEdit = (Button) findViewById(R.id.bEdit);
+		bBack = (Button) findViewById(R.id.bBack);
 		bDelete = (Button) findViewById(R.id.bDelete);
 		bPrefs = (Button) findViewById(R.id.bPrefs);
 		bPlayers = (Button) findViewById(R.id.bPlayers);
@@ -63,7 +65,7 @@ public class MagicHatActivity extends Activity implements View.OnClickListener {
 
 		bBack.setOnClickListener(this);
 		bPrefs.setOnClickListener(this);
-		bCardSearch.setOnClickListener(this);
 		bPlayers.setOnClickListener(this);
+		bCardSearch.setOnClickListener(this);
 	}
 }

@@ -2,7 +2,15 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:paddingTop="1sp" >
+
+    <Spinner
+        android:id="@+id/sDeckOwner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/tab_selected"
+        android:prompt="@string/select_an_owner" />
 
     <EditText
         android:id="@+id/etDeckSearch"
@@ -10,14 +18,12 @@
         android:layout_height="wrap_content"
         android:drawableRight="@drawable/search"
         android:hint="@string/deck_search"
-        android:inputType="text" />
+        android:inputType="textCapWords" />
 
     <ListView
         android:id="@+id/lvDeckList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:divider="@color/light_blue"
-         >
-    </ListView>
+        android:divider="@color/light_blue" />
 
 </LinearLayout>

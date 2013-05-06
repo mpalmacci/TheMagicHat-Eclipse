@@ -59,6 +59,8 @@ public class CardSearch extends MagicHatActivity implements OnClickListener {
 		@Override
 		protected void onPostExecute(ArrayAdapter<Card> cardNameAdapter) {
 			super.onPostExecute(cardNameAdapter);
+			cardNameAdapter.setDropDownViewResource(R.layout.mh_spinner_dropdown);
+			// cardNameAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
 			etName.setAdapter(cardNameAdapter);
 		}
@@ -81,7 +83,7 @@ public class CardSearch extends MagicHatActivity implements OnClickListener {
 			allExpansions.add(0, new Expansion("Any", null));
 
 			ArrayAdapter<Expansion> expAdapter = new ArrayAdapter<Expansion>(
-					CardSearch.this, android.R.layout.simple_spinner_item,
+					CardSearch.this, R.layout.mh_spinner,
 					allExpansions);
 
 			return expAdapter;
@@ -90,6 +92,8 @@ public class CardSearch extends MagicHatActivity implements OnClickListener {
 		@Override
 		protected void onPostExecute(ArrayAdapter<Expansion> expAdapter) {
 			super.onPostExecute(expAdapter);
+			expAdapter.setDropDownViewResource(R.layout.mh_spinner_dropdown);
+			// expAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
 			sExpansion.setAdapter(expAdapter);
 		}
@@ -113,6 +117,8 @@ public class CardSearch extends MagicHatActivity implements OnClickListener {
 		@Override
 		protected void onPostExecute(ArrayAdapter<String> cardSubTypesAdapter) {
 			super.onPostExecute(cardSubTypesAdapter);
+			cardSubTypesAdapter.setDropDownViewResource(R.layout.mh_spinner_dropdown);
+			// cardSubTypesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
 			etSubtype.setAdapter(cardSubTypesAdapter);
 		}

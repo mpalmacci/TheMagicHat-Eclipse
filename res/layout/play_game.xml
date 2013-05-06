@@ -10,8 +10,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:background="@drawable/tab_selected"
         android:text="@string/randomize"
-        android:textSize="20sp" />
+        android:padding="9sp"
+        android:textSize="23sp" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -38,6 +40,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/winner"
+            android:textIsSelectable="false"
             android:textSize="25sp" />
 
         <LinearLayout

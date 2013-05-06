@@ -1,16 +1,17 @@
 package com.magichat.decks;
 
+import java.util.List;
+
+import com.magichat.cards.Card;
 import com.magichat.players.Player;
 
 public class Deck implements Comparable<Deck> {
 
 	private String name;
-
 	private boolean active;
-
 	private Player owner;
-
 	private int id;
+	private List<Card> cardList;
 
 	public Deck() {
 		this.name = new String();
@@ -34,50 +35,65 @@ public class Deck implements Comparable<Deck> {
 		this.id = id;
 	}
 
-	public boolean isActive() {
-		return active;
-	}
-
-	public void setActive(boolean active) {
-		this.active = active;
-	}
-
-	public Player getOwner() {
-		return owner;
-	}
-
-	public void setOwner(Player owner) {
-		this.owner = owner;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
+	public Deck(int id, String name, Player owner, boolean active,
+			List<Card> cardList) {
+		this(id, name, owner, active);
+		this.cardList = cardList;
 	}
 
 	public int getId() {
-		return id;
+		return this.id;
 	}
 
 	public void setId(int id) {
 		this.id = id;
 	}
 
+	public String getName() {
+		return this.name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Player getOwner() {
+		return this.owner;
+	}
+
+	public void setOwner(Player owner) {
+		this.owner = owner;
+	}
+
+	public boolean isActive() {
+		return this.active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+
+	public List<Card> getCardList() {
+		return this.cardList;
+	}
+
+	public void setCardList(List<Card> cardList) {
+		this.cardList = cardList;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		Deck d = (Deck) o;
 
-		/*
-		 * TODO Resolve this uniqueness if (this.getId() == d.getId()) { return
-		 * true; } else {
-		 */
-		return this.getName().equalsIgnoreCase(d.getName())
-				&& this.getOwner().getName()
-						.equalsIgnoreCase(d.getOwner().getName());
-		// }
+		// So long as the deck ids are equal and the id isn't zero, then they
+		// are equal
+		if (this.getId() == d.getId() && this.getId() != 0) {
+			return true;
+		} else {
+			return this.getName().equalsIgnoreCase(d.getName())
+					&& this.getOwner().getName()
+							.equalsIgnoreCase(d.getOwner().getName());
+		}
 	}
 
 	public boolean equalsOwner(Deck d) {

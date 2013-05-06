@@ -7,13 +7,28 @@ public class ActionItem {
 	private Drawable icon;
 	private Bitmap thumb;
 	private String title;
+	private int actionId = -1;
 	private boolean selected;
 
 	public ActionItem() {
 	}
 
+	public ActionItem(int actionId, String title, Drawable icon) {
+		this.title = title;
+		this.icon = icon;
+		this.actionId = actionId;
+	}
+
+	public ActionItem(int actionId, String title) {
+		this(actionId, title, null);
+	}
+
 	public ActionItem(Drawable icon) {
 		this.icon = icon;
+	}
+
+	public ActionItem(int actionId, Drawable icon) {
+		this(actionId, null, icon);
 	}
 
 	public void setTitle(String title) {
@@ -30,6 +45,14 @@ public class ActionItem {
 
 	public Drawable getIcon() {
 		return this.icon;
+	}
+
+	public void setActionId(int actionId) {
+		this.actionId = actionId;
+	}
+
+	public int getActionId() {
+		return actionId;
 	}
 
 	public void setSelected(boolean selected) {

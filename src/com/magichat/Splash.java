@@ -21,13 +21,17 @@ public class Splash extends MagicHatActivity {
 		 * Toast.makeText(Splash.this, "Checking for updates...",
 		 * Toast.LENGTH_SHORT) .show();
 		 */
+
+/*		new backupDb().execute();
+		Splash.this.finish();*/
+
 		new setupCardDb().execute();
 		new setupDeckDb().execute();
 
 		Thread timer = new Thread() {
 			public void run() {
 				try {
-					sleep(2000);
+					sleep(1000);
 				} catch (InterruptedException iE) {
 					iE.printStackTrace();
 				} finally {
@@ -38,6 +42,27 @@ public class Splash extends MagicHatActivity {
 			}
 		};
 		timer.start();
+	}
+
+	private class backupDb extends AsyncTask<String, Integer, String> {
+
+		@Override
+		protected String doInBackground(String... arg0) {
+			MagicHatDb mhDb = new MagicHatDb(Splash.this);
+			mhDb.openWritableDB();
+			mhDb.backupDb();
+			mhDb.closeDB();
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			super.onPostExecute(result);
+
+			Toast.makeText(Splash.this, "Database is backed up",
+					Toast.LENGTH_SHORT).show();
+			Splash.this.finish();
+		}
 	}
 
 	private class setupCardDb extends AsyncTask<String, Integer, String> {
@@ -65,12 +90,14 @@ public class Splash extends MagicHatActivity {
 						"Cards have been updated to latest version",
 						Toast.LENGTH_SHORT).show();
 			} else if (wasCreated) {
-				Toast.makeText(Splash.this,
-						"Cards have been initialized",
+				Toast.makeText(Splash.this, "Cards have been initialized",
 						Toast.LENGTH_SHORT).show();
 			} else {
-/*				Toast.makeText(Splash.this, "No changes to Cards were needed",
-						Toast.LENGTH_SHORT).show();*/
+				/*
+				 * Toast.makeText(Splash.this,
+				 * "No changes to Cards were needed",
+				 * Toast.LENGTH_SHORT).show();
+				 */
 			}
 		}
 	}
@@ -83,9 +110,11 @@ public class Splash extends MagicHatActivity {
 			super.onPreExecute();
 
 			if (!MagicHatDb.isCreated()) {
-				/*Toast.makeText(Splash.this,
-						"Initializing Decks... Please wait...",
-						Toast.LENGTH_SHORT).show();*/
+				/*
+				 * Toast.makeText(Splash.this,
+				 * "Initializing Decks... Please wait...",
+				 * Toast.LENGTH_SHORT).show();
+				 */
 				wasCreated = true;
 			}
 		}
@@ -125,7 +154,7 @@ public class Splash extends MagicHatActivity {
 	@Override
 	protected void onPause() {
 		super.onPause();
-		finish();
+		Splash.this.finish();
 	}
 
 }

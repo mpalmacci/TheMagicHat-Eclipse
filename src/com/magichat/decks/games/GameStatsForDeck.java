@@ -25,7 +25,7 @@ public class GameStatsForDeck extends MagicHatActivity implements
 		OnItemSelectedListener {
 
 	float totalGames, totalGamesWon, totalGamesLost = 0;
-	List<Deck> allDecks = new ArrayList<Deck>();
+
 	List<Player> allPlayers = new ArrayList<Player>();
 	List<Deck> dOpponents = new ArrayList<Deck>();
 	List<Deck> playersDecks = new ArrayList<Deck>();
@@ -48,20 +48,21 @@ public class GameStatsForDeck extends MagicHatActivity implements
 	}
 
 	private class populateDeckSpinner extends
-			AsyncTask<String, Integer, String> {
+			AsyncTask<String, Integer, List<Deck>> {
 
 		@Override
-		protected String doInBackground(String... params) {
+		protected List<Deck> doInBackground(String... params) {
+			List<Deck> allDecks = new ArrayList<Deck>();
 			MagicHatDb mhDB = new MagicHatDb(GameStatsForDeck.this);
 			mhDB.openReadableDB();
 			allDecks = mhDB.getAllDecks(false);
 			mhDB.closeDB();
-			return null;
+			return allDecks;
 		}
 
 		@Override
-		protected void onPostExecute(String result) {
-			super.onPostExecute(result);
+		protected void onPostExecute(List<Deck> allDecks) {
+			super.onPostExecute(allDecks);
 
 			if (allDecks.isEmpty()) {
 				llByDecks.setVisibility(LinearLayout.GONE);
@@ -71,7 +72,8 @@ public class GameStatsForDeck extends MagicHatActivity implements
 			} else {
 				ArrayAdapter<Deck> deckAdapter = new ArrayAdapter<Deck>(
 						GameStatsForDeck.this,
-						android.R.layout.simple_spinner_item, allDecks);
+						R.layout.mh_spinner, allDecks);
+				deckAdapter.setDropDownViewResource(R.layout.mh_spinner_dropdown);
 				sDeckSelection.setAdapter(deckAdapter);
 
 				currentDeck = (Deck) sDeckSelection.getSelectedItem();
@@ -212,8 +214,6 @@ public class GameStatsForDeck extends MagicHatActivity implements
 
 		currentDeck = (Deck) sDeckSelection.getSelectedItem();
 		new populateScreen().execute();
-		
-		System.out.println();
 	}
 
 	@Override
@@ -231,9 +231,9 @@ public class GameStatsForDeck extends MagicHatActivity implements
 		tvGamesWon = (TextView) findViewById(R.id.tvGamesWonD);
 		tvGamesLost = (TextView) findViewById(R.id.tvGamesLostD);
 		pbTotalWonLost = (ProgressBar) findViewById(R.id.pbTotalWonLostD);
-		
+
 		this.bCardSearch.setVisibility(LinearLayout.VISIBLE);
-		
+
 		this.tvTitle.setText("Game Stats for Decks");
 
 		sDeckSelection.setOnItemSelectedListener(this);

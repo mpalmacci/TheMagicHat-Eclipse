@@ -2,13 +2,16 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:paddingTop="3sp" >
 
     <Spinner
         android:id="@+id/sCurrentSelection"
         android:layout_width="match_parent"
-        android:layout_height="25dp"
-        android:background="@color/light_blue"
+        android:layout_height="wrap_content"
+        android:background="@drawable/tab_selected"
+        android:paddingBottom="8sp"
+        android:paddingTop="8sp"
         android:prompt="@string/make_a_selection" />
 
     <FrameLayout
@@ -30,12 +33,14 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/total_games" />
+                    android:text="@string/total_games"
+                    android:textIsSelectable="false" />
 
                 <TextView
                     android:id="@+id/tvTotalGamesP"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:textIsSelectable="false" />
             </LinearLayout>
 
             <ProgressBar
@@ -53,22 +58,26 @@
                 <TextView
                     android:id="@+id/tvGamesWonP"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:textIsSelectable="false" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/won" />
+                    android:text="@string/won"
+                    android:textIsSelectable="false" />
 
                 <TextView
                     android:id="@+id/tvGamesLostP"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:textIsSelectable="false" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/lost" />
+                    android:text="@string/lost"
+                    android:textIsSelectable="false" />
             </LinearLayout>
 
             <TextView
@@ -102,7 +111,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:text="@string/no_games_played" />
+                android:text="@string/no_games_played"
+                android:textIsSelectable="false" />
         </LinearLayout>
     </FrameLayout>
 
