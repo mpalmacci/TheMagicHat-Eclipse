@@ -1,148 +1,97 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.magichat"
-    android:versionCode="2"
-    android:versionName="2.0" >
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="2" android:versionName="2.0" package="com.magichat">
 
-    <uses-permission android:name="com.magichat.permission.C2D_MESSAGE" />
+    <uses-permission android:name="com.magichat.permission.C2D_MESSAGE"/>
 
-    <uses-sdk
-        android:minSdkVersion="10"
-        android:targetSdkVersion="16" />
+    <uses-sdk android:minSdkVersion="10" android:targetSdkVersion="16"/>
 
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <!-- App receives GCM messages. -->
-    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
     <!-- GCM connects to Google Services. -->
-    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.INTERNET"/>
     <!-- GCM requires a Google account. -->
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
     <!-- Keeps the processor from sleeping when a message is received. -->
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.USE_CREDENTIALS"/>
     <!-- Permissions to write to external SD Card -->
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
-    <permission
-        android:name="com.magichat.permission.C2D_MESSAGE"
-        android:protectionLevel="signature" />
+    <permission android:name="com.magichat.permission.C2D_MESSAGE" android:protectionLevel="signature"/>
 
-    <application
-        android:allowBackup="true"
-        android:icon="@drawable/main_icon"
-        android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
-        <receiver
-            android:name="com.google.android.gcm.GCMBroadcastReceiver"
-            android:permission="com.google.android.c2dm.permission.SEND" >
+    <application android:allowBackup="true" android:icon="@drawable/main_icon" android:label="@string/app_name" android:theme="@style/AppTheme">
+        <receiver android:name="com.google.android.gcm.GCMBroadcastReceiver" android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-                <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+                <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
+                <action android:name="com.google.android.c2dm.intent.REGISTRATION"/>
 
-                <category android:name="com.magichat" />
+                <category android:name="com.magichat"/>
             </intent-filter>
         </receiver>
 
-        <service android:name="com.magichat.gcm.GCMIntentService" />
+        <service android:name="com.magichat.gcm.GCMIntentService"/>
 
-        <activity
-            android:name=".Splash"
-            android:label="@string/app_name" >
+        <activity android:label="@string/app_name" android:name=".Splash">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity
-            android:name=".MagicHatHome"
-            android:configChanges="orientation|keyboardHidden"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait" >
+        <activity android:configChanges="orientation|keyboardHidden" android:label="@string/app_name" android:name=".MagicHatHome" android:screenOrientation="portrait">
             <intent-filter>
-                <action android:name="com.magichat.MAGICHATHOME" />
+                <action android:name="com.magichat.MAGICHATHOME"/>
 
-                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
-        <activity
-            android:name="com.magichat.prefs.MagicHatPrefs"
-            android:configChanges="orientation|keyboardHidden"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait" >
+        <activity android:configChanges="orientation|keyboardHidden" android:label="@string/app_name" android:name="com.magichat.prefs.MagicHatPrefs" android:screenOrientation="portrait">
             <intent-filter>
-                <action android:name="com.magichat.MAGICHATPREFS" />
+                <action android:name="com.magichat.MAGICHATPREFS"/>
 
-                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
-        <activity
-            android:name=".decks.games.PlayGame"
-            android:configChanges="orientation|keyboardHidden"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait" >
+        <activity android:configChanges="orientation|keyboardHidden" android:label="@string/app_name" android:name=".decks.games.PlayGame" android:screenOrientation="portrait">
             <intent-filter>
-                <action android:name="com.magichat.decks.games.PLAYGAME" />
+                <action android:name="com.magichat.decks.games.PLAYGAME"/>
 
-                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
-        <activity
-            android:name=".decks.games.GameStatsForDeck"
-            android:configChanges="orientation|keyboardHidden"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait" >
+        <activity android:configChanges="orientation|keyboardHidden" android:label="@string/app_name" android:name=".decks.games.GameStatsForDeck" android:screenOrientation="portrait">
             <intent-filter>
-                <action android:name="com.magichat.decks.games.GAMESTATSFORDECK" />
+                <action android:name="com.magichat.decks.games.GAMESTATSFORDECK"/>
 
-                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
-        <activity
-            android:name=".decks.games.GameStatsForPlayer"
-            android:configChanges="orientation|keyboardHidden"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait" >
+        <activity android:configChanges="orientation|keyboardHidden" android:label="@string/app_name" android:name=".decks.games.GameStatsForPlayer" android:screenOrientation="portrait">
             <intent-filter>
-                <action android:name="com.magichat.decks.games.GAMESTATSFORPLAYER" />
+                <action android:name="com.magichat.decks.games.GAMESTATSFORPLAYER"/>
 
-                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
-        <activity
-            android:name=".decks.DecksMain"
-            android:configChanges="orientation|keyboardHidden"
-            android:label="@string/decks"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden" >
+        <activity android:configChanges="orientation|keyboardHidden" android:label="@string/decks" android:name=".decks.DecksMain" android:screenOrientation="portrait" android:windowSoftInputMode="stateHidden">
             <intent-filter>
-                <action android:name="com.magichat.decks.DECKSMAIN" />
+                <action android:name="com.magichat.decks.DECKSMAIN"/>
 
-                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
-        <activity
-            android:name=".decks.DeckView"
-            android:configChanges="orientation|keyboardHidden"
-            android:label="@string/decks"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden" >
+        <activity android:configChanges="orientation|keyboardHidden" android:label="@string/decks" android:name=".decks.DeckView" android:screenOrientation="portrait" android:windowSoftInputMode="stateHidden">
             <intent-filter>
-                <action android:name="com.magichat.decks.DECKVIEW" />
+                <action android:name="com.magichat.decks.DECKVIEW"/>
 
-                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
-        <activity
-            android:name=".decks.DeckEdit"
-            android:configChanges="orientation|keyboardHidden"
-            android:label="@string/decks"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden" >
+        <activity android:configChanges="orientation|keyboardHidden" android:label="@string/decks" android:name=".decks.DeckEdit" android:screenOrientation="portrait" android:windowSoftInputMode="stateHidden">
             <intent-filter>
-                <action android:name="com.magichat.decks.DECKEDIT" />
+                <action android:name="com.magichat.decks.DECKEDIT"/>
 
-                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
         <!--
@@ -202,64 +151,45 @@
             </intent-filter>
         </activity>
         -->
-        <activity
-            android:name=".cards.CardSearch"
-            android:configChanges="orientation|keyboardHidden"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait" >
+        <activity android:configChanges="orientation|keyboardHidden" android:label="@string/app_name" android:name=".cards.CardSearch" android:screenOrientation="portrait">
             <intent-filter>
-                <action android:name="com.magichat.cards.CARDSEARCH" />
+                <action android:name="com.magichat.cards.CARDSEARCH"/>
 
-                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
-        <activity
-            android:name=".cards.CardSearchResults"
-            android:configChanges="orientation|keyboardHidden"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait" >
+        <activity android:configChanges="orientation|keyboardHidden" android:label="@string/app_name" android:name=".cards.CardSearchResults" android:screenOrientation="portrait">
             <intent-filter>
-                <action android:name="com.magichat.cards.CARDSEARCHRESULTS" />
+                <action android:name="com.magichat.cards.CARDSEARCHRESULTS"/>
 
-                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
-        <activity
-            android:name=".cards.CardView"
-            android:configChanges="orientation|keyboardHidden"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait" >
+        <activity android:configChanges="orientation|keyboardHidden" android:label="@string/app_name" android:name=".cards.CardView" android:screenOrientation="portrait">
             <intent-filter>
-                <action android:name="com.magichat.cards.CARDVIEW" />
+                <action android:name="com.magichat.cards.CARDVIEW"/>
 
-                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
-        <activity
-            android:name=".players.PlayersMain"
-            android:configChanges="orientation|keyboardHidden"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait" >
+        <activity android:configChanges="orientation|keyboardHidden" android:label="@string/app_name" android:name=".players.PlayersMain" android:screenOrientation="portrait">
             <intent-filter>
-                <action android:name="com.magichat.players.PLAYERSMAIN" />
+                <action android:name="com.magichat.players.PLAYERSMAIN"/>
 
-                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
-        <activity
-            android:name=".players.PlayerView"
-            android:configChanges="orientation|keyboardHidden"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait" >
+        <activity android:configChanges="orientation|keyboardHidden" android:label="@string/app_name" android:name=".players.PlayerView" android:screenOrientation="portrait">
             <intent-filter>
-                <action android:name="com.magichat.players.PLAYERVIEW" />
+                <action android:name="com.magichat.players.PLAYERVIEW"/>
 
-                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
-        <activity
-            android:name="com.magichat.gcm.RegisterActivity"
-            android:launchMode="singleTop" />
-    </application>
+        <activity android:launchMode="singleTop" android:name="com.magichat.gcm.RegisterActivity"/>
+        <service android:name=".GCMIntentService"/>
+        
+        <activity android:launchMode="singleTop" android:name=".RegisterActivity"/>
+</application>
 
 </manifest>

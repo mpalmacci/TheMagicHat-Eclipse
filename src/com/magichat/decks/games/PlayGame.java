@@ -31,7 +31,6 @@ import android.widget.TextView;
 public class PlayGame extends MagicHatActivity implements
 		OnItemSelectedListener {
 	List<Deck> allActiveDecks = new ArrayList<Deck>();
-	// List<Deck> gameDecks = new ArrayList<Deck>();
 	List<Player> players = new ArrayList<Player>();
 	Map<Player, Deck> playersAndDecks = new HashMap<Player, Deck>();
 
@@ -109,6 +108,10 @@ public class PlayGame extends MagicHatActivity implements
 	}
 
 	private void populateDeckSpinners() {
+		// This line removes the previously created views in case this is
+		// called after onResume
+		llMatchupView.removeAllViews();
+
 		for (Player p : players) {
 			List<Deck> deckList;
 
@@ -124,8 +127,7 @@ public class PlayGame extends MagicHatActivity implements
 			}
 
 			ArrayAdapter<Deck> deckAdapter = new ArrayAdapter<Deck>(
-					PlayGame.this, R.layout.mh_spinner,
-					deckList);
+					PlayGame.this, R.layout.mh_spinner, deckList);
 
 			deckAdapter.setDropDownViewResource(R.layout.mh_spinner_dropdown);
 
@@ -246,16 +248,6 @@ public class PlayGame extends MagicHatActivity implements
 	private class addGameResult extends AsyncTask<Integer, Integer, Integer> {
 
 		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-			/*
-			 * for (int i = 0; i < gameDecks.size(); i++) { Spinner sDeck =
-			 * (Spinner) findViewById(Players.get(i).getId()); gameDecks[i] =
-			 * sDeck }
-			 */
-		}
-
-		@Override
 		protected Integer doInBackground(Integer... pNums) {
 			Game g = new Game(playersAndDecks, new Date());
 			g.setWinner(players.get(pNums[0]));
@@ -289,7 +281,6 @@ public class PlayGame extends MagicHatActivity implements
 				}
 			}
 		}
-
 	}
 
 	private void showWinnerDialog() {
@@ -358,6 +349,7 @@ public class PlayGame extends MagicHatActivity implements
 		llWinnerSection = (LinearLayout) findViewById(R.id.llWinnerSection);
 
 		this.bCardSearch.setVisibility(LinearLayout.VISIBLE);
+		this.bPrefs.setVisibility(LinearLayout.VISIBLE);
 
 		this.tvTitle.setText("Let's Play Some Magic!");
 

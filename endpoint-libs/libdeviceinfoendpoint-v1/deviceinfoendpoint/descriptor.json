@@ -1,18 +1,20 @@
 {
   "files": [
     {
-      "path": "the-magichat-deviceinfoendpoint-v1-20130327014404-java-1.14.1-beta-sources.jar", 
+      "path": "myapp-deviceinfoendpoint-v1-20130516014517-java-1.14.2-beta-sources.jar", 
       "type": "source"
     }, 
     {
-      "path": "the-magichat-deviceinfoendpoint-v1-20130327014404-java-1.14.1-beta.jar.properties", 
+      "path": "myapp-deviceinfoendpoint-v1-20130516014517-java-1.14.2-beta.jar.properties", 
       "type": "android.properties"
     }
   ], 
   "kind": "discovery#directoryItem", 
-  "version": "v1", 
+  "moduleName": "com.magichat", 
+  "name": "deviceinfoendpoint", 
   "language": "java", 
   "proguard-config": "proguard-google-api-client.txt", 
+  "version": "v1", 
   "dependencies": [
     {
       "files": [
@@ -686,8 +688,8 @@
       ]
     }
   ], 
-  "language_version": "1.14.1-beta", 
-  "revision": 20130327014404, 
+  "language_version": "1.14.2-beta", 
+  "revision": 20130516014517, 
   "id": "deviceinfoendpoint:v1", 
-  "name": "deviceinfoendpoint"
+  "modulePath": "com/magichat"
 }
